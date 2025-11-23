@@ -525,6 +525,54 @@ blockquote {
 	font-weight:bold;
 }
 
+/* 404 Error Page Styles */
+.error-404 .error-message {
+	text-align: center;
+	font-size: 14px;
+	margin: 20px 0;
+	line-height: 1.8;
+}
+
+.recent-posts-list,
+.categories-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.recent-posts-list li,
+.categories-list li {
+	background: url("images/sidebox-li.png") no-repeat scroll 100% 5px transparent;
+	padding: 4px 23px 4px 0;
+}
+
+.category-count {
+	color: #888888;
+}
+
+.entry-centered {
+	text-align: center;
+}
+
+.button-home {
+	display: inline-block;
+	padding: 12px 30px;
+	background-color: #39a4cc;
+	color: #ffffff !important;
+	text-decoration: none;
+	border-radius: 4px;
+	font-weight: bold;
+	transition: all 0.3s ease;
+	margin: 20px 0;
+}
+
+.button-home:hover {
+	background-color: #2d8ab3;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(57, 164, 204, 0.3);
+	border-bottom: none;
+}
+
 /* Social Sharing Buttons */
 .social-share-buttons {
 	margin: 20px auto;
