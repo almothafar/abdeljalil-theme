@@ -439,7 +439,6 @@ img.aligncenter {
 }
 .post {
 	width:100%;
-	float:right;
 	margin-bottom:20px;
 	background: url("images/post-bg.png") repeat-x scroll left top #fafafa;
 	border:1px solid #e6e6e6;
@@ -596,8 +595,8 @@ blockquote {
 
 /* Social Sharing Buttons */
 .social-share-buttons {
-	margin: 20px auto;
-	padding: 15px 20px;
+	margin: 10px auto;
+	padding: 8px 10px;
 	text-align: center;
 	background-color: #f9f9f9;
 	border-top: 1px solid #e6e6e6;
@@ -608,7 +607,7 @@ blockquote {
 .share-button {
 	display: inline-block;
 	margin: 5px;
-	padding: 10px 18px;
+	padding: 4px 8px;
 	border-radius: 6px;
 	text-decoration: none;
 	font-weight: bold;
@@ -622,10 +621,12 @@ blockquote {
 	margin-left: 6px;
 	font-size: 16px;
 	vertical-align: middle;
+	color: #fff;
 }
 
 .share-button span {
 	vertical-align: middle;
+	color: #fff;
 }
 
 .share-button:hover {
@@ -1045,6 +1046,11 @@ img.avatar {
 .navigation {
 	color:#d1d1d1;
 	clear:both;
+	height: 30px;
+	margin: 5px 0;
+	display: flex;
+    align-items: flex-start;
+	justify-content: space-between;
 }
 .navigation a {
 	color:#d1d1d1;
@@ -1055,13 +1061,12 @@ img.avatar {
 }
 .navigation .left-nav {
 	width:50%;
-	float:left;
-	text-align:left;
+	text-align:end;
+	white-space: nowrap;
 }
 .navigation .right-nav {
-	width:50%;
-	float:right;
-	text-align:right;
+	text-align:start;
+	white-space: nowrap;
 }
 
 

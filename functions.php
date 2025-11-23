@@ -137,8 +137,8 @@ function abdeljalil_scripts() {
 	// Enqueue main stylesheet
 	wp_enqueue_style( 'abdeljalil-style', get_stylesheet_uri(), array(), '2.0' );
 
-	// Enqueue Font Awesome 7.1.0 (latest stable) for social icons
-	wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.1.0/css/all.min.css', array(), '7.1.0' );
+	// Enqueue Font Awesome 7.0.1 (latest available on CDNJS) for social icons
+	wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css', array(), '7.0.7' );
 
 	// Enqueue WordPress bundled jQuery (modern version)
 	wp_enqueue_script( 'jquery' );
