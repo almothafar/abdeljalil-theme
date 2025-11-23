@@ -1,0 +1,36 @@
+<?php get_header(); ?>
+<div id="container">
+	<?php if(have_posts()) : ?><?php while(have_posts()) : the_post(); ?>
+		<div class="post" id="post-<?php the_ID(); ?>">
+			<div class="post-head">
+				<div class="post-time"><?php the_time('j F Y'); ?></div>
+				<div class="post-cat">التصنيف : <?php the_category('، ') ?></div>
+				<div class="post-author">الكاتب : <?php the_author_link(); ?></div>
+				<div class="post-comment"><?php comments_popup_link('لا تعليقات', 'التعليقات : 1', 'التعليقات : %', '', 'التعليقات مغلقة لهذه التدوينة'); ?></div>
+				<div class="post-view"><?php if(function_exists('the_views')) { the_views(); } ?></div>
+			</div>
+			<div class="entry">
+				<div class="post-title"><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>"><?php the_title(); ?></a></div>
+				<?php the_content('<br /><span class="read-more">أكمل قراءة بقية الموضوع ←</span>'); ?>
+			</div>
+			<div class="post-foot">
+				<div class="post-tags"><?php the_tags('وسوم: ','، ','<br />'); ?></div>
+			</div>
+		</div>
+	<?php endwhile; ?>
+	
+	<div class="navigation">
+		<?php if(function_exists('wp_page_numbers')) { wp_page_numbers(); } ?>
+		<?php /*posts_nav_link();*/ ?>
+	</div>
+	<br />
+	<?php else : ?>
+	
+	<div class="post">
+		<h1>لا توجد حالياً أية تدوينات</h1>
+	</div>
+	
+	<?php endif; ?>
+</div>
+<?php get_sidebar(); ?>
+<?php get_footer(); ?>
