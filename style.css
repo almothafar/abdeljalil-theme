@@ -1,4 +1,22 @@
-﻿/* BODY */
+/*
+Theme Name: Abdeljalil Theme
+Theme URI: https://github.com/yourusername/abdeljalil-theme
+Description: A modernized Arabic RTL WordPress theme with responsive design, HTML5 semantics, and enhanced security. Fully compatible with WordPress 6.8+ and PHP 8.4+.
+Version: 2.0
+Requires at least: 5.0
+Tested up to: 6.8
+Requires PHP: 7.4
+Author: Your Name
+Author URI: https://yourwebsite.com
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: abdeljalil
+Tags: rtl-language-support, right-to-left, arabic, blog, custom-header, custom-background, threaded-comments, translation-ready, responsive-layout, accessibility-ready
+
+This theme, like WordPress, is licensed under the GPL.
+*/
+
+/* BODY */
 
 html {
 	direction:rtl;
@@ -974,38 +992,254 @@ div#qTip {
 	padding: 0.2em 0.5em;
 }
 
+/* ==========================================================================
+   RESPONSIVE DESIGN - Modern Mobile-First Approach
+   ========================================================================== */
+
+/* Base improvements for all devices */
+img,
+embed,
+object,
+video {
+	max-width: 100%;
+	height: auto;
+}
+
+/* Tablets and smaller (max-width: 990px) */
 @media (max-width: 990px) {
+	#navbar,
+	#header,
+	#wrapper,
+	#header-image {
+		width: 100%;
+		max-width: 100%;
+	}
 
-       #navbar, #header, #wrapper, #header-image {
-       	width: 100%;
-       }
+	#sidebar {
+		margin-right: 2%;
+		width: 29%;
+	}
 
-       #sidebar {
-		    margin-right: 2%;
-		    width: 29%;
-		}
+	#container {
+		width: 69%;
+	}
 
-		#container {
-			width: 69%;
-		}
-
+	#blog-name {
+		font-size: 28px;
+		margin-top: 40px;
+	}
 }
-@media (max-width: 650px) {
-       
+
+/* Small tablets and large phones (max-width: 768px) */
+@media (max-width: 768px) {
+	#container {
+		width: 100%;
+		float: none;
+		margin: 0 auto 20px;
+	}
+
+	#sidebar {
+		width: 100%;
+		float: none;
+		margin: 0;
+	}
+
+	#navbar ul li a {
+		padding-right: 10px;
+		padding-left: 10px;
+		font-size: 11px;
+	}
+
+	.post-head {
+		font-size: 10px;
+	}
+
+	#blog-name {
+		font-size: 24px;
+		margin-top: 30px;
+		padding-right: 10px;
+	}
+
+	#description {
+		padding-right: 10px;
+		font-size: 11px;
+	}
 }
+
+/* Mobile devices (max-width: 480px) */
 @media (max-width: 480px) {
-       .post-head .post-time, .post-head .post-view {
-       	display: none;
-       }
+	body {
+		margin: 0;
+		padding: 0;
+		width: 100%;
+		font-size: 14px;
+	}
+
+	#container,
+	#sidebar {
+		width: 100%;
+		margin: 0;
+		float: none;
+	}
+
+	#navbar {
+		height: auto;
+	}
+
+	#navbar #n-right,
+	#navbar #n-left {
+		width: 100%;
+		float: none;
+		margin: 0;
+		text-align: center;
+	}
+
+	#navbar ul {
+		padding: 0;
+		text-align: center;
+	}
+
+	#navbar ul li {
+		display: block;
+		margin: 0;
+	}
+
+	#navbar ul li a {
+		display: block;
+		padding: 10px;
+		border-bottom: 1px solid #3a3a3a;
+	}
+
+	.searchbox {
+		width: 60%;
+		margin: 5px auto;
+	}
+
+	.searchbtn {
+		width: 35%;
+		margin: 5px auto;
+	}
+
+	#header {
+		height: auto;
+		min-height: 120px;
+	}
+
+	#header-image {
+		height: auto;
+		min-height: 120px;
+	}
+
+	#blog-name {
+		font-size: 20px;
+		margin-top: 20px;
+		padding-right: 10px;
+		text-align: center;
+		float: none;
+	}
+
+	#description {
+		padding-right: 10px;
+		text-align: center;
+		float: none;
+		clear: both;
+	}
+
+	.post-head .post-time,
+	.post-head .post-view {
+		display: none;
+	}
+
+	.post-head .post-cat,
+	.post-head .post-author {
+		font-size: 9px;
+	}
+
+	.post-title {
+		padding-left: 5px;
+		padding-right: 5px;
+	}
+
+	.post-title a,
+	.post-title h1 {
+		font-size: 18px;
+	}
+
+	.entry {
+		padding-right: 10px;
+		padding-left: 10px;
+	}
+
+	.comment-head {
+		height: auto;
+	}
+
+	.comment-data {
+		font-size: 10px;
+	}
+
+	.comment-avatar {
+		width: 40px;
+	}
+
+	img.avatar {
+		width: 40px;
+		height: auto;
+	}
+
+	#footer {
+		height: auto;
+		padding: 10px;
+		text-align: center;
+	}
+
+	#footer #right,
+	#footer #left {
+		width: 100%;
+		float: none;
+		text-align: center;
+		padding: 5px 0;
+	}
 }
-@media (min-width: 320px) and (max-width: 480px) {
-body {
-    margin: 0 auto;
-    padding: 0;
-    width: 99%;
+
+/* Small mobile devices (max-width: 320px) */
+@media (max-width: 320px) {
+	body {
+		font-size: 13px;
+	}
+
+	#blog-name {
+		font-size: 18px;
+	}
+
+	.post-title a,
+	.post-title h1 {
+		font-size: 16px;
+	}
+
+	.post-head {
+		font-size: 9px;
+	}
 }
-       #container ,  #sidebar {
-       	width: 100%;
-       	margin: 0;
-       }
+
+/* Print styles */
+@media print {
+	#navbar,
+	#sidebar,
+	#footer,
+	.navigation,
+	.comment-reply-link,
+	.edit-post {
+		display: none;
+	}
+
+	#container {
+		width: 100%;
+		float: none;
+	}
+
+	body {
+		background: #fff;
+		color: #000;
+	}
 }

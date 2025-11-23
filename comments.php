@@ -1,105 +1,85 @@
-<?php // Do not delete these lines
-if ('comments.php' == basename($_SERVER['SCRIPT_FILENAME'])) die ('عذراً، لا تفتح هذه الصفحة مباشرة !');
-if (!empty($post->post_password)) {
-	if ($_COOKIE['wp-postpass_' . COOKIEHASH] != $post->post_password) {
-?>
-<h1>تدوينة محمية بكلمة مرور</h1>
-<p>أدخل كلمة المرور لرؤية التعليقات.</p>
-<?php return;
-	}
+<?php
+/**
+ * Comments Template
+ *
+ * @package Abdeljalil
+ */
+
+if ( post_password_required() ) {
+	return;
 }
-$oddcomment = '';
 ?>
 
-<!-- يمكنك بدأ التعديل من هنا -->
-<?php if ($comments) : ?>
-	<h3 id="comments"><?php comments_number('لا توجد تعليقات ', 'عدد التعليقات : 1 ', 'عدد التعليقات : %' );?> | <a href="#respond">أكتب تعليقك</a></h3>
-	<div class="navigation">
-		<div class="right-nav"><?php previous_comments_link() ?></div>
-		<div class="left-nav"><?php next_comments_link() ?></div>
-	</div>
-<ul class="commentlist">
-<?php $counter = 0; ?>
-<?php wp_list_comments( array( 'type' => 'comment', 'callback' => 'Abdeljalil_comment' ) ); ?>
+<div id="comments" class="comments-area">
+	<?php if ( have_comments() ) : ?>
+		<h3 class="comments-title">
+			<?php
+			$comments_number = get_comments_number();
+			if ( 1 === $comments_number ) {
+				printf( _x( 'تعليق واحد على &ldquo;%s&rdquo;', 'comments title', 'abdeljalil' ), get_the_title() );
+			} else {
+				printf(
+					_nx(
+						'%1$s تعليق على &ldquo;%2$s&rdquo;',
+						'%1$s تعليق على &ldquo;%2$s&rdquo;',
+						$comments_number,
+						'comments title',
+						'abdeljalil'
+					),
+					number_format_i18n( $comments_number ),
+					get_the_title()
+				);
+			}
+			?>
+		</h3>
 
-</ul>
+		<?php if ( get_comment_pages_count() > 1 && get_option( 'page_comments' ) ) : ?>
+			<nav class="navigation comment-navigation" role="navigation">
+				<div class="nav-previous"><?php previous_comments_link( __( '&larr; تعليقات أقدم', 'abdeljalil' ) ); ?></div>
+				<div class="nav-next"><?php next_comments_link( __( 'تعليقات أحدث &rarr;', 'abdeljalil' ) ); ?></div>
+			</nav>
+		<?php endif; ?>
 
-<?php else : // this is displayed if there are no comments so far ?>
-<?php if ('open' == $post->comment_status) : ?>
-	<!-- If comments are open, but there are no comments. -->
-	<?php else : // comments are closed ?>
-	<!-- If comments are closed. -->
-<p class="nocomments">التعليقات مغلقة.</p>
+		<ul class="commentlist">
+			<?php
+			wp_list_comments( array(
+				'style'       => 'ul',
+				'short_ping'  => true,
+				'avatar_size' => 50,
+				'callback'    => 'abdeljalil_comment',
+			) );
+			?>
+		</ul>
+
+		<?php if ( get_comment_pages_count() > 1 && get_option( 'page_comments' ) ) : ?>
+			<nav class="navigation comment-navigation" role="navigation">
+				<div class="nav-previous"><?php previous_comments_link( __( '&larr; تعليقات أقدم', 'abdeljalil' ) ); ?></div>
+				<div class="nav-next"><?php next_comments_link( __( 'تعليقات أحدث &rarr;', 'abdeljalil' ) ); ?></div>
+			</nav>
+		<?php endif; ?>
+
 	<?php endif; ?>
-<?php endif; ?>
 
-<?php if ('open' == $post->comment_status) : ?>
-		<br />
-<div id="respond">
-		<div class="add-comment-head"><?php comment_form_title( 'أكتب تعليقك', 'إقتباس مشاركة :  %s' ); ?></div>
-<?php if ( function_exists(cs_print_smilies) ) {cs_print_smilies();}?>
-		<div class="entry">
+	<?php if ( ! comments_open() && get_comments_number() && post_type_supports( get_post_type(), 'comments' ) ) : ?>
+		<p class="no-comments"><?php _e( 'التعليقات مغلقة.', 'abdeljalil' ); ?></p>
+	<?php endif; ?>
 
-<div class="cancel-comment-reply">
-	<small><?php cancel_comment_reply_link('إضغط هنا لإلغاء الإقتباس.'); ?></small>
+	<?php
+	comment_form( array(
+		'title_reply'          => __( 'أكتب تعليقك', 'abdeljalil' ),
+		'title_reply_to'       => __( 'الرد على %s', 'abdeljalil' ),
+		'cancel_reply_link'    => __( 'إلغاء الرد', 'abdeljalil' ),
+		'label_submit'         => __( 'إرسال التعليق', 'abdeljalil' ),
+		'comment_field'        => '<p class="comment-form-comment"><label for="comment">' . _x( 'التعليق', 'noun', 'abdeljalil' ) . '</label><textarea class="add-comment-input" id="comment" name="comment" cols="45" rows="8" aria-required="true"></textarea></p>',
+		'fields'               => array(
+			'author' => '<p class="comment-form-author"><input class="add-comment-input" id="author" name="author" type="text" value="' . esc_attr( $commenter['comment_author'] ) . '" size="30" /><label for="author">' . __( 'الاسم', 'abdeljalil' ) . ( $req ? ' <span class="required">*</span>' : '' ) . '</label></p>',
+			'email'  => '<p class="comment-form-email"><input class="add-comment-input" id="email" name="email" type="email" value="' . esc_attr( $commenter['comment_author_email'] ) . '" size="30" /><label for="email">' . __( 'البريد الإلكتروني', 'abdeljalil' ) . ( $req ? ' <span class="required">*</span>' : '' ) . '</label></p>',
+			'url'    => '<p class="comment-form-url"><input class="add-comment-input" id="url" name="url" type="url" value="' . esc_attr( $commenter['comment_author_url'] ) . '" size="30" /><label for="url">' . __( 'الموقع', 'abdeljalil' ) . '</label></p>',
+		),
+		'class_submit'         => 'submit',
+		'submit_button'        => '<button name="%1$s" type="submit" id="%2$s" class="%3$s" value="%4$s">%4$s</button>',
+		'comment_notes_before' => '',
+		'comment_notes_after'  => '',
+	) );
+	?>
 </div>
-
-
-<?php if ( get_option('comment_registration') && !$user_ID ) : ?>
-
-
-
-<p>يجب أن <a href="<?php echo get_option('siteurl'); ?>/wp-login.php?redirect_to=<?php the_permalink(); ?>">تسجل دخولك</a> لترك التعليقات.</p>
-
-
-
-<?php else : ?>
-
-<form action="<?php echo get_option('siteurl'); ?>/wp-comments-post.php" method="post" id="commentform" name="commentform">
-
-<?php if ( $user_ID ) : ?>
-
-
-<p>دخولك مسجل بإسم <a href="<?php echo get_option('siteurl'); ?>/wp-admin/profile.php"><?php echo $user_identity; ?></a>. <a href="<?php echo get_option('siteurl'); ?>/wp-login.php?action=logout" title="تسجيل الخروج من هذا الحساب">تسجيل الخروج &raquo;</a></p>
-
-
-
-<?php else : ?>
-
-<p><input class="add-comment-input" type="text" name="author" id="author" value="" size="40" tabindex="1" onclick="clear_value(author)" onblur="set_value(author)" />
-
-
-<label for="author">الإسم <?php if ($req) echo "( مطلوب )"; ?></label></p>
-
-
-<p><input class="add-comment-input" type="text" name="email" id="email" value="" size="40" tabindex="2" onclick="clear_value(email)" onblur="set_value(email)" />
-
-
-<label for="email">البريد الإلكتروني ( لن ينشر ) <?php if ($req) echo "( مطلوب )"; ?></label></p>
-
-
-<p><input class="add-comment-input" type="text" name="url" id="url" value="" size="40" tabindex="3" onclick="clear_value(url)" onblur="set_value(url)" />
-
-
-<label for="url">الموقع ( إختياري ) </label></p>
-<?php endif; ?>
-<?php 
-/****** Math Comment Spam Protection Plugin ******/
-if ( function_exists('math_comment_spam_protection') && !$user_ID ) { 
-	$mcsp_info = math_comment_spam_protection();
-?> 	<p><input type="text" name="mcspvalue" id="mcspvalue" value="" size="22" tabindex="4" />
-	<label for="mcspvalue"><small>كم مجموع <?php echo $mcsp_info['operand1'] . ' + ' . $mcsp_info['operand2'] . ' ?' ?> (مطلوب) </small></label>
-	<input type="hidden" name="mcspinfo" value="<?php echo $mcsp_info['result']; ?>" />
-</p>
-<?php } // if function_exists... ?>
-<p><textarea class="add-comment-input" name="comment" id="comment" rows="" cols="" tabindex="4"></textarea></p>
-<p><input name="submit" type="submit" id="submit" value="" tabindex="5" />
-<input type="hidden" name="comment_post_ID" value="<?php echo $id; ?>" />
-</p>
-<?php comment_id_fields(); ?>
-<?php do_action('comment_form', $post->ID); ?>
-</form>
-</div>
-</div>
-<?php endif; // If registration required and not logged in ?>
-<?php endif; // if you delete this the sky will fall on your head ?>

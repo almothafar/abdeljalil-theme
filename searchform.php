@@ -1,6 +1,9 @@
-<form method="get" id="searchform" action="<?php bloginfo('home'); ?>/">
-<div>
-	<input type="submit" id="searchsubmit" value="" class="searchbtn" title="إبحث !" TABINDEX="2" />
-	<input type="text" value="إبحث.." name="s" id="s" class="searchbox" onclick="clear_value(s)" onblur="set_value(s)" TABINDEX="1" />
-</div>
+<form role="search" method="get" class="search-form" action="<?php echo esc_url( home_url( '/' ) ); ?>">
+	<label>
+		<span class="screen-reader-text"><?php _e( 'البحث عن:', 'abdeljalil' ); ?></span>
+		<input type="search" class="searchbox" placeholder="<?php echo esc_attr_x( 'إبحث...', 'placeholder', 'abdeljalil' ); ?>" value="<?php echo get_search_query(); ?>" name="s" />
+	</label>
+	<button type="submit" class="searchbtn">
+		<span class="screen-reader-text"><?php _e( 'بحث', 'abdeljalil' ); ?></span>
+	</button>
 </form>

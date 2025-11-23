@@ -1,94 +1,43 @@
 <!DOCTYPE html>
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-
-<head profile="http://gmpg.org/xfn/11">
-
-	<title><?php bloginfo('name'); ?><?php wp_title(); ?></title>
-
-	<meta http-equiv="Content-Type" content="<?php bloginfo('html_type'); ?>; charset=<?php bloginfo('charset'); ?>" />	
-
-	<meta name="generator" content="WordPress <?php bloginfo('version'); ?>" /> <!-- leave this for stats please -->
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-	<link rel="stylesheet" href="<?php bloginfo('stylesheet_url'); ?>" type="text/css" media="screen" />
-
-	<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="<?php bloginfo('rss2_url'); ?>" />
-
-	<link rel="alternate" type="text/xml" title="RSS .92" href="<?php bloginfo('rss_url'); ?>" />
-
-	<link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="<?php bloginfo('atom_url'); ?>" />
-
-	<script language="JavaScript" src="<?php bloginfo('template_directory'); ?>/files/qTip.js" type="text/JavaScript"></script>
-
-	<script language="JavaScript" src="<?php bloginfo('template_directory'); ?>/files/scroll.js" type="text/JavaScript"></script>
-
-	<script language="JavaScript" src="<?php bloginfo('template_directory'); ?>/files/jQuery162.js" type="text/JavaScript"></script>
-
-	<script language="JavaScript" src="<?php bloginfo('template_directory'); ?>/files/Abdeljalil.js" type="text/JavaScript"></script>
-
-	<link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
-
-	<?php wp_get_archives('type=monthly&format=link'); ?>
-
-	<?php //comments_popup_script(); // off by default ?>
-
-<?php wp_head(); ?>
-	<script type="text/javascript">
-
-	  var _gaq = _gaq || [];
-	  _gaq.push(['_setAccount', 'UA-984089-10']);
-	  _gaq.push(['_trackPageview']);
-
-	  (function() {
-		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-	  })();
-
-	</script>
-	<script type="text/javascript" src="https://apis.google.com/js/plusone.js">
-	  {lang: 'ar'}
-	</script>
-
-	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-	<script>
-		 (adsbygoogle = window.adsbygoogle || []).push({
-			  google_ad_client: "ca-pub-1244440343559843",
-			  enable_page_level_ads: true
-		 });
-	</script>
+<html <?php language_attributes(); ?>>
+<head>
+	<meta charset="<?php bloginfo( 'charset' ); ?>">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="profile" href="http://gmpg.org/xfn/11">
+	<?php wp_head(); ?>
 </head>
 
-<body>
+<body <?php body_class(); ?>>
+<?php wp_body_open(); ?>
 
-<div id="navbar">
-
+<nav id="navbar" role="navigation">
 	<div id="n-right">
-
-		<?php wp_page_menu('show_home=1&sort_column=post_date'); ?>
-
+		<?php
+		wp_nav_menu( array(
+			'theme_location' => 'primary',
+			'menu_class'     => 'menu',
+			'container'      => false,
+			'fallback_cb'    => 'wp_page_menu',
+		) );
+		?>
 	</div>
 
 	<div id="n-left">
-
-		<?php include(TEMPLATEPATH . '/searchform.php'); ?>
-
+		<?php get_search_form(); ?>
 	</div>
+</nav>
 
-</div>
-
-<div id="header">
-
-<div id="header-image">
-
-	    <div id="blog-name"><a href="<?php bloginfo('url'); ?>" title="<?php bloginfo('name'); ?>"><?php bloginfo('name'); ?></a></div>
-
-	    <div id="description"><?php bloginfo('description'); ?></div>
-
-</div>
-
-</div>
+<header id="header" role="banner">
+	<div id="header-image" style="background-image: url(<?php header_image(); ?>);">
+		<?php if ( display_header_text() ) : ?>
+			<div id="blog-name">
+				<a href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
+					<?php bloginfo( 'name' ); ?>
+				</a>
+			</div>
+			<div id="description"><?php bloginfo( 'description' ); ?></div>
+		<?php endif; ?>
+	</div>
+</header>
 
 <div id="wrapper">
