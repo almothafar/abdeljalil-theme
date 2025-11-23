@@ -137,6 +137,9 @@ function abdeljalil_scripts() {
 	// Enqueue main stylesheet
 	wp_enqueue_style( 'abdeljalil-style', get_stylesheet_uri(), array(), '2.0' );
 
+	// Enqueue Font Awesome for social icons
+	wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css', array(), '6.5.1' );
+
 	// Enqueue WordPress bundled jQuery (modern version)
 	wp_enqueue_script( 'jquery' );
 
@@ -161,28 +164,95 @@ function abdeljalil_social_sharing_buttons() {
 	?>
 	<div class="social-share-buttons">
 		<a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo $post_url; ?>" target="_blank" rel="noopener noreferrer" class="share-button facebook" title="شارك على فيسبوك">
-			<span class="screen-reader-text">شارك على فيسبوك</span>
-			Facebook
+			<i class="fab fa-facebook-f"></i>
+			<span>Facebook</span>
 		</a>
 		<a href="https://twitter.com/intent/tweet?url=<?php echo $post_url; ?>&text=<?php echo $post_title; ?>" target="_blank" rel="noopener noreferrer" class="share-button twitter" title="شارك على X (تويتر)">
-			<span class="screen-reader-text">شارك على X</span>
-			X
+			<i class="fab fa-x-twitter"></i>
+			<span>X</span>
 		</a>
 		<a href="https://www.linkedin.com/shareArticle?mini=true&url=<?php echo $post_url; ?>&title=<?php echo $post_title; ?>" target="_blank" rel="noopener noreferrer" class="share-button linkedin" title="شارك على لينكد إن">
-			<span class="screen-reader-text">شارك على LinkedIn</span>
-			LinkedIn
+			<i class="fab fa-linkedin-in"></i>
+			<span>LinkedIn</span>
 		</a>
 		<a href="https://telegram.me/share/url?url=<?php echo $post_url; ?>&text=<?php echo $post_title; ?>" target="_blank" rel="noopener noreferrer" class="share-button telegram" title="شارك على تيليجرام">
-			<span class="screen-reader-text">شارك على Telegram</span>
-			Telegram
+			<i class="fab fa-telegram-plane"></i>
+			<span>Telegram</span>
 		</a>
 		<a href="https://wa.me/?text=<?php echo $post_title; ?>%20<?php echo $post_url; ?>" target="_blank" rel="noopener noreferrer" class="share-button whatsapp" title="شارك على واتساب">
-			<span class="screen-reader-text">شارك على WhatsApp</span>
-			WhatsApp
+			<i class="fab fa-whatsapp"></i>
+			<span>WhatsApp</span>
 		</a>
 	</div>
 	<?php
 }
+
+/***************************************************************
+ * Open Graph Meta Tags for Social Sharing
+ **************************************************************/
+function abdeljalil_add_opengraph_tags() {
+	if ( is_singular() ) {
+		global $post;
+		setup_postdata( $post );
+
+		$og_title       = get_the_title();
+		$og_description = get_the_excerpt();
+		$og_url         = get_permalink();
+		$og_image       = '';
+
+		// Get featured image
+		if ( has_post_thumbnail() ) {
+			$og_image = get_the_post_thumbnail_url( $post->ID, 'large' );
+		}
+
+		// If no featured image, try to get first image from content
+		if ( ! $og_image ) {
+			$content = $post->post_content;
+			preg_match( '/<img[^>]+src=[\'"]([^\'"]+)[\'"][^>]*>/i', $content, $matches );
+			if ( isset( $matches[1] ) ) {
+				$og_image = $matches[1];
+			}
+		}
+
+		// Fallback to site logo or default image
+		if ( ! $og_image && has_custom_logo() ) {
+			$custom_logo_id = get_theme_mod( 'custom_logo' );
+			$og_image       = wp_get_attachment_image_url( $custom_logo_id, 'full' );
+		}
+
+		// Clean up description
+		if ( ! $og_description ) {
+			$og_description = wp_trim_words( strip_tags( $post->post_content ), 30, '...' );
+		}
+
+		echo "\n<!-- Open Graph Meta Tags by Abdeljalil Theme -->\n";
+		echo '<meta property="og:type" content="article" />' . "\n";
+		echo '<meta property="og:title" content="' . esc_attr( $og_title ) . '" />' . "\n";
+		echo '<meta property="og:description" content="' . esc_attr( $og_description ) . '" />' . "\n";
+		echo '<meta property="og:url" content="' . esc_url( $og_url ) . '" />' . "\n";
+		echo '<meta property="og:site_name" content="' . esc_attr( get_bloginfo( 'name' ) ) . '" />' . "\n";
+
+		if ( $og_image ) {
+			echo '<meta property="og:image" content="' . esc_url( $og_image ) . '" />' . "\n";
+			echo '<meta property="og:image:width" content="1200" />' . "\n";
+			echo '<meta property="og:image:height" content="630" />' . "\n";
+		}
+
+		// Twitter Card tags
+		echo '<meta name="twitter:card" content="summary_large_image" />' . "\n";
+		echo '<meta name="twitter:title" content="' . esc_attr( $og_title ) . '" />' . "\n";
+		echo '<meta name="twitter:description" content="' . esc_attr( $og_description ) . '" />' . "\n";
+
+		if ( $og_image ) {
+			echo '<meta name="twitter:image" content="' . esc_url( $og_image ) . '" />' . "\n";
+		}
+
+		echo "<!-- / Open Graph Meta Tags -->\n\n";
+
+		wp_reset_postdata();
+	}
+}
+add_action( 'wp_head', 'abdeljalil_add_opengraph_tags' );
 
 /***************************************************************
  * Security Enhancements
