@@ -27,6 +27,14 @@
 					) );
 					?>
 				</div>
+
+				<?php
+				// Display social sharing buttons
+				if ( function_exists( 'abdeljalil_social_sharing_buttons' ) ) {
+					abdeljalil_social_sharing_buttons();
+				}
+				?>
+
 				<div class="post-foot">
 					<div class="post-tags"><?php the_tags( 'وسوم: ', '، ', '<br />' ); ?></div>
 				</div>

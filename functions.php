@@ -137,13 +137,8 @@ function abdeljalil_scripts() {
 	// Enqueue main stylesheet
 	wp_enqueue_style( 'abdeljalil-style', get_stylesheet_uri(), array(), '2.0' );
 
-	// Enqueue scripts
+	// Enqueue WordPress bundled jQuery (modern version)
 	wp_enqueue_script( 'jquery' );
-
-	// Enqueue custom scripts
-	wp_enqueue_script( 'abdeljalil-qtip', get_template_directory_uri() . '/files/qTip.js', array( 'jquery' ), '1.0', true );
-	wp_enqueue_script( 'abdeljalil-scroll', get_template_directory_uri() . '/files/scroll.js', array( 'jquery' ), '1.0', true );
-	wp_enqueue_script( 'abdeljalil-main', get_template_directory_uri() . '/files/Abdeljalil.js', array( 'jquery' ), '1.0', true );
 
 	// Enqueue comment reply script
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
@@ -151,6 +146,43 @@ function abdeljalil_scripts() {
 	}
 }
 add_action( 'wp_enqueue_scripts', 'abdeljalil_scripts' );
+
+/***************************************************************
+ * Social Sharing Buttons
+ **************************************************************/
+function abdeljalil_social_sharing_buttons() {
+	if ( ! is_single() ) {
+		return;
+	}
+
+	$post_url   = urlencode( get_permalink() );
+	$post_title = urlencode( get_the_title() );
+
+	?>
+	<div class="social-share-buttons">
+		<a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo $post_url; ?>" target="_blank" rel="noopener noreferrer" class="share-button facebook" title="شارك على فيسبوك">
+			<span class="screen-reader-text">شارك على فيسبوك</span>
+			Facebook
+		</a>
+		<a href="https://twitter.com/intent/tweet?url=<?php echo $post_url; ?>&text=<?php echo $post_title; ?>" target="_blank" rel="noopener noreferrer" class="share-button twitter" title="شارك على X (تويتر)">
+			<span class="screen-reader-text">شارك على X</span>
+			X
+		</a>
+		<a href="https://www.linkedin.com/shareArticle?mini=true&url=<?php echo $post_url; ?>&title=<?php echo $post_title; ?>" target="_blank" rel="noopener noreferrer" class="share-button linkedin" title="شارك على لينكد إن">
+			<span class="screen-reader-text">شارك على LinkedIn</span>
+			LinkedIn
+		</a>
+		<a href="https://telegram.me/share/url?url=<?php echo $post_url; ?>&text=<?php echo $post_title; ?>" target="_blank" rel="noopener noreferrer" class="share-button telegram" title="شارك على تيليجرام">
+			<span class="screen-reader-text">شارك على Telegram</span>
+			Telegram
+		</a>
+		<a href="https://wa.me/?text=<?php echo $post_title; ?>%20<?php echo $post_url; ?>" target="_blank" rel="noopener noreferrer" class="share-button whatsapp" title="شارك على واتساب">
+			<span class="screen-reader-text">شارك على WhatsApp</span>
+			WhatsApp
+		</a>
+	</div>
+	<?php
+}
 
 /***************************************************************
  * Security Enhancements

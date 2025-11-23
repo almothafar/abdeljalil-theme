@@ -1,19 +1,26 @@
 /*
 Theme Name: Abdeljalil Theme
-Theme URI: https://github.com/yourusername/abdeljalil-theme
-Description: A modernized Arabic RTL WordPress theme with responsive design, HTML5 semantics, and enhanced security. Fully compatible with WordPress 6.8+ and PHP 8.4+.
+Theme URI: https://github.com/almothafar/abdeljalil-theme
+Description: A modernized Arabic RTL WordPress theme with responsive design, HTML5 semantics, and enhanced security. Originally created by Abdeljalil, now maintained and modernized by Al-Mothafar Al-Hasan. Fully compatible with WordPress 6.8+ and PHP 8.4+.
 Version: 2.0
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Author: Your Name
-Author URI: https://yourwebsite.com
+Author: Al-Mothafar Al-Hasan
+Author URI: https://almothafar.com
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: abdeljalil
 Tags: rtl-language-support, right-to-left, arabic, blog, custom-header, custom-background, threaded-comments, translation-ready, responsive-layout, accessibility-ready
 
+Original Theme: Abdeljalil Theme (2016)
+Modernized & Maintained by: Al-Mothafar Al-Hasan (https://almothafar.com)
+GitHub: https://github.com/almothafar
+LinkedIn: https://linkedin.com/in/almothafar
+Twitter/X: https://twitter.com/almothafar
+
 This theme, like WordPress, is licensed under the GPL.
+Use it freely, modify it, and share it!
 */
 
 /* BODY */
@@ -515,14 +522,78 @@ blockquote {
 	font-weight:bold;
 }
 
-.social-network-shares {
-    float: left;
-    height: 20px;
-    margin: 5px 0;
+/* Social Sharing Buttons */
+.social-share-buttons {
+	margin: 20px auto;
+	padding: 15px 20px;
+	text-align: center;
+	background-color: #f9f9f9;
+	border-top: 1px solid #e6e6e6;
+	border-bottom: 1px solid #e6e6e6;
+	clear: both;
 }
 
-.snbutton {
-	float: left;
+.share-button {
+	display: inline-block;
+	margin: 5px;
+	padding: 10px 15px;
+	border-radius: 4px;
+	text-decoration: none;
+	font-weight: bold;
+	font-size: 12px;
+	color: #fff;
+	transition: all 0.3s ease;
+}
+
+.share-button:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+	border-bottom: none;
+}
+
+.share-button.facebook {
+	background-color: #1877f2;
+}
+
+.share-button.facebook:hover {
+	background-color: #145dbf;
+	color: #fff;
+}
+
+.share-button.twitter {
+	background-color: #000000;
+}
+
+.share-button.twitter:hover {
+	background-color: #333333;
+	color: #fff;
+}
+
+.share-button.linkedin {
+	background-color: #0077b5;
+}
+
+.share-button.linkedin:hover {
+	background-color: #005885;
+	color: #fff;
+}
+
+.share-button.telegram {
+	background-color: #0088cc;
+}
+
+.share-button.telegram:hover {
+	background-color: #006699;
+	color: #fff;
+}
+
+.share-button.whatsapp {
+	background-color: #25d366;
+}
+
+.share-button.whatsapp:hover {
+	background-color: #1da851;
+	color: #fff;
 }
 
 /* COMMENTS TEMPLATE */
