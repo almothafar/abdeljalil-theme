@@ -96,7 +96,7 @@ Use it freely, modify it, and share it!
 	--spacing-xl: 30px;
 
 	/* Layout */
-	--border-radius: 4px;
+	--border-radius: 5px;
 	--transition-base: all 0.3s ease;
 	--container-max-width: 990px;
 	--sidebar-width: 29%;
@@ -1083,7 +1083,7 @@ img.avatar {
 .comment-respond {
 	background: linear-gradient(to bottom, var(--color-bg-lighter) 0%, var(--color-bg-gray-alt) 100%);
 	border: 1px solid var(--color-border);
-	border-radius: var(--border-radius);
+	border-radius: 0 0 var(--border-radius) var(--border-radius);
 	margin-block-end: var(--spacing-lg);
 	padding: var(--spacing-lg);
 	clear: both;
