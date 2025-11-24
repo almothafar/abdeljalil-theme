@@ -327,7 +327,20 @@ function abdeljalil_comment( $comment, $args, $depth ) {
 			?>
 		</div>
 	<?php
-}				
+}
+
+/***************************************************************
+ * Fix Akismet Privacy Notice - Replace English "processed" with Arabic
+ **************************************************************/
+function abdeljalil_fix_akismet_text( $translated, $original, $domain ) {
+	// Fix Akismet's mixed Arabic/English text
+	if ( 'akismet' === $domain || 'default' === $domain ) {
+		// Replace "processed" with Arabic equivalent
+		$translated = str_replace( 'processed', 'تتم معالجتها', $translated );
+	}
+	return $translated;
+}
+add_filter( 'gettext', 'abdeljalil_fix_akismet_text', 20, 3 );
 
 //End of Functions
 

@@ -23,6 +23,23 @@ This theme, like WordPress, is licensed under the GPL.
 Use it freely, modify it, and share it!
 */
 
+/* Font Declarations */
+@font-face {
+	font-family: 'Noto Kufi Arabic';
+	src: url('fonts/NotoKufiArabic-Regular.ttf') format('truetype');
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Noto Kufi Arabic';
+	src: url('fonts/NotoKufiArabic-Bold.ttf') format('truetype');
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
+}
+
 /* CSS Variables */
 :root {
 	/* Primary Colors */
@@ -65,11 +82,12 @@ Use it freely, modify it, and share it!
 	--color-error-bg: #ffbaba;
 
 	/* Typography */
-	--font-primary: tahoma;
+	--font-primary: 'Noto Kufi Arabic', tahoma, sans-serif;
 	--font-size-base: 12px;
-	--font-size-small: 11px;
-	--font-size-medium: 13px;
-	--font-size-large: 14px;
+	--font-size-small: 10px;
+	--font-size-medium: 11px;
+	--font-size-large: 13px;
+	--font-size-xlarge: 14px;
 
 	/* Spacing */
 	--spacing-xs: 5px;
@@ -1282,10 +1300,9 @@ img.avatar {
 
 /* Modern submit button with gradient */
 .comment-submit {
-	font-family: sans-serif;
+	font-family: var(--font-primary);
 	background: linear-gradient(to bottom, var(--color-primary) 0%, var(--color-primary-dark) 100%);
 	color: var(--color-text-white);
-	font-size: 16px;
 	font-weight: bold;
 	padding: 12px 30px;
 	border: none;
@@ -1324,6 +1341,30 @@ img.avatar {
 		width: 100%;
 		align-self: stretch;
 	}
+}
+
+/* Akismet Privacy Notice Styling */
+#respond .comment-form-comment + p,
+#respond .akismet_comment_form_privacy_notice {
+	font-size: 11px;
+	color: var(--color-text-light);
+	margin-block-start: 15px;
+	line-height: 1.6;
+}
+
+#respond .comment-form-comment + p a,
+#respond .akismet_comment_form_privacy_notice a {
+	color: var(--color-primary);
+	text-decoration: none;
+	border-bottom: 1px dashed var(--color-primary);
+	transition: var(--transition-base);
+	padding-bottom: 1px;
+}
+
+#respond .comment-form-comment + p a:hover,
+#respond .akismet_comment_form_privacy_notice a:hover {
+	color: var(--color-primary-dark);
+	border-bottom-style: solid;
 }
 
 
