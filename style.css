@@ -103,134 +103,6 @@ Use it freely, modify it, and share it!
 	--content-width: 69%;
 }
 
-/* Common Utility Classes */
-
-/* Link hover effect with dashed underline - can be applied to any link */
-.link-dashed-hover:hover {
-	padding-block-end: 2px;
-	border-block-end: 1px dashed currentColor;
-}
-
-/* Common link styles used throughout the theme */
-.theme-link {
-	color: var(--color-primary);
-	text-decoration: none;
-	transition: var(--transition-base);
-}
-
-.theme-link:visited {
-	color: var(--color-primary);
-}
-
-.theme-link:hover {
-	color: var(--color-primary);
-	padding-block-end: 2px;
-	border-block-end: 1px dashed var(--color-primary);
-}
-
-/* Spacing Utility Classes - Use for consistent spacing throughout */
-.margin-block-sm {
-	margin-block: var(--spacing-sm);
-}
-
-.margin-block-md {
-	margin-block: var(--spacing-md);
-}
-
-.margin-block-lg {
-	margin-block: var(--spacing-lg);
-}
-
-.margin-block-end-sm {
-	margin-block-end: var(--spacing-sm);
-}
-
-.margin-block-end-md {
-	margin-block-end: var(--spacing-md);
-}
-
-.margin-block-end-lg {
-	margin-block-end: var(--spacing-lg);
-}
-
-.padding-inline-sm {
-	padding-inline: var(--spacing-sm);
-}
-
-.padding-inline-md {
-	padding-inline: var(--spacing-md);
-}
-
-.padding-inline-lg {
-	padding-inline: var(--spacing-lg);
-}
-
-.padding-block-sm {
-	padding-block: var(--spacing-sm);
-}
-
-.padding-block-md {
-	padding-block: var(--spacing-md);
-}
-
-.padding-block-lg {
-	padding-block: var(--spacing-lg);
-}
-
-/* Gap Utility Classes - For flexbox/grid containers */
-.gap-xs {
-	gap: var(--spacing-xs);
-}
-
-.gap-sm {
-	gap: var(--spacing-sm);
-}
-
-.gap-md {
-	gap: var(--spacing-md);
-}
-
-.gap-lg {
-	gap: var(--spacing-lg);
-}
-
-/* Flexbox Utility Classes */
-.flex {
-	display: flex;
-}
-
-.flex-column {
-	display: flex;
-	flex-direction: column;
-}
-
-.flex-center {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.flex-between {
-	display: flex;
-	justify-content: space-between;
-}
-
-.flex-wrap {
-	flex-wrap: wrap;
-}
-
-/* Text Utility Classes */
-.text-center {
-	text-align: center;
-}
-
-.text-start {
-	text-align: start;
-}
-
-.text-end {
-	text-align: end;
-}
 
 /* BODY */
 
@@ -1343,8 +1215,7 @@ img.avatar {
 .comments-area .akismet_comment_form_privacy_notice {
 	font-size: var(--font-size-medium);
 	color: var(--color-text-light);
-	margin-block-start: var(--spacing-md);
-	line-height: 1.6;
+	padding: 0 var(--spacing-sm);
 }
 
 .comments-area .akismet_comment_form_privacy_notice a {
@@ -1445,7 +1316,7 @@ img.avatar {
 /* NAVIGATION */
 
 .navigation {
-	color: var(--color-text-lighter);
+	color: var(--color-primary);
 	clear: both;
 	font-size: var(--font-size-large);
 	height: var(--spacing-xl);
@@ -1457,7 +1328,7 @@ img.avatar {
 
 /* Navigation links - consolidated */
 .navigation a {
-	color: var(--color-text-lighter);
+	color: var(--color-primary-darkest);
 	text-decoration: none;
 	transition: var(--transition-base);
 }
