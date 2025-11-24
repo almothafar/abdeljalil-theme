@@ -48,6 +48,14 @@ Use it freely, modify it, and share it!
 	--transition-base: all 0.3s ease;
 }
 
+/* Common Utility Classes */
+
+/* Link hover effect with dashed underline - can be applied to any link */
+.link-dashed-hover:hover {
+	padding-block-end: 2px;
+	border-block-end: 1px dashed currentColor;
+}
+
 /* BODY */
 
 html {
@@ -144,12 +152,12 @@ h3 a {
 
 .alignleft {
 	display: inline;
-	float: inline-start;
+	float: inline-end;
 }
 
 .alignright {
 	display: inline;
-	float: inline-end;
+	float: inline-start;
 }
 
 .aligncenter {
@@ -342,26 +350,21 @@ img.aligncenter {
 	padding-block-end: 2px;
 	border-block-end: 1px dashed var(--color-text);
 }
-/* Common styles for post metadata */
-.post-time,
-.post-comment,
-.post-view,
-.post-author,
-.post-cat {
+/* Common styles for post metadata - Use .post-head-stat class in templates */
+.post-head-stat {
 	float: inline-start;
 	padding: 0 17px 0 0;
 	line-height: 19px;
 	height: 23px;
 	text-align: start;
-}
-
-.post-comment,
-.post-view,
-.post-author,
-.post-cat {
 	margin-inline-start: 20px;
 }
 
+.post-head-stat:first-child {
+	margin-inline-start: 0;
+}
+
+/* Specific styles for each stat type */
 .post-time {
 	background: url("images/clock.png") no-repeat scroll 100% 4px transparent;
 }
@@ -458,7 +461,7 @@ img.aligncenter {
 }
 
 .post-tags {
-	float: inline-end;
+	float: inline-start;
 	background: url("images/tags.png") no-repeat scroll 100% 5px transparent;
 	padding: 0 18px 0 0;
 	line-height: 19px;
@@ -1305,18 +1308,18 @@ img.avatar {
 }
 
 #footer #right {
-	float: inline-end;
-	text-align: end;
+	float: inline-start;
+	text-align: start;
 	width: 70%;
-	padding-inline-end: 20px;
+	padding-inline-start: 20px;
 	padding-block-start: 9px;
 }
 
 #footer #left {
-	float: inline-start;
-	text-align: start;
+	float: inline-end;
+	text-align: end;
 	width: 170px;
-	padding-inline-start: 20px;
+	padding-inline-end: 20px;
 	padding-block-start: 9px;
 }
 
