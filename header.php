@@ -10,8 +10,8 @@
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 
-<nav id="navbar" role="navigation">
-	<div id="n-right">
+<nav class="navbar-modern" role="navigation">
+	<div class="navbar-end">
 		<?php
 		wp_nav_menu( array(
 			'theme_location' => 'primary',
@@ -22,22 +22,22 @@
 		?>
 	</div>
 
-	<div id="n-left">
+	<div class="navbar-start">
 		<?php get_search_form(); ?>
 	</div>
 </nav>
 
-<header id="header" role="banner">
-	<div id="header-image" style="background-image: url(<?php header_image(); ?>);">
-		<?php if ( display_header_text() ) : ?>
-			<div id="blog-name">
+<header class="site-header" role="banner" style="background-image: url(<?php header_image(); ?>);">
+	<?php if ( display_header_text() ) : ?>
+		<div class="header-content">
+			<div class="site-title">
 				<a href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
 					<?php bloginfo( 'name' ); ?>
 				</a>
 			</div>
-			<div id="description"><?php bloginfo( 'description' ); ?></div>
-		<?php endif; ?>
-	</div>
+			<div class="site-description"><?php bloginfo( 'description' ); ?></div>
+		</div>
+	<?php endif; ?>
 </header>
 
 <div id="wrapper">
