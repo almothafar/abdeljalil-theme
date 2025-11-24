@@ -40,7 +40,7 @@ if ( post_password_required() ) {
 			</nav>
 		<?php endif; ?>
 
-		<ul class="commentlist">
+		<ul class="comment-list">
 			<?php
 			wp_list_comments( array(
 				'style'       => 'ul',

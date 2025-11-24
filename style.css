@@ -906,10 +906,11 @@ blockquote {
 
 .comments-template {
 	width: 100%;
-	margin-block-start: 25px;
+	margin-block-start: var(--spacing-xl);
+    padding-block-start: var(--spacing-sm);
 }
 
-.commentlist {
+.comment-list {
 	margin: 0;
 	padding: 0;
 	list-style-type: none;
@@ -931,6 +932,10 @@ blockquote {
 
 .author-comment {
 	border: 2px dashed var(--color-primary);
+}
+
+.comments-section {
+    border-block-start: 2px solid var(--color-primary-dark);
 }
 
 .comments-section h3 {
