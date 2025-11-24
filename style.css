@@ -464,7 +464,6 @@ img.aligncenter {
 
 .entry {
 	padding-inline: var(--spacing-lg);
-	line-height: 150%;
 	text-align: justify;
 }
 
@@ -561,7 +560,6 @@ blockquote {
 .no-result {
 	padding: 0 var(--spacing-lg) var(--spacing-lg) var(--spacing-lg);
 	clear: both;
-	line-height: 170%;
 	font-weight: bold;
 }
 
@@ -1031,7 +1029,6 @@ img.avatar {
 /* Comment content */
 .comment-entry {
 	padding: 0;
-	line-height: 1.6;
 	color: var(--color-text);
 	word-wrap: break-word;
 }
