@@ -35,8 +35,8 @@
 			<article class="post" id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 				<div class="post-head">
 					<div class="post-head-stat post-time"><?php echo esc_html( get_the_date( 'j F Y' ) ); ?></div>
-					<div class="post-head-stat post-cat">التصنيف : <?php the_category( '، ' ); ?></div>
-					<div class="post-head-stat post-author">الكاتب : <?php the_author_posts_link(); ?></div>
+					<div class="post-head-stat post-cat"><?php the_category( '، ' ); ?></div>
+					<div class="post-head-stat post-author"><?php the_author_posts_link(); ?></div>
 					<div class="post-head-stat post-comment">
 						<?php comments_popup_link( 'لا تعليقات', 'التعليقات : 1', 'التعليقات : %', '', 'التعليقات مغلقة لهذه التدوينة' ); ?>
 					</div>
