@@ -40,4 +40,4 @@
 	<?php endif; ?>
 </header>
 
-<div id="wrapper">
+<div class="site-wrapper">

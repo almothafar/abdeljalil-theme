@@ -1,6 +1,6 @@
 <?php get_header(); ?>
 
-<main id="container" role="main">
+<main class="site-container" role="main">
 	<?php if ( have_posts() ) : ?>
 		<header class="archive-header">
 			<h1 class="archive-title">

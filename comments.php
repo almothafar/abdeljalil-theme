@@ -10,7 +10,7 @@ if ( post_password_required() ) {
 }
 ?>
 
-<div id="comments" class="comments-area">
+<div class="comments-section comments-area">
 	<?php if ( have_comments() ) : ?>
 		<h3 class="comments-title">
 			<?php

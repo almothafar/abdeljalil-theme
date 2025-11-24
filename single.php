@@ -1,6 +1,6 @@
 <?php get_header(); ?>
 
-<main id="container" role="main">
+<main class="site-container" role="main">
 	<?php if ( have_posts() ) : ?>
 		<?php while ( have_posts() ) : the_post(); ?>
 			<article class="post" id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
@@ -41,8 +41,8 @@
 			</article>
 
 			<nav class="navigation" role="navigation">
-				<div class="right-nav"><?php previous_post_link( '&laquo; %link' ); ?></div>
-				<div class="left-nav"><?php next_post_link( '%link &raquo;' ); ?></div>
+				<div class="nav-previous"><?php previous_post_link( '&laquo; %link' ); ?></div>
+				<div class="nav-next"><?php next_post_link( '%link &raquo;' ); ?></div>
 			</nav>
 
 			<div class="comments-template">

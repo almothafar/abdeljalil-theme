@@ -1,4 +1,4 @@
-<aside id="sidebar" role="complementary">
+<aside class="site-sidebar" role="complementary">
 	<?php if ( is_active_sidebar( 'sidebar-1' ) ) : ?>
 		<?php dynamic_sidebar( 'sidebar-1' ); ?>
 	<?php else : ?>

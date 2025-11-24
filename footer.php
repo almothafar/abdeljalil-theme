@@ -1,6 +1,6 @@
-</div><!-- #wrapper -->
+</div><!-- .site-wrapper -->
 
-<footer id="footer" role="contentinfo">
+<footer class="site-footer" role="contentinfo">
 	<div>
 		جميع الحقوق محفوظة &copy; <?php echo date( 'Y' ); ?> <a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php bloginfo( 'name' ); ?></a>
 		<?php
