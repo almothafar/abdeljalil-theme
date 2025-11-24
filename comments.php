@@ -35,8 +35,8 @@ if ( post_password_required() ) {
 
 		<?php if ( get_comment_pages_count() > 1 && get_option( 'page_comments' ) ) : ?>
 			<nav class="navigation comment-navigation" role="navigation">
-				<div class="nav-previous"><?php previous_comments_link( __( '&larr; تعليقات أقدم', 'abdeljalil' ) ); ?></div>
-				<div class="nav-next"><?php next_comments_link( __( 'تعليقات أحدث &rarr;', 'abdeljalil' ) ); ?></div>
+				<div class="nav-previous"><?php previous_comments_link( __( '&rarr; تعليقات أقدم', 'abdeljalil' ) ); ?></div>
+				<div class="nav-next"><?php next_comments_link( __( 'تعليقات أحدث &larr;', 'abdeljalil' ) ); ?></div>
 			</nav>
 		<?php endif; ?>
 
@@ -53,8 +53,8 @@ if ( post_password_required() ) {
 
 		<?php if ( get_comment_pages_count() > 1 && get_option( 'page_comments' ) ) : ?>
 			<nav class="navigation comment-navigation" role="navigation">
-				<div class="nav-previous"><?php previous_comments_link( __( '&larr; تعليقات أقدم', 'abdeljalil' ) ); ?></div>
-				<div class="nav-next"><?php next_comments_link( __( 'تعليقات أحدث &rarr;', 'abdeljalil' ) ); ?></div>
+                <div class="nav-previous"><?php previous_comments_link( __( '&rarr; تعليقات أقدم', 'abdeljalil' ) ); ?></div>
+                <div class="nav-next"><?php next_comments_link( __( 'تعليقات أحدث &larr;', 'abdeljalil' ) ); ?></div>
 			</nav>
 		<?php endif; ?>
 
@@ -70,11 +70,11 @@ if ( post_password_required() ) {
 		'title_reply_to'       => __( 'الرد على %s', 'abdeljalil' ),
 		'cancel_reply_link'    => __( 'إلغاء الرد', 'abdeljalil' ),
 		'label_submit'         => __( 'إرسال التعليق', 'abdeljalil' ),
-		'comment_field'        => '<p class="comment-form-comment"><label for="comment">' . _x( 'التعليق', 'noun', 'abdeljalil' ) . '</label><textarea class="comment-input" id="comment" name="comment" cols="45" rows="8" aria-required="true"></textarea></p>',
+		'comment_field'        => '<p class="comment-form-field"><label for="comment">' . _x( 'التعليق', 'noun', 'abdeljalil' ) . '</label><textarea class="comment-input" id="comment" name="comment" cols="45" rows="8" aria-required="true"></textarea></p>',
 		'fields'               => array(
-			'author' => '<p class="comment-form-author"><label for="author">' . __( 'الاسم', 'abdeljalil' ) . ( $req ? ' <span class="required">*</span>' : '' ) . '</label><input class="comment-input" id="author" name="author" type="text" value="' . esc_attr( $commenter['comment_author'] ) . '" size="30" /></p>',
-			'email'  => '<p class="comment-form-email"><label for="email">' . __( 'البريد الإلكتروني', 'abdeljalil' ) . ( $req ? ' <span class="required">*</span>' : '' ) . '</label><input class="comment-input" id="email" name="email" type="email" value="' . esc_attr( $commenter['comment_author_email'] ) . '" size="30" /></p>',
-			'url'    => '<p class="comment-form-url"><label for="url">' . __( 'الموقع', 'abdeljalil' ) . '</label><input class="comment-input" id="url" name="url" type="url" value="' . esc_attr( $commenter['comment_author_url'] ) . '" size="30" /></p>',
+			'author' => '<p class="comment-form-field"><label for="author">' . __( 'الاسم', 'abdeljalil' ) . ( $req ? ' <span class="required">*</span>' : '' ) . '</label><input class="comment-input" id="author" name="author" type="text" value="' . esc_attr( $commenter['comment_author'] ) . '" size="30" /></p>',
+			'email'  => '<p class="comment-form-field"><label for="email">' . __( 'البريد الإلكتروني', 'abdeljalil' ) . ( $req ? ' <span class="required">*</span>' : '' ) . '</label><input class="comment-input" id="email" name="email" type="email" value="' . esc_attr( $commenter['comment_author_email'] ) . '" size="30" /></p>',
+			'url'    => '<p class="comment-form-field"><label for="url">' . __( 'الموقع', 'abdeljalil' ) . '</label><input class="comment-input" id="url" name="url" type="url" value="' . esc_attr( $commenter['comment_author_url'] ) . '" size="30" /></p>',
 		),
 		'class_submit'         => 'comment-submit',
 		'submit_button'        => '<button name="%1$s" type="submit" id="%2$s" class="%3$s">%4$s</button>',
