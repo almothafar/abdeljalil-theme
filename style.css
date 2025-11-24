@@ -723,7 +723,7 @@ blockquote {
 
 /* Modern Navbar with Flexbox */
 .navbar-modern {
-	height: 33px;
+	height: 37px;
 	width: 100%;
 	max-width: var(--container-max-width);
 	background-color: var(--color-bg-dark);
@@ -805,15 +805,20 @@ blockquote {
 	flex: 0 1 auto;
 }
 
+.search-input,
+.search-button {
+    box-sizing: border-box;
+    height: 27px;
+    line-height: 27px;
+}
+
 .search-input {
-	width: 150px;
-	height: 24px;
+    width: 200px;
 	border: none;
 	background-color: var(--color-bg-gray);
 	color: var(--color-text-light);
 	font-family: var(--font-primary);
 	font-size: var(--font-size-small);
-	font-weight: bold;
 	padding: 0 8px;
 	border-radius: 0 var(--border-radius) var(--border-radius) 0;
 	transition: var(--transition-base);
@@ -827,7 +832,6 @@ blockquote {
 
 .search-button {
 	width: 40px;
-	height: 24px;
 	background-color: var(--color-primary);
 	border: none;
 	cursor: pointer;
@@ -895,10 +899,6 @@ blockquote {
 	.search-form-modern {
 		justify-content: center;
 		padding: var(--spacing-sm) 0;
-	}
-
-	.search-input {
-		width: 200px;
 	}
 }
 
