@@ -374,7 +374,11 @@ img.aligncenter {
 }
 
 .post-head {
-	height: var(--spacing-xl);
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	column-gap: var(--spacing-lg);
+	min-height: var(--spacing-xl);
 	width: 95%;
 	margin: 0 auto;
 	border-block-end: 1px solid var(--color-border);
@@ -396,16 +400,9 @@ img.aligncenter {
 }
 /* Common styles for post metadata - Use .post-head-stat class in templates */
 .post-head-stat {
-	float: inline-start;
-	padding: 0 17px 0 0;
 	line-height: 19px;
-	height: 23px;
 	text-align: start;
-	margin-inline-start: var(--spacing-lg);
-}
-
-.post-head-stat:first-child {
-	margin-inline-start: 0;
+    padding-inline-start: 15px;
 }
 
 /* Specific styles for each stat type */
@@ -1485,10 +1482,6 @@ video {
 		width: 100%;
 		margin: 0;
 		float: none;
-	}
-
-	.post-head .post-author {
-		display: none;
 	}
 
 	.post-title {
