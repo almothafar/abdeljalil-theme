@@ -41,8 +41,7 @@ The theme has been rebuilt from the ground up to meet modern WordPress and web s
 - **Desktop**: 990px+
 - **Tablet**: 768px - 990px
 - **Large Mobile**: 480px - 768px
-- **Mobile**: 320px - 480px
-- **Small Mobile**: < 320px
+- **Mobile**: < 480px
 
 ## 🔒 Security Improvements (v2.0)
 

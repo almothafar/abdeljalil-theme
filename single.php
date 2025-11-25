@@ -4,17 +4,7 @@
 	<?php if ( have_posts() ) : ?>
 		<?php while ( have_posts() ) : the_post(); ?>
 			<article class="post" id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-				<div class="post-head">
-					<div class="post-head-stat post-time"><?php echo esc_html( get_the_date( 'j F Y' ) ); ?></div>
-					<div class="post-head-stat post-cat"><?php the_category( '، ' ); ?></div>
-					<div class="post-head-stat post-author"><?php the_author_posts_link(); ?></div>
-					<div class="post-head-stat post-comment">
-						<?php comments_popup_link( 'لا تعليقات', 'التعليقات : 1', 'التعليقات : %', '', 'التعليقات مغلقة لهذه التدوينة' ); ?>
-					</div>
-					<?php if ( function_exists( 'the_views' ) ) : ?>
-						<div class="post-head-stat post-view"><?php the_views(); ?></div>
-					<?php endif; ?>
-				</div>
+				<?php get_template_part( 'template-parts/post-meta' ); ?>
 				<div class="entry">
 					<div class="post-title">
 						<h1><?php the_title(); ?></h1>
@@ -35,9 +25,7 @@
 				}
 				?>
 
-				<div class="post-foot">
-					<div class="post-tags"><?php the_tags( 'وسوم: ', '، ', '<br />' ); ?></div>
-				</div>
+				<?php get_template_part( 'template-parts/post-tags' ); ?>
 			</article>
 
 			<nav class="navigation" role="navigation">
@@ -56,9 +44,7 @@
 		<?php endwhile; ?>
 
 	<?php else : ?>
-		<article class="post">
-			<h1><?php _e( 'لا توجد حالياً أية تدوينات', 'abdeljalil' ); ?></h1>
-		</article>
+		<?php get_template_part( 'template-parts/no-posts' ); ?>
 	<?php endif; ?>
 </main>
 
