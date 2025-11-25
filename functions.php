@@ -243,9 +243,139 @@ function almothafar_add_meta_description() {
 add_action( 'wp_head', 'almothafar_add_meta_description', 1 );
 
 /***************************************************************
+ * Canonical URL
+ **************************************************************/
+function almothafar_add_canonical_url() {
+	$canonical_url = '';
+
+	if ( is_singular() ) {
+		// Single post/page
+		$canonical_url = get_permalink();
+	} elseif ( is_category() ) {
+		// Category archive
+		$canonical_url = get_category_link( get_queried_object_id() );
+	} elseif ( is_tag() ) {
+		// Tag archive
+		$canonical_url = get_tag_link( get_queried_object_id() );
+	} elseif ( is_author() ) {
+		// Author archive
+		$canonical_url = get_author_posts_url( get_queried_object_id() );
+	} elseif ( is_home() || is_front_page() ) {
+		// Homepage
+		$canonical_url = home_url( '/' );
+	} elseif ( is_search() ) {
+		// Search results
+		$canonical_url = get_search_link();
+	}
+
+	// Add pagination if exists
+	if ( $canonical_url ) {
+		$paged = get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1;
+		if ( $paged > 1 ) {
+			$canonical_url = trailingslashit( $canonical_url ) . 'page/' . $paged . '/';
+		}
+
+		echo '<link rel="canonical" href="' . esc_url( $canonical_url ) . '" />' . "\n";
+	}
+}
+add_action( 'wp_head', 'almothafar_add_canonical_url', 2 );
+
+/***************************************************************
+ * JSON-LD Structured Data (Schema.org)
+ **************************************************************/
+function almothafar_add_structured_data() {
+	if ( is_singular( 'post' ) ) {
+		global $post;
+		setup_postdata( $post );
+
+		$author_id = $post->post_author;
+		$schema = array(
+			'@context'      => 'https://schema.org',
+			'@type'         => 'Article',
+			'headline'      => get_the_title(),
+			'description'   => has_excerpt() ? get_the_excerpt() : wp_trim_words( strip_tags( $post->post_content ), 30 ),
+			'datePublished' => get_the_date( 'c' ),
+			'dateModified'  => get_the_modified_date( 'c' ),
+			'author'        => array(
+				'@type' => 'Person',
+				'name'  => get_the_author_meta( 'display_name', $author_id ),
+				'url'   => get_author_posts_url( $author_id ),
+			),
+			'publisher'     => array(
+				'@type' => 'Organization',
+				'name'  => get_bloginfo( 'name' ),
+				'logo'  => array(
+					'@type' => 'ImageObject',
+					'url'   => get_template_directory_uri() . '/screenshot.png',
+				),
+			),
+			'mainEntityOfPage' => array(
+				'@type' => 'WebPage',
+				'@id'   => get_permalink(),
+			),
+		);
+
+		// Add image if available
+		if ( has_post_thumbnail() ) {
+			$image_url = get_the_post_thumbnail_url( $post->ID, 'large' );
+			$image_meta = wp_get_attachment_metadata( get_post_thumbnail_id( $post->ID ) );
+			$schema['image'] = array(
+				'@type'  => 'ImageObject',
+				'url'    => $image_url,
+				'width'  => isset( $image_meta['width'] ) ? $image_meta['width'] : 1200,
+				'height' => isset( $image_meta['height'] ) ? $image_meta['height'] : 630,
+			);
+		}
+
+		// Add article section (category)
+		$categories = get_the_category();
+		if ( ! empty( $categories ) ) {
+			$schema['articleSection'] = $categories[0]->name;
+		}
+
+		// Add keywords (tags)
+		$tags = get_the_tags();
+		if ( $tags ) {
+			$keywords = array();
+			foreach ( $tags as $tag ) {
+				$keywords[] = $tag->name;
+			}
+			$schema['keywords'] = implode( ', ', $keywords );
+		}
+
+		echo "\n<!-- JSON-LD Structured Data -->\n";
+		echo '<script type="application/ld+json">' . "\n";
+		echo wp_json_encode( $schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT ) . "\n";
+		echo '</script>' . "\n";
+
+		wp_reset_postdata();
+	} elseif ( is_front_page() || is_home() ) {
+		// Website schema for homepage
+		$schema = array(
+			'@context'    => 'https://schema.org',
+			'@type'       => 'WebSite',
+			'name'        => get_bloginfo( 'name' ),
+			'description' => get_bloginfo( 'description' ),
+			'url'         => home_url( '/' ),
+			'potentialAction' => array(
+				'@type'       => 'SearchAction',
+				'target'      => home_url( '/?s={search_term_string}' ),
+				'query-input' => 'required name=search_term_string',
+			),
+		);
+
+		echo "\n<!-- JSON-LD Structured Data -->\n";
+		echo '<script type="application/ld+json">' . "\n";
+		echo wp_json_encode( $schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT ) . "\n";
+		echo '</script>' . "\n";
+	}
+}
+add_action( 'wp_head', 'almothafar_add_structured_data', 3 );
+
+/***************************************************************
  * Open Graph Meta Tags for Social Sharing
  **************************************************************/
-function abdeljalil_add_opengraph_tags() {
+function almothafar_add_opengraph_tags() {
 	if ( is_singular() ) {
 		global $post;
 		setup_postdata( $post );
@@ -307,7 +437,7 @@ function abdeljalil_add_opengraph_tags() {
 		wp_reset_postdata();
 	}
 }
-add_action( 'wp_head', 'abdeljalil_add_opengraph_tags' );
+add_action( 'wp_head', 'almothafar_add_opengraph_tags' );
 
 /***************************************************************
  * Security Enhancements
@@ -330,7 +460,6 @@ add_filter( 'the_generator', 'abdeljalil_remove_version' );
 if ( ! isset( $content_width ) ) {
 	$content_width = 990;
 }
-
 
 
 /***************************************************************
@@ -387,7 +516,7 @@ function abdeljalil_comment( $comment, $args, $depth ) {
 /***************************************************************
  * Fix Akismet Privacy Notice - Replace English "processed" with Arabic
  **************************************************************/
-function abdeljalil_fix_akismet_text( $translated, $original, $domain ) {
+function almothafar_fix_akismet_text( $translated, $original, $domain ) {
 	// Fix Akismet's mixed Arabic/English text
 	if ( 'akismet' === $domain || 'default' === $domain ) {
 		// Replace "processed" with Arabic equivalent
@@ -395,7 +524,7 @@ function abdeljalil_fix_akismet_text( $translated, $original, $domain ) {
 	}
 	return $translated;
 }
-add_filter( 'gettext', 'abdeljalil_fix_akismet_text', 20, 3 );
+add_filter( 'gettext', 'almothafar_fix_akismet_text', 20, 3 );
 
 //End of Functions
 
