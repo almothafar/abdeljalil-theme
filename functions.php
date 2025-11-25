@@ -188,6 +188,61 @@ function abdeljalil_social_sharing_buttons() {
 }
 
 /***************************************************************
+ * Meta Description
+ **************************************************************/
+function almothafar_add_meta_description() {
+	$description = '';
+
+	if ( is_singular() ) {
+		// For single posts/pages
+		global $post;
+		if ( $post ) {
+			// Use excerpt if available
+			if ( has_excerpt( $post ) ) {
+				$description = get_the_excerpt( $post );
+			} else {
+				// Generate from content
+				$description = wp_trim_words( strip_tags( $post->post_content ), 30, '...' );
+			}
+		}
+	} elseif ( is_category() ) {
+		// Category archive
+		$description = category_description();
+		if ( ! $description ) {
+			$description = sprintf( __( 'تصفح جميع المقالات في تصنيف %s', 'abdeljalil' ), single_cat_title( '', false ) );
+		}
+	} elseif ( is_tag() ) {
+		// Tag archive
+		$description = tag_description();
+		if ( ! $description ) {
+			$description = sprintf( __( 'تصفح جميع المقالات الموسومة بـ %s', 'abdeljalil' ), single_tag_title( '', false ) );
+		}
+	} elseif ( is_author() ) {
+		// Author archive
+		$author = get_queried_object();
+		$description = get_the_author_meta( 'description', $author->ID );
+		if ( ! $description ) {
+			$description = sprintf( __( 'تصفح جميع مقالات الكاتب %s', 'abdeljalil' ), get_the_author_meta( 'display_name', $author->ID ) );
+		}
+	} elseif ( is_home() || is_front_page() ) {
+		// Homepage
+		$description = get_bloginfo( 'description' );
+	} elseif ( is_search() ) {
+		// Search results
+		$description = sprintf( __( 'نتائج البحث عن: %s', 'abdeljalil' ), get_search_query() );
+	}
+
+	// Clean and output
+	if ( $description ) {
+		$description = wp_strip_all_tags( $description );
+		$description = str_replace( array( "\r", "\n", "\t" ), ' ', $description );
+		$description = trim( preg_replace( '/\s+/', ' ', $description ) );
+		echo '<meta name="description" content="' . esc_attr( $description ) . '" />' . "\n";
+	}
+}
+add_action( 'wp_head', 'almothafar_add_meta_description', 1 );
+
+/***************************************************************
  * Open Graph Meta Tags for Social Sharing
  **************************************************************/
 function abdeljalil_add_opengraph_tags() {
