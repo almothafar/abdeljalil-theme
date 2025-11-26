@@ -38,9 +38,9 @@ The theme has been rebuilt from the ground up to meet modern WordPress and web s
 
 ## 📱 Responsive Breakpoints
 
-- **Desktop**: 990px+
-- **Tablet**: 990px
-- **Large Mobile**: 600px - 990px
+- **Desktop**: 1200px+
+- **Tablet**: 1200px
+- **Large Mobile**: 600px - 1200px
 - **Mobile**: < 600px
 
 ## 🔒 Security Improvements (v2.0)

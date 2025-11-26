@@ -98,7 +98,7 @@ Use it freely, modify it, and share it!
 	/* Layout */
 	--border-radius: 5px;
 	--transition-base: all 0.3s ease;
-	--container-max-width: 990px;
+	--container-max-width: 1200px;
 	--sidebar-width: 29%;
 	--content-width: 69%;
 }
@@ -308,7 +308,7 @@ pre code,
 /* Modern Header with Flexbox */
 .site-header {
 	width: 100%;
-	max-width: 990px;
+	max-width: var(--container-max-width);
 	margin: 0 auto 20px auto;
 	padding: 0;
 	min-height: 190px;
@@ -741,12 +741,11 @@ blockquote {
 
 /* Modern Navbar with Flexbox */
 .navbar-modern {
-	height: 37px;
+	height: 45px;
 	width: 100%;
 	max-width: var(--container-max-width);
 	background-color: var(--color-bg-dark);
 	margin: 0 auto;
-	padding: 0;
 	font-weight: bold;
 	display: flex;
 	justify-content: space-between;
@@ -764,6 +763,38 @@ blockquote {
 	display: flex;
 	align-items: center;
 	flex: 0 0 auto;
+}
+
+/* Social Icons in Header */
+.social-icons {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-xs);
+	padding: 0 var(--spacing-sm);
+}
+
+.social-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	color: var(--color-gray);
+	background-color: transparent;
+	border-radius: var(--border-radius);
+	text-decoration: none;
+	transition: var(--transition-base);
+	font-size: 16px;
+}
+
+.social-icon:hover {
+	color: var(--color-text-white);
+	background-color: var(--color-border-dark);
+	transform: translateY(-2px);
+}
+
+.social-icon i {
+	font-size: 18px;
 }
 
 .navbar-modern ul {
@@ -917,6 +948,20 @@ blockquote {
 	.search-form-modern {
 		justify-content: center;
 		padding: var(--spacing-sm) 0;
+	}
+
+	.social-icons {
+		padding: var(--spacing-sm) 0;
+		justify-content: center;
+	}
+
+	.social-icon {
+		width: 36px;
+		height: 36px;
+	}
+
+	.social-icon i {
+		font-size: 20px;
 	}
 }
 
@@ -1371,13 +1416,66 @@ img.avatar {
 
 .site-footer {
 	width: auto;
-	height: 35px;
+	min-height: 35px;
 	border-block-start: 3px solid var(--color-border-dark);
 	background-color: var(--color-bg-dark);
 	clear: both;
 	color: var(--color-gray);
 	max-width: var(--container-max-width);
-    margin: 0 auto;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-sm);
+	padding: var(--spacing-sm) 0;
+}
+
+/* Footer Navigation */
+.footer-navigation {
+	display: flex;
+	justify-content: center;
+	padding: 0 var(--spacing-md);
+}
+
+.footer-menu {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	gap: var(--spacing-md);
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.footer-menu li {
+	display: inline-block;
+	margin: 0;
+	padding: 0;
+}
+
+.footer-menu li a {
+	color: var(--color-gray);
+	text-decoration: none;
+	padding: var(--spacing-xs) var(--spacing-sm);
+	display: inline-block;
+	transition: var(--transition-base);
+	font-size: var(--font-size-base);
+}
+
+.footer-menu li a:hover {
+	color: var(--color-text-white);
+	background-color: var(--color-border-dark);
+	border-radius: var(--border-radius);
+}
+
+.footer-menu li.current_page_item a {
+	color: var(--color-primary);
+}
+
+/* Footer Copyright */
+.footer-copyright {
+	text-align: center;
+	padding: 0 var(--spacing-lg);
+	font-size: var(--font-size-small);
 }
 
 /* Footer links - consolidated */
@@ -1391,13 +1489,6 @@ img.avatar {
 	color: var(--color-primary);
 	padding-block-end: 2px;
 	border-block-end: 1px dashed var(--color-primary);
-}
-
-.site-footer > div {
-	float: inline-start;
-	text-align: start;
-	padding-inline-start: var(--spacing-lg);
-	padding-block-start: 9px;
 }
 
 /* Pagination - consolidated */
@@ -1457,8 +1548,8 @@ video {
 	height: auto;
 }
 
-/* Tablets and smaller (max-width: 990px) */
-@media (max-width: 990px) {
+/* Tablets and smaller (max-width: --container-max-width) */
+@media (max-width: var(--container-max-width)) {
 	.site-wrapper {
 		width: 100%;
 		max-width: 100%;
@@ -1470,7 +1561,7 @@ video {
 	}
 }
 
-/* Mobile devices (max-width: 500) */
+/* Mobile devices (max-width: 600) */
 @media (max-width: 600px) {
 	body {
 		margin: 0;
@@ -1523,15 +1614,26 @@ video {
 
 	.site-footer {
 		height: auto;
-		padding: var(--spacing-sm);
+		padding: var(--spacing-md);
 		text-align: center;
 	}
 
-	.site-footer > div {
-		width: 100%;
-		float: none;
-		text-align: center;
-		padding: var(--spacing-xs) 0;
+	.footer-navigation {
+		padding: 0;
+	}
+
+	.footer-menu {
+		gap: var(--spacing-xs);
+	}
+
+	.footer-menu li a {
+		font-size: var(--font-size-small);
+		padding: var(--spacing-xs);
+	}
+
+	.footer-copyright {
+		padding: var(--spacing-sm) 0 0 0;
+		font-size: var(--font-size-small);
 	}
 }
 

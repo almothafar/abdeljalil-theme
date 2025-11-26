@@ -12,14 +12,45 @@
 
 <nav class="navbar-modern" role="navigation">
 	<div class="navbar-end">
-		<?php
-		wp_nav_menu( array(
-			'theme_location' => 'primary',
-			'menu_class'     => 'menu',
-			'container'      => false,
-			'fallback_cb'    => 'wp_page_menu',
-		) );
-		?>
+		<div class="social-icons">
+			<?php
+			$github = get_theme_mod( 'almothafar_github', 'almothafar' );
+			$linkedin = get_theme_mod( 'almothafar_linkedin', 'almothafar' );
+			$twitter = get_theme_mod( 'almothafar_twitter', 'almothafar' );
+			$facebook = get_theme_mod( 'almothafar_facebook', 'almothafar' );
+			$steam = get_theme_mod( 'almothafar_steam', 'almothafar' );
+
+			if ( ! empty( $github ) ) :
+			?>
+				<a href="https://github.com/<?php echo esc_attr( $github ); ?>" target="_blank" rel="noopener noreferrer" class="social-icon" title="GitHub">
+					<i class="fab fa-github"></i>
+				</a>
+			<?php endif; ?>
+
+			<?php if ( ! empty( $linkedin ) ) : ?>
+				<a href="https://linkedin.com/in/<?php echo esc_attr( $linkedin ); ?>" target="_blank" rel="noopener noreferrer" class="social-icon" title="LinkedIn">
+					<i class="fab fa-linkedin-in"></i>
+				</a>
+			<?php endif; ?>
+
+			<?php if ( ! empty( $twitter ) ) : ?>
+				<a href="https://twitter.com/<?php echo esc_attr( $twitter ); ?>" target="_blank" rel="noopener noreferrer" class="social-icon" title="X (Twitter)">
+					<i class="fab fa-x-twitter"></i>
+				</a>
+			<?php endif; ?>
+
+			<?php if ( ! empty( $facebook ) ) : ?>
+				<a href="https://facebook.com/<?php echo esc_attr( $facebook ); ?>" target="_blank" rel="noopener noreferrer" class="social-icon" title="Facebook">
+					<i class="fab fa-facebook-f"></i>
+				</a>
+			<?php endif; ?>
+
+			<?php if ( ! empty( $steam ) ) : ?>
+				<a href="https://steamcommunity.com/id/<?php echo esc_attr( $steam ); ?>" target="_blank" rel="noopener noreferrer" class="social-icon" title="Steam">
+					<i class="fab fa-steam"></i>
+				</a>
+			<?php endif; ?>
+		</div>
 	</div>
 
 	<div class="navbar-start">

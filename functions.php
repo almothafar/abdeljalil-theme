@@ -32,7 +32,7 @@ function abdeljalil_theme_setup() {
 
 	// Add theme support for post thumbnails
 	add_theme_support( 'post-thumbnails' );
-	set_post_thumbnail_size( 990, 400, true );
+	set_post_thumbnail_size( 1200, 400, true );
 
 	// Add theme support for automatic feed links
 	add_theme_support( 'automatic-feed-links' );
@@ -49,7 +49,7 @@ function abdeljalil_theme_setup() {
 	add_theme_support( 'custom-header', array(
 		'default-text-color' => '2d2d2d',
 		'default-image'      => get_template_directory_uri() . '/images/headers/plane.jpg',
-		'width'              => 990,
+		'width'              => 1200,
 		'height'             => 190,
 		'flex-width'         => true,
 		'flex-height'        => true,
@@ -108,10 +108,98 @@ function abdeljalil_theme_setup() {
 
 	// Set content width
 	if ( ! isset( $content_width ) ) {
-		$content_width = 990;
+		$content_width = 1200;
 	}
 }
 add_action( 'after_setup_theme', 'abdeljalil_theme_setup' );
+
+/***************************************************************
+ * Theme Customizer - Social Media Links
+ **************************************************************/
+function almothafar_customize_register( $wp_customize ) {
+	// Add Social Media Section
+	$wp_customize->add_section( 'almothafar_social_section', array(
+		'title'       => __( 'روابط التواصل الاجتماعي', 'abdeljalil' ),
+		'description' => __( 'أدخل اسم المستخدم فقط، بدون الرابط الكامل', 'abdeljalil' ),
+		'priority'    => 30,
+	) );
+
+	// GitHub
+	$wp_customize->add_setting( 'almothafar_github', array(
+		'default'           => 'almothafar',
+		'sanitize_callback' => 'sanitize_text_field',
+	) );
+	$wp_customize->add_control( 'almothafar_github', array(
+		'label'       => __( 'GitHub', 'abdeljalil' ),
+		'section'     => 'almothafar_social_section',
+		'type'        => 'text',
+		'description' => __( 'اسم المستخدم فقط (مثال: almothafar) - يصبح الرابط: github.com/almothafar', 'abdeljalil' ),
+		'input_attrs' => array(
+			'placeholder' => 'almothafar',
+		),
+	) );
+
+	// LinkedIn
+	$wp_customize->add_setting( 'almothafar_linkedin', array(
+		'default'           => 'almothafar',
+		'sanitize_callback' => 'sanitize_text_field',
+	) );
+	$wp_customize->add_control( 'almothafar_linkedin', array(
+		'label'       => __( 'LinkedIn', 'abdeljalil' ),
+		'section'     => 'almothafar_social_section',
+		'type'        => 'text',
+		'description' => __( 'اسم المستخدم فقط (مثال: almothafar) - يصبح الرابط: linkedin.com/in/almothafar', 'abdeljalil' ),
+		'input_attrs' => array(
+			'placeholder' => 'almothafar',
+		),
+	) );
+
+	// X (Twitter)
+	$wp_customize->add_setting( 'almothafar_twitter', array(
+		'default'           => 'almothafar',
+		'sanitize_callback' => 'sanitize_text_field',
+	) );
+	$wp_customize->add_control( 'almothafar_twitter', array(
+		'label'       => __( 'X (Twitter)', 'abdeljalil' ),
+		'section'     => 'almothafar_social_section',
+		'type'        => 'text',
+		'description' => __( 'اسم المستخدم فقط (مثال: almothafar) - يصبح الرابط: twitter.com/almothafar', 'abdeljalil' ),
+		'input_attrs' => array(
+			'placeholder' => 'almothafar',
+		),
+	) );
+
+	// Facebook
+	$wp_customize->add_setting( 'almothafar_facebook', array(
+		'default'           => 'almothafar',
+		'sanitize_callback' => 'sanitize_text_field',
+	) );
+	$wp_customize->add_control( 'almothafar_facebook', array(
+		'label'       => __( 'Facebook', 'abdeljalil' ),
+		'section'     => 'almothafar_social_section',
+		'type'        => 'text',
+		'description' => __( 'اسم المستخدم فقط (مثال: almothafar) - يصبح الرابط: facebook.com/almothafar', 'abdeljalil' ),
+		'input_attrs' => array(
+			'placeholder' => 'almothafar',
+		),
+	) );
+
+	// Steam
+	$wp_customize->add_setting( 'almothafar_steam', array(
+		'default'           => 'almothafar',
+		'sanitize_callback' => 'sanitize_text_field',
+	) );
+	$wp_customize->add_control( 'almothafar_steam', array(
+		'label'       => __( 'Steam', 'abdeljalil' ),
+		'section'     => 'almothafar_social_section',
+		'type'        => 'text',
+		'description' => __( 'اسم المستخدم فقط (مثال: almothafar) - يصبح الرابط: steamcommunity.com/id/almothafar', 'abdeljalil' ),
+		'input_attrs' => array(
+			'placeholder' => 'almothafar',
+		),
+	) );
+}
+add_action( 'customize_register', 'almothafar_customize_register' );
 
 /***************************************************************
  * Register Sidebar
@@ -538,7 +626,7 @@ add_filter( 'the_generator', 'abdeljalil_remove_version' );
  * Content Width
  **************************************************************/
 if ( ! isset( $content_width ) ) {
-	$content_width = 990;
+	$content_width = 1200;
 }
 
 
