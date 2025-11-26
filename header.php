@@ -34,13 +34,13 @@
 			<?php endif; ?>
 
 			<?php if ( ! empty( $twitter ) ) : ?>
-				<a href="https://twitter.com/<?php echo esc_attr( $twitter ); ?>" target="_blank" rel="noopener noreferrer" class="social-icon" title="X (Twitter)">
+				<a href="https://x.com/<?php echo esc_attr( $twitter ); ?>" target="_blank" rel="noopener noreferrer" class="social-icon" title="X">
 					<i class="fab fa-x-twitter"></i>
 				</a>
 			<?php endif; ?>
 
 			<?php if ( ! empty( $facebook ) ) : ?>
-				<a href="https://facebook.com/<?php echo esc_attr( $facebook ); ?>" target="_blank" rel="noopener noreferrer" class="social-icon" title="Facebook">
+				<a href="https://fb.me/<?php echo esc_attr( $facebook ); ?>" target="_blank" rel="noopener noreferrer" class="social-icon" title="Facebook">
 					<i class="fab fa-facebook-f"></i>
 				</a>
 			<?php endif; ?>
