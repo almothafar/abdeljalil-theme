@@ -208,6 +208,21 @@ function almothafar_customize_register( $wp_customize ) {
 			'placeholder' => 'almothafar',
 		),
 	) );
+
+	// YouTube
+	$wp_customize->add_setting( 'almothafar_youtube', array(
+		'default'           => '',
+		'sanitize_callback' => 'sanitize_text_field',
+	) );
+	$wp_customize->add_control( 'almothafar_youtube', array(
+		'label'       => __( 'YouTube', 'abdeljalil' ),
+		'section'     => 'almothafar_social_section',
+		'type'        => 'text',
+		'description' => __( 'اسم القناة فقط (مثال: almothafar) - يصبح الرابط: youtube.com/@almothafar', 'abdeljalil' ),
+		'input_attrs' => array(
+			'placeholder' => 'almothafar',
+		),
+	) );
 }
 add_action( 'customize_register', 'almothafar_customize_register' );
 

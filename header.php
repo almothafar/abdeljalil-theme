@@ -19,6 +19,7 @@
 			$twitter = get_theme_mod( 'almothafar_twitter', 'almothafar' );
 			$facebook = get_theme_mod( 'almothafar_facebook', 'almothafar' );
 			$steam = get_theme_mod( 'almothafar_steam', 'almothafar' );
+			$youtube = get_theme_mod( 'almothafar_youtube', 'almothafar' );
 
 			if ( ! empty( $github ) ) :
 			?>
@@ -42,6 +43,12 @@
 			<?php if ( ! empty( $facebook ) ) : ?>
 				<a href="https://fb.me/<?php echo esc_attr( $facebook ); ?>" target="_blank" rel="noopener noreferrer" class="social-icon" title="Facebook">
 					<i class="fab fa-facebook-f"></i>
+				</a>
+			<?php endif; ?>
+
+			<?php if ( ! empty( $youtube ) ) : ?>
+				<a href="https://youtube.com/@<?php echo esc_attr( $youtube ); ?>" target="_blank" rel="noopener noreferrer" class="social-icon" title="YouTube">
+					<i class="fab fa-youtube"></i>
 				</a>
 			<?php endif; ?>
 

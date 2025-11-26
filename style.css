@@ -98,17 +98,17 @@ Use it freely, modify it, and share it!
 	/* Layout */
 	--border-radius: 5px;
 	--transition-base: all 0.3s ease;
-	--container-max-width: var(--max-content-width);
+	--container-max-width: 1200px;
 	--sidebar-width: 29%;
 	--content-width: 69%;
 
 	/* Header Dimensions */
-	--header-width: var(--max-content-width);
+	--header-width: var(--container-max-width);
 	--header-height: 190px;
 	--header-min-height: 190px;
 
 	/* Thumbnail Dimensions */
-	--thumbnail-width: var(--max-content-width);
+	--thumbnail-width: var(--container-max-width);
 	--thumbnail-height: 400px;
 }
 
