@@ -57,7 +57,6 @@ function abdeljalil_theme_setup() {
 
 	// Add theme support for custom header
 	add_theme_support( 'custom-header', array(
-		'default-text-color' => '2d2d2d',
 		'default-image'      => get_template_directory_uri() . '/images/headers/plane.jpg',
 		'width'              => ALMOTHAFAR_HEADER_WIDTH,
 		'height'             => ALMOTHAFAR_HEADER_HEIGHT,
@@ -225,6 +224,82 @@ function almothafar_customize_register( $wp_customize ) {
 	) );
 }
 add_action( 'customize_register', 'almothafar_customize_register' );
+
+/***************************************************************
+ * Theme Customizer - Header Text Colors
+ **************************************************************/
+function almothafar_header_colors_customize_register( $wp_customize ) {
+	// Add Header Colors Section
+	$wp_customize->add_section( 'almothafar_header_colors_section', array(
+		'title'    => __( 'ألوان نصوص الترويسة', 'abdeljalil' ),
+		'priority' => 35,
+	) );
+
+	// Site Title Color
+	$wp_customize->add_setting( 'almothafar_site_title_color', array(
+		'default'           => '#d32f2f',
+		'sanitize_callback' => 'sanitize_hex_color',
+	) );
+	$wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'almothafar_site_title_color', array(
+		'label'   => __( 'لون عنوان الموقع', 'abdeljalil' ),
+		'section' => 'almothafar_header_colors_section',
+	) ) );
+
+	// Site Description Color
+	$wp_customize->add_setting( 'almothafar_site_description_color', array(
+		'default'           => '#ffffff',
+		'sanitize_callback' => 'sanitize_hex_color',
+	) );
+	$wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'almothafar_site_description_color', array(
+		'label'   => __( 'لون وصف الموقع', 'abdeljalil' ),
+		'section' => 'almothafar_header_colors_section',
+	) ) );
+
+	// Text Shadow Toggle
+	$wp_customize->add_setting( 'almothafar_header_text_shadow', array(
+		'default'           => true,
+		'sanitize_callback' => 'absint',
+	) );
+	$wp_customize->add_control( 'almothafar_header_text_shadow', array(
+		'label'   => __( 'تفعيل ظل النص', 'abdeljalil' ),
+		'section' => 'almothafar_header_colors_section',
+		'type'    => 'checkbox',
+	) );
+}
+add_action( 'customize_register', 'almothafar_header_colors_customize_register' );
+
+/***************************************************************
+ * Apply Header Text Colors from Customizer
+ **************************************************************/
+function almothafar_header_text_colors_css() {
+	$title_color = get_theme_mod( 'almothafar_site_title_color', '#d32f2f' );
+	$description_color = get_theme_mod( 'almothafar_site_description_color', '#ffffff' );
+	$text_shadow = get_theme_mod( 'almothafar_header_text_shadow', true );
+
+	?>
+	<style type="text/css">
+		.site-title a,
+		.site-title a:hover {
+			color: <?php echo esc_attr( $title_color ); ?> !important;
+		}
+		.site-description {
+			color: <?php echo esc_attr( $description_color ); ?> !important;
+		}
+		<?php if ( $text_shadow ) : ?>
+		.site-title a,
+		.site-description {
+			text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+		}
+		<?php else : ?>
+		.site-title a,
+		.site-description {
+			text-shadow: none;
+		}
+		<?php endif; ?>
+	</style>
+	<?php
+}
+add_action( 'wp_head', 'almothafar_header_text_colors_css' );
 
 /***************************************************************
  * Register Sidebar
