@@ -287,8 +287,9 @@ function almothafar_header_text_colors_css() {
 	$description_color = sanitize_hex_color( get_theme_mod( 'almothafar_site_description_color', '#ffffff' ) );
 	$text_shadow       = get_theme_mod( 'almothafar_header_text_shadow', true );
 
-	// Only custom properties are emitted; style.css consumes them with its own
-	// values as the fallback, so no !important is needed to win specificity.
+	// Only overrides are emitted. style.css declares the defaults on :root, so
+	// anything left at its default needs no declaration here and no !important
+	// to win specificity -- and the shadow value itself lives in one place.
 	$declarations = array();
 
 	if ( $title_color ) {
@@ -299,7 +300,13 @@ function almothafar_header_text_colors_css() {
 		$declarations[] = '--header-description-color:' . $description_color;
 	}
 
-	$declarations[] = '--header-text-shadow:' . ( $text_shadow ? '1px 1px 2px rgba(0, 0, 0, 0.5)' : 'none' );
+	if ( ! $text_shadow ) {
+		$declarations[] = '--header-text-shadow:none';
+	}
+
+	if ( ! $declarations ) {
+		return;
+	}
 
 	wp_add_inline_style( 'abdeljalil-style', ':root{' . implode( ';', $declarations ) . ';}' );
 }
@@ -369,9 +376,12 @@ function abdeljalil_social_sharing_buttons() {
 		return;
 	}
 
-	// add_query_arg() encodes the values, so these are passed raw.
-	$post_url   = get_permalink();
-	$post_title = get_the_title();
+	// add_query_arg() does NOT encode values -- build_query() calls
+	// _http_build_query( $data, null, '&', '', false ), where that false is
+	// $urlencode. Core's docblock says the caller must encode, so an unencoded
+	// "&" in a post title would otherwise start a new query parameter.
+	$post_url   = rawurlencode( get_permalink() );
+	$post_title = rawurlencode( get_the_title() );
 
 	$facebook_url = add_query_arg( 'u', $post_url, 'https://www.facebook.com/sharer/sharer.php' );
 	$twitter_url  = add_query_arg(

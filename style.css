@@ -110,6 +110,11 @@ Use it freely, modify it, and share it!
 	/* Thumbnail Dimensions */
 	--thumbnail-width: var(--container-max-width);
 	--thumbnail-height: 400px;
+
+	/* Header text: the Customizer overrides these via wp_add_inline_style(). */
+	--header-title-color: #d32f2f;
+	--header-description-color: #ffffff;
+	--header-text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 
@@ -342,11 +347,9 @@ pre code,
 	margin-block-end: var(--spacing-xs);
 }
 
-/* --header-* properties are set by the Customizer via wp_add_inline_style().
-   The values below are the fallbacks when nothing has been customised. */
 .site-title a {
-	color: var(--header-title-color, var(--color-primary));
-	text-shadow: var(--header-text-shadow, 1px 1px 2px rgba(0, 0, 0, 0.5));
+	color: var(--header-title-color);
+	text-shadow: var(--header-text-shadow);
 	text-decoration: none;
 	transition: var(--transition-base);
 }
@@ -357,8 +360,8 @@ pre code,
 
 .site-description {
 	font-size: var(--font-size-large);
-	color: var(--header-description-color, var(--color-text-white));
-	text-shadow: var(--header-text-shadow, 1px 1px 2px rgba(0, 0, 0, 0.5));
+	color: var(--header-description-color);
+	text-shadow: var(--header-text-shadow);
 }
 
 /* Responsive Header */
@@ -402,6 +405,13 @@ pre code,
 	max-width: var(--content-width);
 	overflow-x: hidden;
 	box-sizing: border-box;
+}
+
+/* sidebar.php returns early when it has nothing to render, so the main
+   column takes the whole row instead of leaving a dead 29% gap. */
+.site-container:only-child {
+	flex: 1 1 auto;
+	max-width: 100%;
 }
 
 .post-head {

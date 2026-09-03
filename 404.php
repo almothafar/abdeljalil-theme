@@ -33,8 +33,9 @@ get_header();
 		<div class="entry">
 			<h3><?php _e( '📝 أحدث المقالات', 'abdeljalil' ); ?></h3>
 			<?php
-			// get_posts() forces no_found_rows, so this skips the SQL_CALC_FOUND_ROWS
-			// pass that wp_get_recent_posts() pays for a count nothing here uses.
+			// wp_get_recent_posts() is a thin wrapper that calls get_posts() and then
+			// converts every WP_Post into an array. Calling get_posts() directly skips
+			// that conversion; the query itself is identical.
 			$recent_posts = get_posts( array(
 				'numberposts' => 5,
 				'post_status' => 'publish',

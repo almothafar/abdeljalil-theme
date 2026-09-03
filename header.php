@@ -65,8 +65,7 @@
 	</div>
 </nav>
 
-<?php $abdeljalil_header_image = get_header_image(); ?>
-<header class="site-header"<?php if ( $abdeljalil_header_image ) : ?> style="background-image: url(<?php echo esc_url( $abdeljalil_header_image ); ?>);"<?php endif; ?>>
+<header class="site-header"<?php if ( get_header_image() ) : ?> style="background-image: url(<?php echo esc_url( get_header_image() ); ?>);"<?php endif; ?>>
 	<?php if ( display_header_text() ) : ?>
 		<div class="header-content">
 			<div class="site-title">
