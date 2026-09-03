@@ -1,28 +1,22 @@
 # Copilot instructions — Abdeljalil Theme
 
 A classic (non-block) WordPress theme for an Arabic, right-to-left blog. Plain PHP templates and one
-stylesheet. There is no build step and no package manager — no `composer.json`, no `package.json`.
-Do not introduce a toolchain.
+stylesheet, no build step, no package manager.
 
-The full guide is [`AGENTS.md`](../AGENTS.md). The rules that matter most:
+The full guide is [`AGENTS.md`](../AGENTS.md): coding standards, verification steps, the
+version-bumping rule and the boundaries on what belongs in a theme. Read it. Repeated here are only
+the three things most often got wrong in this repo.
 
-- **Escape at output, with the matching function.** `esc_html()` for text, `esc_attr()` for
-  attributes, `esc_url()` for URLs, `wp_kses_post()` for markup. Hex colours get
-  `sanitize_hex_color()` — `esc_attr()` is not a CSS escaper.
-- **Wrap user-facing strings** in the `abdeljalil` text domain (`__()`, `_e()`, `esc_html__()`).
-- **RTL first.** Use CSS logical properties (`inset-inline-start`, `margin-block-end`), never
-  `left`/`right`. There is no `rtl.css`.
-- **WordPress PHP coding standards**, as the files already follow them: tabs, spaces inside
-  parentheses `function foo( $bar )`, Yoda conditions, long-form `array()`.
-- **Prefix new functions `abdeljalil_`** (see #20 — do not add to the existing prefix split).
-- **No plugin behaviour in the theme.** Anything that should survive a theme switch belongs in a
-  plugin.
-- **No remote assets.** Everything ships from the theme directory.
-- **Do not duplicate core.** WordPress already emits canonical URLs, robots directives, sitemaps and
-  the title tag.
+- **Escape at output, with the function that matches the context.** `esc_html()` for text,
+  `esc_attr()` for attributes, `esc_url()` for URLs. `esc_attr()` is not a CSS escaper; hex colours
+  get `sanitize_hex_color()`.
+- **Use CSS logical properties** such as `inset-inline-start` and `margin-block-end`, not
+  `left`/`right`. There is no `rtl.css`; `style.css` is RTL-first.
+- **Every user-facing string goes through the `abdeljalil` text domain**, via `__()`, `_e()` or
+  `esc_html__()`.
 
-There is no test suite. Verify manually across home, single post, archive, search, page and 404,
-with `WP_DEBUG` on, and view source rather than trusting that it looks right.
-
-The version lives in both `style.css` (`Version:`) and the `wp_enqueue_style()` call in
-`functions.php`. Bump both together or browsers serve a stale stylesheet.
+<!--
+Why this file exists alongside AGENTS.md: Copilot Chat does not read AGENTS.md in JetBrains, Visual
+Studio, Eclipse or Xcode, and @ file references expand only in Copilot CLI. This path is the one
+instruction file every Copilot surface reads. Keep it short and let AGENTS.md carry the detail.
+-->
