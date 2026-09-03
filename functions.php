@@ -393,14 +393,11 @@ function abdeljalil_social_sharing_buttons() {
 		),
 		'https://x.com/intent/tweet'
 	);
-	$linkedin_url = add_query_arg(
-		array(
-			'mini'  => 'true',
-			'url'   => $post_url,
-			'title' => $post_title,
-		),
-		'https://www.linkedin.com/shareArticle'
-	);
+	// share-offsite is LinkedIn's current endpoint and takes `url` only. It reads
+	// the title and description from the page's Open Graph tags, which
+	// almothafar_add_opengraph_tags() already emits, so passing a title is both
+	// unnecessary and ignored.
+	$linkedin_url = add_query_arg( 'url', $post_url, 'https://www.linkedin.com/sharing/share-offsite/' );
 	$telegram_url = add_query_arg(
 		array(
 			'url'  => $post_url,
