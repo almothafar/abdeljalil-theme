@@ -673,6 +673,9 @@ add_filter( 'wp_robots', 'almothafar_robots_noindex_thin_pages' );
 // Remove WordPress version from head
 remove_action( 'wp_head', 'wp_generator' );
 
+// Disable XML-RPC if not needed (prevents brute force attacks)
+add_filter( 'xmlrpc_enabled', '__return_false' );
+
 // Remove WordPress version from RSS feeds
 function abdeljalil_remove_version() {
 	return '';

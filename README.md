@@ -20,7 +20,7 @@ The theme has been rebuilt from the ground up to meet modern WordPress and web s
 - ✅ **RTL (Right-to-Left) Support** - Fully optimized for Arabic content
 - ✅ **Fully Responsive** - Mobile-first design with comprehensive breakpoints
 - ✅ **HTML5 Semantic Markup** - Modern, accessible code
-- ✅ **Security Hardened** - Removed malware, added input sanitization
+- ✅ **Security Hardened** - Removed malware, added input sanitization, disabled XML-RPC
 - ✅ **WordPress 6.8+ Compatible** - Uses latest WordPress APIs
 - ✅ **PHP 8.4+ Compatible** - No deprecated functions
 - ✅ **Modern Social Sharing** - Facebook, X, LinkedIn, Telegram, WhatsApp
@@ -54,7 +54,7 @@ The theme has been rebuilt from the ground up to meet modern WordPress and web s
 - ✅ Removed 220+ lines of malicious backdoor code
 - ✅ Implemented proper input sanitization (`esc_url()`, `esc_html()`, `esc_attr()`)
 - ✅ Removed WordPress version exposure
-- ⚠️ XML-RPC was disabled here in v2.0. That has moved out of the theme (see Unreleased below) and now belongs in a plugin or your server config
+- ✅ Disabled XML-RPC to prevent brute force attacks
 - ✅ Removed hardcoded tracking IDs
 - ✅ Modern script enqueueing (no inline JavaScript)
 
@@ -99,7 +99,6 @@ The theme has been rebuilt from the ground up to meet modern WordPress and web s
 - Removed the three sitemap filters. Core's defaults apply again, including honouring the "Discourage search engines from indexing this site" setting that the theme previously overrode.
 - Removed the `robots_txt` filter. Crawl policy belongs to the server or a plugin.
 - Stopped enqueueing jQuery. The theme ships no JavaScript.
-- Removed the `xmlrpc_enabled` filter. **XML-RPC is re-enabled on upgrade unless you add this back from a plugin, or block `xmlrpc.php` at the server.**
 
 ### Version 2.0 (2025)
 **Complete Theme Modernization by Al-Mothafar Al-Hasan**
