@@ -52,6 +52,15 @@ are all core's job. Duplicating them is worse than omitting them.
 
 There is no test suite and no CI, so verification is manual. Say in the PR what you actually checked.
 
+- **PHP lint, before anything else.** No PHP is installed on the machine this is usually written
+  on, which is not a reason to skip the check. Download a portable build — the `nts-Win32-x64` zip
+  from <https://windows.php.net/downloads/releases/> — extract it to a scratch directory and run
+  `php -l` over every `.php` file from there. No install, nothing on `PATH`, delete it afterwards.
+  Lint against both the oldest and the newest PHP the theme header claims to support.
+- **Output-changing code deserves more than a lint.** Stub the WordPress functions a change calls,
+  copy the real implementations of the two or three that actually matter out of core, and assert on
+  what the function prints. That is how the share-URL encoding was verified — and how a regression
+  in it was caught, by running the same assertions against the previous commit.
 - **Front end:** home, a single post with comments, a category archive, a search result (including
   one with no results), a page, and a 404.
 - **PHP notices:** run with `WP_DEBUG` on and confirm the change adds none.
