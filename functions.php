@@ -650,17 +650,22 @@ add_action( 'wp_head', 'almothafar_add_opengraph_tags' );
 // Core has emitted the robots meta tag through wp_robots() -- hooked to
 // wp_head at priority 1 -- since WordPress 5.7. Add to the directives it
 // collects rather than printing a second, competing tag.
-function almothafar_robots_noindex_archives( $robots ) {
-	// Author and date archives add nothing a category or the front page does
-	// not already cover. Core's wp_robots_noindex_search() handles search
-	// already; naming it here keeps the intent explicit if that ever changes.
+//
+// wp_robots_no_robots() is core's own helper for this case: it sets noindex
+// and pairs it with follow or nofollow according to blog_public. Setting
+// noindex by hand reimplements half of it and drops the follow.
+function almothafar_robots_noindex_thin_pages( $robots ) {
+	// Author archives, date archives and search results carry nothing a
+	// category or the front page does not already cover. Core's
+	// wp_robots_noindex_search() covers the search case as well; keeping it
+	// here is belt-and-braces, per the note on issue #2.
 	if ( is_author() || is_date() || is_search() ) {
-		$robots['noindex'] = true;
+		return wp_robots_no_robots( $robots );
 	}
 
 	return $robots;
 }
-add_filter( 'wp_robots', 'almothafar_robots_noindex_archives' );
+add_filter( 'wp_robots', 'almothafar_robots_noindex_thin_pages' );
 
 /***************************************************************
  * Security Enhancements
