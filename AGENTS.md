@@ -87,3 +87,5 @@ from the diff. One logical change per PR, and reference the issue it closes.
 
 Issues that overlap with another carry a note saying which to land first. Read it before starting, so
 the same lines are not rewritten twice.
+
+**Soft-wrap prose; do not hard-wrap it at a column.** One long line per paragraph in Markdown files, pull request descriptions and commit message bodies, and let the editor or the renderer wrap it. GitHub reflows prose when it renders, so hard-wrapped paragraphs arrive broken at a width that matches nobody's viewport, and changing one word reflows every following line in the diff. List items, table rows and headings stay one per line, as they already are. None of this applies to code or to comments inside code, which follow the WordPress standards above. Most of the Markdown here, this file included, predates the rule and is still wrapped at 100. Do not add more, and reflow what you touch.

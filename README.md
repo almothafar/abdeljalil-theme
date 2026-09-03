@@ -20,7 +20,7 @@ The theme has been rebuilt from the ground up to meet modern WordPress and web s
 - ✅ **RTL (Right-to-Left) Support** - Fully optimized for Arabic content
 - ✅ **Fully Responsive** - Mobile-first design with comprehensive breakpoints
 - ✅ **HTML5 Semantic Markup** - Modern, accessible code
-- ✅ **Security Hardened** - Removed malware, added input sanitization, disabled XML-RPC
+- ✅ **Security Hardened** - Removed malware, added input sanitization
 - ✅ **WordPress 6.8+ Compatible** - Uses latest WordPress APIs
 - ✅ **PHP 8.4+ Compatible** - No deprecated functions
 - ✅ **Modern Social Sharing** - Facebook, X, LinkedIn, Telegram, WhatsApp
@@ -34,7 +34,7 @@ The theme has been rebuilt from the ground up to meet modern WordPress and web s
 - ✅ **Translation Ready** - i18n/l10n support
 - ✅ **Accessibility Improvements** - ARIA roles and screen reader text
 - ✅ **CSS Variables** - Easy theme customization with CSS custom properties
-- ✅ **SEO Optimized** - Meta descriptions, canonical URLs, Open Graph tags, structured data
+- ✅ **SEO Optimized** - Meta descriptions, Open Graph tags, structured data (canonical and robots tags are left to WordPress core)
 
 ## 🚀 Installation
 
@@ -54,7 +54,7 @@ The theme has been rebuilt from the ground up to meet modern WordPress and web s
 - ✅ Removed 220+ lines of malicious backdoor code
 - ✅ Implemented proper input sanitization (`esc_url()`, `esc_html()`, `esc_attr()`)
 - ✅ Removed WordPress version exposure
-- ✅ Disabled XML-RPC to prevent brute force attacks
+- ⚠️ XML-RPC was disabled here in v2.0. It has moved out of the theme (see Unreleased below), because site-wide behaviour should not depend on which theme is active
 - ✅ Removed hardcoded tracking IDs
 - ✅ Modern script enqueueing (no inline JavaScript)
 
@@ -90,6 +90,16 @@ The theme has been rebuilt from the ground up to meet modern WordPress and web s
 3. Menu will appear in the footer
 
 ## 🛠️ Changelog
+
+### Unreleased
+**Stop duplicating what WordPress core already does**
+
+- Removed the duplicate `<link rel="canonical">`. Core's `rel_canonical()` is the only one now, and archive pages no longer get a theme-invented canonical.
+- Moved the robots directives onto core's `wp_robots` filter, so one `<meta name="robots">` is rendered instead of two. Paginated archives are no longer `noindex`, which is what lets crawlers reach older posts.
+- Removed the three sitemap filters. Core's defaults apply again, including honouring the "Discourage search engines from indexing this site" setting that the theme previously overrode.
+- Removed the `robots_txt` filter. Crawl policy belongs to the server or a plugin.
+- Stopped enqueueing jQuery. The theme ships no JavaScript.
+- Removed the `xmlrpc_enabled` filter. Disabling XML-RPC is a site decision, not a theme one -- it should not switch off when you change themes. To keep it disabled, install a plugin such as [Remove XML-RPC Methods](https://wordpress.org/plugins/wee-remove-xmlrpc-methods/), which also closes the pingback methods the theme filter never covered.
 
 ### Version 2.0 (2025)
 **Complete Theme Modernization by Al-Mothafar Al-Hasan**
