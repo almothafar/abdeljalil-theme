@@ -5,7 +5,7 @@ stylesheet, no build step, no package manager.
 
 The full guide is [`AGENTS.md`](../AGENTS.md): coding standards, verification steps, the
 version-bumping rule and the boundaries on what belongs in a theme. Read it. Repeated here are only
-the three things most often got wrong in this repo.
+the things most often got wrong in this repo.
 
 - **Escape at output, with the function that matches the context.** `esc_html()` for text,
   `esc_attr()` for attributes, `esc_url()` for URLs. `esc_attr()` is not a CSS escaper; hex colours
@@ -17,6 +17,7 @@ the three things most often got wrong in this repo.
 - **Prefix new functions `almothafar_`**, matching the constants and the newer code. `abdeljalil_`
   is the original 2016 layer; leave those names alone rather than extending them. Note the text
   domain above is a different thing entirely and never changes.
+- **Soft-wrap prose.** One long line per paragraph in Markdown, PR descriptions and commit message bodies. Do not hard-wrap at a column. This does not apply to code or to comments inside code.
 
 <!--
 Why this file exists alongside AGENTS.md: Copilot Chat does not read AGENTS.md in JetBrains, Visual
