@@ -47,6 +47,7 @@ Use it freely, modify it, and share it!
 	--color-primary-dark: #2d8ab3;
 	--color-primary-darker: #236a8a;
 	--color-primary-darkest: #1a5268;
+	--color-accent: #d32f2f;
 
 	/* Text Colors */
 	--color-text: #686868;
@@ -80,6 +81,7 @@ Use it freely, modify it, and share it!
 	/* Status Colors */
 	--color-error: #d8000c;
 	--color-error-bg: #ffbaba;
+	--color-shadow: rgba(0, 0, 0, 0.5);
 
 	/* Typography */
 	--font-primary: 'Noto Kufi Arabic', tahoma, sans-serif;
@@ -112,9 +114,9 @@ Use it freely, modify it, and share it!
 	--thumbnail-height: 400px;
 
 	/* Header text: the Customizer overrides these via wp_add_inline_style(). */
-	--header-title-color: #d32f2f;
-	--header-description-color: #ffffff;
-	--header-text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+	--header-title-color: var(--color-accent);
+	--header-description-color: var(--color-text-white);
+	--header-text-shadow: 1px 1px 2px var(--color-shadow);
 }
 
 

@@ -282,9 +282,11 @@ add_action( 'customize_register', 'almothafar_header_colors_customize_register' 
  * Apply Header Text Colors from Customizer
  **************************************************************/
 function almothafar_header_text_colors_css() {
-	// Re-validate on output: esc_attr() is an HTML escaper, not a CSS one.
-	$title_color       = sanitize_hex_color( get_theme_mod( 'almothafar_site_title_color', '#d32f2f' ) );
-	$description_color = sanitize_hex_color( get_theme_mod( 'almothafar_site_description_color', '#ffffff' ) );
+	// Defaulting to '' rather than a hex keeps the colour literals out of PHP:
+	// an untouched setting emits nothing and style.css's :root value applies.
+	// Re-validate on output too, since esc_attr() is an HTML escaper, not a CSS one.
+	$title_color       = sanitize_hex_color( get_theme_mod( 'almothafar_site_title_color', '' ) );
+	$description_color = sanitize_hex_color( get_theme_mod( 'almothafar_site_description_color', '' ) );
 	$text_shadow       = get_theme_mod( 'almothafar_header_text_shadow', true );
 
 	// Only overrides are emitted. style.css declares the defaults on :root, so
@@ -354,7 +356,7 @@ add_action( 'wp_enqueue_scripts', 'abdeljalil_scripts' );
  **************************************************************/
 // The header image is normally the LCP element, but it is applied as an inline
 // background-image, which the preload scanner cannot see. Announce it early.
-function abdeljalil_preload_header_image() {
+function almothafar_preload_header_image() {
 	$header_image = get_header_image();
 
 	if ( ! $header_image ) {
@@ -366,7 +368,7 @@ function abdeljalil_preload_header_image() {
 		esc_url( $header_image )
 	);
 }
-add_action( 'wp_head', 'abdeljalil_preload_header_image', 2 );
+add_action( 'wp_head', 'almothafar_preload_header_image', 2 );
 
 /***************************************************************
  * Social Sharing Buttons
@@ -389,7 +391,7 @@ function abdeljalil_social_sharing_buttons() {
 			'url'  => $post_url,
 			'text' => $post_title,
 		),
-		'https://twitter.com/intent/tweet'
+		'https://x.com/intent/tweet'
 	);
 	$linkedin_url = add_query_arg(
 		array(
