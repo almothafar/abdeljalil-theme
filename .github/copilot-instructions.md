@@ -14,6 +14,9 @@ the three things most often got wrong in this repo.
   `left`/`right`. There is no `rtl.css`; `style.css` is RTL-first.
 - **Every user-facing string goes through the `abdeljalil` text domain**, via `__()`, `_e()` or
   `esc_html__()`.
+- **Prefix new functions `almothafar_`**, matching the constants and the newer code. `abdeljalil_`
+  is the original 2016 layer; leave those names alone rather than extending them. Note the text
+  domain above is a different thing entirely and never changes.
 
 <!--
 Why this file exists alongside AGENTS.md: Copilot Chat does not read AGENTS.md in JetBrains, Visual

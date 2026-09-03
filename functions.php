@@ -15,12 +15,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 /***************************************************************
  * Theme Constants
  **************************************************************/
-// Define theme dimensions as constants for use in PHP
-define( 'ALMOTHAFAR_HEADER_WIDTH', 1200 );
-define( 'ALMOTHAFAR_HEADER_HEIGHT', 190 );
-define( 'ALMOTHAFAR_THUMBNAIL_WIDTH', 1200 );
-define( 'ALMOTHAFAR_THUMBNAIL_HEIGHT', 400 );
-define( 'ALMOTHAFAR_CONTENT_WIDTH', 1200 );
+// Define theme dimensions as constants for use in PHP.
+// Guarded so a child theme or plugin can define them first.
+if ( ! defined( 'ALMOTHAFAR_HEADER_WIDTH' ) ) {
+	define( 'ALMOTHAFAR_HEADER_WIDTH', 1200 );
+}
+
+if ( ! defined( 'ALMOTHAFAR_HEADER_HEIGHT' ) ) {
+	define( 'ALMOTHAFAR_HEADER_HEIGHT', 190 );
+}
+
+if ( ! defined( 'ALMOTHAFAR_THUMBNAIL_WIDTH' ) ) {
+	define( 'ALMOTHAFAR_THUMBNAIL_WIDTH', 1200 );
+}
+
+if ( ! defined( 'ALMOTHAFAR_THUMBNAIL_HEIGHT' ) ) {
+	define( 'ALMOTHAFAR_THUMBNAIL_HEIGHT', 400 );
+}
+
+if ( ! defined( 'ALMOTHAFAR_CONTENT_WIDTH' ) ) {
+	define( 'ALMOTHAFAR_CONTENT_WIDTH', 1200 );
+}
 
 /***************************************************************
  * Theme Setup
@@ -114,11 +129,6 @@ function abdeljalil_theme_setup() {
 	register_nav_menus( array(
 		'primary' => __( 'Primary Menu', 'abdeljalil' ),
 	) );
-
-	// Set content width
-	if ( ! isset( $content_width ) ) {
-		$content_width = ALMOTHAFAR_CONTENT_WIDTH;
-	}
 }
 add_action( 'after_setup_theme', 'abdeljalil_theme_setup' );
 
@@ -272,34 +282,37 @@ add_action( 'customize_register', 'almothafar_header_colors_customize_register' 
  * Apply Header Text Colors from Customizer
  **************************************************************/
 function almothafar_header_text_colors_css() {
-	$title_color = get_theme_mod( 'almothafar_site_title_color', '#d32f2f' );
-	$description_color = get_theme_mod( 'almothafar_site_description_color', '#ffffff' );
-	$text_shadow = get_theme_mod( 'almothafar_header_text_shadow', true );
+	// Defaulting to '' rather than a hex keeps the colour literals out of PHP:
+	// an untouched setting emits nothing and style.css's :root value applies.
+	// Re-validate on output too, since esc_attr() is an HTML escaper, not a CSS one.
+	$title_color       = sanitize_hex_color( get_theme_mod( 'almothafar_site_title_color', '' ) );
+	$description_color = sanitize_hex_color( get_theme_mod( 'almothafar_site_description_color', '' ) );
+	$text_shadow       = get_theme_mod( 'almothafar_header_text_shadow', true );
 
-	?>
-	<style type="text/css">
-		.site-title a,
-		.site-title a:hover {
-			color: <?php echo esc_attr( $title_color ); ?> !important;
-		}
-		.site-description {
-			color: <?php echo esc_attr( $description_color ); ?> !important;
-		}
-		<?php if ( $text_shadow ) : ?>
-		.site-title a,
-		.site-description {
-			text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-		}
-		<?php else : ?>
-		.site-title a,
-		.site-description {
-			text-shadow: none;
-		}
-		<?php endif; ?>
-	</style>
-	<?php
+	// Only overrides are emitted. style.css declares the defaults on :root, so
+	// anything left at its default needs no declaration here and no !important
+	// to win specificity -- and the shadow value itself lives in one place.
+	$declarations = array();
+
+	if ( $title_color ) {
+		$declarations[] = '--header-title-color:' . $title_color;
+	}
+
+	if ( $description_color ) {
+		$declarations[] = '--header-description-color:' . $description_color;
+	}
+
+	if ( ! $text_shadow ) {
+		$declarations[] = '--header-text-shadow:none';
+	}
+
+	if ( ! $declarations ) {
+		return;
+	}
+
+	wp_add_inline_style( 'abdeljalil-style', ':root{' . implode( ';', $declarations ) . ';}' );
 }
-add_action( 'wp_head', 'almothafar_header_text_colors_css' );
+add_action( 'wp_enqueue_scripts', 'almothafar_header_text_colors_css', 20 );
 
 /***************************************************************
  * Register Sidebar
@@ -339,6 +352,25 @@ function abdeljalil_scripts() {
 add_action( 'wp_enqueue_scripts', 'abdeljalil_scripts' );
 
 /***************************************************************
+ * Preload the Header Image
+ **************************************************************/
+// The header image is normally the LCP element, but it is applied as an inline
+// background-image, which the preload scanner cannot see. Announce it early.
+function almothafar_preload_header_image() {
+	$header_image = get_header_image();
+
+	if ( ! $header_image ) {
+		return;
+	}
+
+	printf(
+		'<link rel="preload" as="image" href="%s" fetchpriority="high" />' . "\n",
+		esc_url( $header_image )
+	);
+}
+add_action( 'wp_head', 'almothafar_preload_header_image', 2 );
+
+/***************************************************************
  * Social Sharing Buttons
  **************************************************************/
 function abdeljalil_social_sharing_buttons() {
@@ -346,28 +378,54 @@ function abdeljalil_social_sharing_buttons() {
 		return;
 	}
 
-	$post_url   = urlencode( get_permalink() );
-	$post_title = urlencode( get_the_title() );
+	// add_query_arg() does NOT encode values -- build_query() calls
+	// _http_build_query( $data, null, '&', '', false ), where that false is
+	// $urlencode. Core's docblock says the caller must encode, so an unencoded
+	// "&" in a post title would otherwise start a new query parameter.
+	$post_url   = rawurlencode( get_permalink() );
+	$post_title = rawurlencode( get_the_title() );
+
+	$facebook_url = add_query_arg( 'u', $post_url, 'https://www.facebook.com/sharer/sharer.php' );
+	$twitter_url  = add_query_arg(
+		array(
+			'url'  => $post_url,
+			'text' => $post_title,
+		),
+		'https://x.com/intent/tweet'
+	);
+	// share-offsite is LinkedIn's current endpoint and takes `url` only. It reads
+	// the title and description from the page's Open Graph tags, which
+	// almothafar_add_opengraph_tags() already emits, so passing a title is both
+	// unnecessary and ignored.
+	$linkedin_url = add_query_arg( 'url', $post_url, 'https://www.linkedin.com/sharing/share-offsite/' );
+	$telegram_url = add_query_arg(
+		array(
+			'url'  => $post_url,
+			'text' => $post_title,
+		),
+		'https://telegram.me/share/url'
+	);
+	$whatsapp_url = add_query_arg( 'text', $post_title . ' ' . $post_url, 'https://wa.me/' );
 
 	?>
 	<div class="social-share-buttons">
-		<a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo $post_url; ?>" target="_blank" rel="noopener noreferrer" class="share-button facebook" title="شارك على فيسبوك">
+		<a href="<?php echo esc_url( $facebook_url ); ?>" target="_blank" rel="noopener noreferrer" class="share-button facebook" title="<?php esc_attr_e( 'شارك على فيسبوك', 'abdeljalil' ); ?>">
 			<i class="fab fa-facebook-f"></i>
 			<span>Facebook</span>
 		</a>
-		<a href="https://twitter.com/intent/tweet?url=<?php echo $post_url; ?>&text=<?php echo $post_title; ?>" target="_blank" rel="noopener noreferrer" class="share-button twitter" title="شارك على X (تويتر)">
+		<a href="<?php echo esc_url( $twitter_url ); ?>" target="_blank" rel="noopener noreferrer" class="share-button twitter" title="<?php esc_attr_e( 'شارك على X (تويتر)', 'abdeljalil' ); ?>">
 			<i class="fab fa-x-twitter"></i>
 			<span>X</span>
 		</a>
-		<a href="https://www.linkedin.com/shareArticle?mini=true&url=<?php echo $post_url; ?>&title=<?php echo $post_title; ?>" target="_blank" rel="noopener noreferrer" class="share-button linkedin" title="شارك على لينكد إن">
+		<a href="<?php echo esc_url( $linkedin_url ); ?>" target="_blank" rel="noopener noreferrer" class="share-button linkedin" title="<?php esc_attr_e( 'شارك على لينكد إن', 'abdeljalil' ); ?>">
 			<i class="fab fa-linkedin-in"></i>
 			<span>LinkedIn</span>
 		</a>
-		<a href="https://telegram.me/share/url?url=<?php echo $post_url; ?>&text=<?php echo $post_title; ?>" target="_blank" rel="noopener noreferrer" class="share-button telegram" title="شارك على تيليجرام">
+		<a href="<?php echo esc_url( $telegram_url ); ?>" target="_blank" rel="noopener noreferrer" class="share-button telegram" title="<?php esc_attr_e( 'شارك على تيليجرام', 'abdeljalil' ); ?>">
 			<i class="fab fa-telegram-plane"></i>
 			<span>Telegram</span>
 		</a>
-		<a href="https://wa.me/?text=<?php echo $post_title; ?>%20<?php echo $post_url; ?>" target="_blank" rel="noopener noreferrer" class="share-button whatsapp" title="شارك على واتساب">
+		<a href="<?php echo esc_url( $whatsapp_url ); ?>" target="_blank" rel="noopener noreferrer" class="share-button whatsapp" title="<?php esc_attr_e( 'شارك على واتساب', 'abdeljalil' ); ?>">
 			<i class="fab fa-whatsapp"></i>
 			<span>WhatsApp</span>
 		</a>
@@ -794,6 +852,4 @@ function almothafar_fix_akismet_text( $translated, $original, $domain ) {
 }
 add_filter( 'gettext', 'almothafar_fix_akismet_text', 20, 3 );
 
-//End of Functions
-
-?>
+// No closing tag: trailing whitespace after it would be sent as output.

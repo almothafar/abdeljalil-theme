@@ -1,6 +1,6 @@
 <?php get_header(); ?>
 
-<main class="site-container" role="main">
+<main class="site-container">
 	<?php if ( have_posts() ) : ?>
 		<?php while ( have_posts() ) : the_post(); ?>
 			<article class="post" id="post-<?php the_ID(); ?>" <?php post_class(); ?>>

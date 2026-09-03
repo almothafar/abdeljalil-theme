@@ -31,8 +31,10 @@ not `left`/`right`/`margin-left`. There is no `rtl.css`; `style.css` is RTL-firs
 inside parentheses: `function foo( $bar )`. Yoda conditions: `if ( '' === $value )`. Long-form
 `array()`, not `[]`.
 
-**Prefix new functions `abdeljalil_`.** The file also holds `almothafar_` functions and
-`ALMOTHAFAR_` constants from a later pass. Do not add to the split.
+**Prefix new functions `almothafar_`,** matching the constants (`ALMOTHAFAR_`) and the newer
+code. `abdeljalil_` is the original 2016 layer -- leave those names alone, but do not add
+to them. The `abdeljalil` text domain is unrelated to this and never changes: it is tied to
+the theme slug in `style.css`.
 
 **Do not put plugin behaviour in the theme.** Anything that should survive a theme switch, such as
 disabling XML-RPC, analytics, redirects or custom post types, belongs in a plugin. A user who

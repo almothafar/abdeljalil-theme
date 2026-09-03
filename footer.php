@@ -1,6 +1,6 @@
 </div><!-- .site-wrapper -->
 
-<footer class="site-footer" role="contentinfo">
+<footer class="site-footer">
 	<div class="footer-navigation">
 		<?php
 		wp_nav_menu( array(
@@ -12,7 +12,7 @@
 		?>
 	</div>
 	<div class="footer-copyright">
-		جميع الحقوق محفوظة &copy; <?php echo date( 'Y' ); ?> <a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php bloginfo( 'name' ); ?></a>
+		جميع الحقوق محفوظة &copy; <?php echo esc_html( wp_date( 'Y' ) ); ?> <a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php bloginfo( 'name' ); ?></a>
 		<?php
 		printf(
 			' | ' . __( 'قالب %1$s، مُحدّث بواسطة %2$s', 'abdeljalil' ),

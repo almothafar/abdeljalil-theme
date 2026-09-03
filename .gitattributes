@@ -1,0 +1,11 @@
+# Normalize line endings to LF in the repository and in the working tree, so
+# checkouts match .editorconfig's `end_of_line = lf` regardless of a
+# contributor's core.autocrlf setting.
+* text=auto eol=lf
+
+# Binary assets: never touch these.
+*.png binary
+*.jpg binary
+*.gif binary
+*.ttf binary
+*.woff2 binary

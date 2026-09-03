@@ -47,6 +47,7 @@ Use it freely, modify it, and share it!
 	--color-primary-dark: #2d8ab3;
 	--color-primary-darker: #236a8a;
 	--color-primary-darkest: #1a5268;
+	--color-accent: #d32f2f;
 
 	/* Text Colors */
 	--color-text: #686868;
@@ -80,6 +81,7 @@ Use it freely, modify it, and share it!
 	/* Status Colors */
 	--color-error: #d8000c;
 	--color-error-bg: #ffbaba;
+	--color-shadow: rgba(0, 0, 0, 0.5);
 
 	/* Typography */
 	--font-primary: 'Noto Kufi Arabic', tahoma, sans-serif;
@@ -110,6 +112,11 @@ Use it freely, modify it, and share it!
 	/* Thumbnail Dimensions */
 	--thumbnail-width: var(--container-max-width);
 	--thumbnail-height: 400px;
+
+	/* Header text: the Customizer overrides these via wp_add_inline_style(). */
+	--header-title-color: var(--color-accent);
+	--header-description-color: var(--color-text-white);
+	--header-text-shadow: 1px 1px 2px var(--color-shadow);
 }
 
 
@@ -119,7 +126,7 @@ html {
 	background-color: var(--color-bg-light);
 	padding: 0;
 	margin: 0;
-    font-family: var(--font-primary), sans-serif;
+	font-family: var(--font-primary);
 	font-size: var(--font-size-base);
 	color: var(--color-text);
 	scroll-behavior: smooth;
@@ -343,7 +350,8 @@ pre code,
 }
 
 .site-title a {
-	color: var(--color-primary);
+	color: var(--header-title-color);
+	text-shadow: var(--header-text-shadow);
 	text-decoration: none;
 	transition: var(--transition-base);
 }
@@ -354,8 +362,8 @@ pre code,
 
 .site-description {
 	font-size: var(--font-size-large);
-	color: var(--color-text-white);
-	text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+	color: var(--header-description-color);
+	text-shadow: var(--header-text-shadow);
 }
 
 /* Responsive Header */
@@ -399,6 +407,13 @@ pre code,
 	max-width: var(--content-width);
 	overflow-x: hidden;
 	box-sizing: border-box;
+}
+
+/* sidebar.php returns early when it has nothing to render, so the main
+   column takes the whole row instead of leaving a dead 29% gap. */
+.site-container:only-child {
+	flex: 1 1 auto;
+	max-width: 100%;
 }
 
 .post-head {

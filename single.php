@@ -1,6 +1,6 @@
 <?php get_header(); ?>
 
-<main class="site-container" role="main">
+<main class="site-container">
 	<?php if ( have_posts() ) : ?>
 		<?php while ( have_posts() ) : the_post(); ?>
 			<article class="post" id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
@@ -28,9 +28,10 @@
 				<?php get_template_part( 'template-parts/post-tags' ); ?>
 			</article>
 
-			<nav class="navigation" role="navigation">
-				<div class="nav-previous"><?php previous_post_link( '&laquo; %link' ); ?></div>
-				<div class="nav-next"><?php next_post_link( '%link &raquo;' ); ?></div>
+			<?php // Arrows are mirrored: in RTL the previous post sits to the right. ?>
+			<nav class="navigation">
+				<div class="nav-previous"><?php previous_post_link( '&raquo; %link' ); ?></div>
+				<div class="nav-next"><?php next_post_link( '%link &laquo;' ); ?></div>
 			</nav>
 
 			<div class="comments-template">

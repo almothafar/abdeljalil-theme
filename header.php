@@ -10,7 +10,7 @@
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 
-<nav class="navbar-modern" role="navigation">
+<nav class="navbar-modern">
 	<div class="navbar-end">
 		<div class="social-icons">
 			<?php
@@ -65,7 +65,7 @@
 	</div>
 </nav>
 
-<header class="site-header" role="banner" style="background-image: url(<?php header_image(); ?>);">
+<header class="site-header"<?php if ( get_header_image() ) : ?> style="background-image: url(<?php echo esc_url( get_header_image() ); ?>);"<?php endif; ?>>
 	<?php if ( display_header_text() ) : ?>
 		<div class="header-content">
 			<div class="site-title">
