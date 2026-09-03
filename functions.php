@@ -486,44 +486,6 @@ function almothafar_add_meta_description() {
 add_action( 'wp_head', 'almothafar_add_meta_description', 1 );
 
 /***************************************************************
- * Canonical URL
- **************************************************************/
-function almothafar_add_canonical_url() {
-	$canonical_url = '';
-
-	if ( is_singular() ) {
-		// Single post/page
-		$canonical_url = get_permalink();
-	} elseif ( is_category() ) {
-		// Category archive
-		$canonical_url = get_category_link( get_queried_object_id() );
-	} elseif ( is_tag() ) {
-		// Tag archive
-		$canonical_url = get_tag_link( get_queried_object_id() );
-	} elseif ( is_author() ) {
-		// Author archive
-		$canonical_url = get_author_posts_url( get_queried_object_id() );
-	} elseif ( is_home() || is_front_page() ) {
-		// Homepage
-		$canonical_url = home_url( '/' );
-	} elseif ( is_search() ) {
-		// Search results
-		$canonical_url = get_search_link();
-	}
-
-	// Add pagination if exists
-	if ( $canonical_url ) {
-		$paged = get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1;
-		if ( $paged > 1 ) {
-			$canonical_url = trailingslashit( $canonical_url ) . 'page/' . $paged . '/';
-		}
-
-		echo '<link rel="canonical" href="' . esc_url( $canonical_url ) . '" />' . "\n";
-	}
-}
-add_action( 'wp_head', 'almothafar_add_canonical_url', 2 );
-
-/***************************************************************
  * JSON-LD Structured Data (Schema.org)
  **************************************************************/
 function almothafar_add_structured_data() {
@@ -683,20 +645,22 @@ function almothafar_add_opengraph_tags() {
 add_action( 'wp_head', 'almothafar_add_opengraph_tags' );
 
 /***************************************************************
- * Robots Meta Tags for Specific Pages
+ * Robots Directives
  **************************************************************/
-function almothafar_add_robots_meta() {
-	// Don't index author archives, date archives, and search results
+// Core has emitted the robots meta tag through wp_robots() -- hooked to
+// wp_head at priority 1 -- since WordPress 5.7. Add to the directives it
+// collects rather than printing a second, competing tag.
+function almothafar_robots_noindex_archives( $robots ) {
+	// Author and date archives add nothing a category or the front page does
+	// not already cover. Core's wp_robots_noindex_search() handles search
+	// already; naming it here keeps the intent explicit if that ever changes.
 	if ( is_author() || is_date() || is_search() ) {
-		echo '<meta name="robots" content="noindex, follow" />' . "\n";
+		$robots['noindex'] = true;
 	}
 
-	// Don't index paginated pages beyond page 1
-	if ( is_paged() && get_query_var( 'paged' ) > 1 ) {
-		echo '<meta name="robots" content="noindex, follow" />' . "\n";
-	}
+	return $robots;
 }
-add_action( 'wp_head', 'almothafar_add_robots_meta', 1 );
+add_filter( 'wp_robots', 'almothafar_robots_noindex_archives' );
 
 /***************************************************************
  * Security Enhancements
