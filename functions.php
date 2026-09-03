@@ -341,9 +341,6 @@ function abdeljalil_scripts() {
 	// Enqueue Font Awesome 7.0.1 (latest available on CDNJS) for social icons
 	wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css', array(), '7.0.7' );
 
-	// Enqueue WordPress bundled jQuery (modern version)
-	wp_enqueue_script( 'jquery' );
-
 	// Enqueue comment reply script
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
