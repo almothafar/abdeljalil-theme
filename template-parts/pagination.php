@@ -1,4 +1,4 @@
-<nav class="navigation" role="navigation">
+<nav class="navigation">
 	<?php
 	the_posts_pagination( array(
 		'mid_size'  => 2,

@@ -9,7 +9,7 @@
 get_header();
 ?>
 
-<main class="site-container" role="main">
+<main class="site-container">
 	<article class="post error-404">
 		<div class="entry">
 			<div class="post-title">
@@ -33,7 +33,9 @@ get_header();
 		<div class="entry">
 			<h3><?php _e( '📝 أحدث المقالات', 'abdeljalil' ); ?></h3>
 			<?php
-			$recent_posts = wp_get_recent_posts( array(
+			// get_posts() forces no_found_rows, so this skips the SQL_CALC_FOUND_ROWS
+			// pass that wp_get_recent_posts() pays for a count nothing here uses.
+			$recent_posts = get_posts( array(
 				'numberposts' => 5,
 				'post_status' => 'publish',
 			) );
@@ -45,13 +47,12 @@ get_header();
 					foreach ( $recent_posts as $recent ) :
 						?>
 						<li>
-							<a href="<?php echo esc_url( get_permalink( $recent['ID'] ) ); ?>">
-								<?php echo esc_html( $recent['post_title'] ); ?>
+							<a href="<?php echo esc_url( get_permalink( $recent->ID ) ); ?>">
+								<?php echo esc_html( get_the_title( $recent ) ); ?>
 							</a>
 						</li>
 					<?php
 					endforeach;
-					wp_reset_postdata();
 					?>
 				</ul>
 			<?php

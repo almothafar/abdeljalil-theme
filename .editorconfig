@@ -1,0 +1,19 @@
+# Abdeljalil Theme — https://editorconfig.org
+# Matches the WordPress coding standards: tabs everywhere except YAML.
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = tab
+
+[*.md]
+# Two trailing spaces are a hard line break in Markdown.
+trim_trailing_whitespace = false
+
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2

@@ -15,12 +15,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 /***************************************************************
  * Theme Constants
  **************************************************************/
-// Define theme dimensions as constants for use in PHP
-define( 'ALMOTHAFAR_HEADER_WIDTH', 1200 );
-define( 'ALMOTHAFAR_HEADER_HEIGHT', 190 );
-define( 'ALMOTHAFAR_THUMBNAIL_WIDTH', 1200 );
-define( 'ALMOTHAFAR_THUMBNAIL_HEIGHT', 400 );
-define( 'ALMOTHAFAR_CONTENT_WIDTH', 1200 );
+// Define theme dimensions as constants for use in PHP.
+// Guarded so a child theme or plugin can define them first.
+if ( ! defined( 'ALMOTHAFAR_HEADER_WIDTH' ) ) {
+	define( 'ALMOTHAFAR_HEADER_WIDTH', 1200 );
+}
+
+if ( ! defined( 'ALMOTHAFAR_HEADER_HEIGHT' ) ) {
+	define( 'ALMOTHAFAR_HEADER_HEIGHT', 190 );
+}
+
+if ( ! defined( 'ALMOTHAFAR_THUMBNAIL_WIDTH' ) ) {
+	define( 'ALMOTHAFAR_THUMBNAIL_WIDTH', 1200 );
+}
+
+if ( ! defined( 'ALMOTHAFAR_THUMBNAIL_HEIGHT' ) ) {
+	define( 'ALMOTHAFAR_THUMBNAIL_HEIGHT', 400 );
+}
+
+if ( ! defined( 'ALMOTHAFAR_CONTENT_WIDTH' ) ) {
+	define( 'ALMOTHAFAR_CONTENT_WIDTH', 1200 );
+}
 
 /***************************************************************
  * Theme Setup
@@ -114,11 +129,6 @@ function abdeljalil_theme_setup() {
 	register_nav_menus( array(
 		'primary' => __( 'Primary Menu', 'abdeljalil' ),
 	) );
-
-	// Set content width
-	if ( ! isset( $content_width ) ) {
-		$content_width = ALMOTHAFAR_CONTENT_WIDTH;
-	}
 }
 add_action( 'after_setup_theme', 'abdeljalil_theme_setup' );
 
@@ -272,34 +282,28 @@ add_action( 'customize_register', 'almothafar_header_colors_customize_register' 
  * Apply Header Text Colors from Customizer
  **************************************************************/
 function almothafar_header_text_colors_css() {
-	$title_color = get_theme_mod( 'almothafar_site_title_color', '#d32f2f' );
-	$description_color = get_theme_mod( 'almothafar_site_description_color', '#ffffff' );
-	$text_shadow = get_theme_mod( 'almothafar_header_text_shadow', true );
+	// Re-validate on output: esc_attr() is an HTML escaper, not a CSS one.
+	$title_color       = sanitize_hex_color( get_theme_mod( 'almothafar_site_title_color', '#d32f2f' ) );
+	$description_color = sanitize_hex_color( get_theme_mod( 'almothafar_site_description_color', '#ffffff' ) );
+	$text_shadow       = get_theme_mod( 'almothafar_header_text_shadow', true );
 
-	?>
-	<style type="text/css">
-		.site-title a,
-		.site-title a:hover {
-			color: <?php echo esc_attr( $title_color ); ?> !important;
-		}
-		.site-description {
-			color: <?php echo esc_attr( $description_color ); ?> !important;
-		}
-		<?php if ( $text_shadow ) : ?>
-		.site-title a,
-		.site-description {
-			text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-		}
-		<?php else : ?>
-		.site-title a,
-		.site-description {
-			text-shadow: none;
-		}
-		<?php endif; ?>
-	</style>
-	<?php
+	// Only custom properties are emitted; style.css consumes them with its own
+	// values as the fallback, so no !important is needed to win specificity.
+	$declarations = array();
+
+	if ( $title_color ) {
+		$declarations[] = '--header-title-color:' . $title_color;
+	}
+
+	if ( $description_color ) {
+		$declarations[] = '--header-description-color:' . $description_color;
+	}
+
+	$declarations[] = '--header-text-shadow:' . ( $text_shadow ? '1px 1px 2px rgba(0, 0, 0, 0.5)' : 'none' );
+
+	wp_add_inline_style( 'abdeljalil-style', ':root{' . implode( ';', $declarations ) . ';}' );
 }
-add_action( 'wp_head', 'almothafar_header_text_colors_css' );
+add_action( 'wp_enqueue_scripts', 'almothafar_header_text_colors_css', 20 );
 
 /***************************************************************
  * Register Sidebar
@@ -339,6 +343,25 @@ function abdeljalil_scripts() {
 add_action( 'wp_enqueue_scripts', 'abdeljalil_scripts' );
 
 /***************************************************************
+ * Preload the Header Image
+ **************************************************************/
+// The header image is normally the LCP element, but it is applied as an inline
+// background-image, which the preload scanner cannot see. Announce it early.
+function abdeljalil_preload_header_image() {
+	$header_image = get_header_image();
+
+	if ( ! $header_image ) {
+		return;
+	}
+
+	printf(
+		'<link rel="preload" as="image" href="%s" fetchpriority="high" />' . "\n",
+		esc_url( $header_image )
+	);
+}
+add_action( 'wp_head', 'abdeljalil_preload_header_image', 2 );
+
+/***************************************************************
  * Social Sharing Buttons
  **************************************************************/
 function abdeljalil_social_sharing_buttons() {
@@ -346,28 +369,54 @@ function abdeljalil_social_sharing_buttons() {
 		return;
 	}
 
-	$post_url   = urlencode( get_permalink() );
-	$post_title = urlencode( get_the_title() );
+	// add_query_arg() encodes the values, so these are passed raw.
+	$post_url   = get_permalink();
+	$post_title = get_the_title();
+
+	$facebook_url = add_query_arg( 'u', $post_url, 'https://www.facebook.com/sharer/sharer.php' );
+	$twitter_url  = add_query_arg(
+		array(
+			'url'  => $post_url,
+			'text' => $post_title,
+		),
+		'https://twitter.com/intent/tweet'
+	);
+	$linkedin_url = add_query_arg(
+		array(
+			'mini'  => 'true',
+			'url'   => $post_url,
+			'title' => $post_title,
+		),
+		'https://www.linkedin.com/shareArticle'
+	);
+	$telegram_url = add_query_arg(
+		array(
+			'url'  => $post_url,
+			'text' => $post_title,
+		),
+		'https://telegram.me/share/url'
+	);
+	$whatsapp_url = add_query_arg( 'text', $post_title . ' ' . $post_url, 'https://wa.me/' );
 
 	?>
 	<div class="social-share-buttons">
-		<a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo $post_url; ?>" target="_blank" rel="noopener noreferrer" class="share-button facebook" title="شارك على فيسبوك">
+		<a href="<?php echo esc_url( $facebook_url ); ?>" target="_blank" rel="noopener noreferrer" class="share-button facebook" title="<?php esc_attr_e( 'شارك على فيسبوك', 'abdeljalil' ); ?>">
 			<i class="fab fa-facebook-f"></i>
 			<span>Facebook</span>
 		</a>
-		<a href="https://twitter.com/intent/tweet?url=<?php echo $post_url; ?>&text=<?php echo $post_title; ?>" target="_blank" rel="noopener noreferrer" class="share-button twitter" title="شارك على X (تويتر)">
+		<a href="<?php echo esc_url( $twitter_url ); ?>" target="_blank" rel="noopener noreferrer" class="share-button twitter" title="<?php esc_attr_e( 'شارك على X (تويتر)', 'abdeljalil' ); ?>">
 			<i class="fab fa-x-twitter"></i>
 			<span>X</span>
 		</a>
-		<a href="https://www.linkedin.com/shareArticle?mini=true&url=<?php echo $post_url; ?>&title=<?php echo $post_title; ?>" target="_blank" rel="noopener noreferrer" class="share-button linkedin" title="شارك على لينكد إن">
+		<a href="<?php echo esc_url( $linkedin_url ); ?>" target="_blank" rel="noopener noreferrer" class="share-button linkedin" title="<?php esc_attr_e( 'شارك على لينكد إن', 'abdeljalil' ); ?>">
 			<i class="fab fa-linkedin-in"></i>
 			<span>LinkedIn</span>
 		</a>
-		<a href="https://telegram.me/share/url?url=<?php echo $post_url; ?>&text=<?php echo $post_title; ?>" target="_blank" rel="noopener noreferrer" class="share-button telegram" title="شارك على تيليجرام">
+		<a href="<?php echo esc_url( $telegram_url ); ?>" target="_blank" rel="noopener noreferrer" class="share-button telegram" title="<?php esc_attr_e( 'شارك على تيليجرام', 'abdeljalil' ); ?>">
 			<i class="fab fa-telegram-plane"></i>
 			<span>Telegram</span>
 		</a>
-		<a href="https://wa.me/?text=<?php echo $post_title; ?>%20<?php echo $post_url; ?>" target="_blank" rel="noopener noreferrer" class="share-button whatsapp" title="شارك على واتساب">
+		<a href="<?php echo esc_url( $whatsapp_url ); ?>" target="_blank" rel="noopener noreferrer" class="share-button whatsapp" title="<?php esc_attr_e( 'شارك على واتساب', 'abdeljalil' ); ?>">
 			<i class="fab fa-whatsapp"></i>
 			<span>WhatsApp</span>
 		</a>
@@ -794,6 +843,4 @@ function almothafar_fix_akismet_text( $translated, $original, $domain ) {
 }
 add_filter( 'gettext', 'almothafar_fix_akismet_text', 20, 3 );
 
-//End of Functions
-
-?>
+// No closing tag: trailing whitespace after it would be sent as output.
