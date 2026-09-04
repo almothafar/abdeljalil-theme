@@ -2,10 +2,10 @@
 /**
  * Abdeljalil Theme Functions
  *
- * Modernized for WordPress 6.8+ and PHP 8.4+
+ * Requirements are declared once, in the style.css theme header.
  *
  * @package Abdeljalil
- * @version 2.1
+ * @version 2.2
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -48,8 +48,6 @@ function abdeljalil_theme_setup() {
 		'comment-list',
 		'gallery',
 		'caption',
-		'style',
-		'script',
 	) );
 
 	// Add theme support for title tag
@@ -343,7 +341,7 @@ add_action( 'widgets_init', 'abdeljalil_widgets_init' );
  **************************************************************/
 function abdeljalil_scripts() {
 	// Enqueue main stylesheet
-	wp_enqueue_style( 'abdeljalil-style', get_stylesheet_uri(), array(), '2.1' );
+	wp_enqueue_style( 'abdeljalil-style', get_stylesheet_uri(), array(), '2.2' );
 
 	// Enqueue comment reply script
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
@@ -821,6 +819,9 @@ add_action( 'wp_head', 'almothafar_add_opengraph_tags' );
 // Core has emitted the robots meta tag through wp_robots() -- hooked to
 // wp_head at priority 1 -- since WordPress 5.7. Add to the directives it
 // collects rather than printing a second, competing tag.
+//
+// This filter and wp_robots_no_robots() are the newest core APIs the theme
+// calls, so they are what set the Requires at least header in style.css.
 //
 // wp_robots_no_robots() is core's own helper for this case: it sets noindex
 // and pairs it with follow or nofollow according to blog_public. Setting

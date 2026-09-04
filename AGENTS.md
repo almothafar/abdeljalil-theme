@@ -52,11 +52,7 @@ are all core's job. Duplicating them is worse than omitting them.
 
 There is no test suite and no CI, so verification is manual. Say in the PR what you actually checked.
 
-- **PHP lint, before anything else.** No PHP is installed on the machine this is usually written
-  on, which is not a reason to skip the check. Download a portable build — the `nts-Win32-x64` zip
-  from <https://windows.php.net/downloads/releases/> — extract it to a scratch directory and run
-  `php -l` over every `.php` file from there. No install, nothing on `PATH`, delete it afterwards.
-  Lint against both the oldest and the newest PHP the theme header claims to support.
+- **PHP lint, before anything else.** No PHP is installed on the machine this is usually written on, which is not a reason to skip the check. Download a portable build — the `nts-Win32-x64` zip from <https://downloads.php.net/~windows/releases/>, which is where <https://windows.php.net/downloads/releases/> now redirects, so `curl` needs `-L` — extract it to a scratch directory and run `php -l` over every `.php` file from there. No install, nothing on `PATH`, delete it afterwards. That index carries one build per branch, and the compiler tag differs between them: `vc15` for 7.4, `vs16` for 8.0 to 8.3, `vs17` for 8.4 and up. Lint against both the oldest and the newest PHP the theme header claims to support; the oldest is on that live index, not in `archives/`.
 - **Output-changing code deserves more than a lint.** Stub the WordPress functions a change calls,
   copy the real implementations of the two or three that actually matter out of core, and assert on
   what the function prints. That is how the share-URL encoding was verified — and how a regression
