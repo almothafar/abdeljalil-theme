@@ -165,6 +165,19 @@ h3 a {
 	direction: ltr;
 }
 
+/* ICONS */
+
+/*
+ * almothafar_icon() emits an inline <svg class="icon">. Sizing it in em keeps
+ * the font-size rules on .social-icon, .share-button and .search-button in
+ * charge of it, the way they were when these were Font Awesome <i> elements;
+ * each path carries fill="currentColor", so colour is inherited as well.
+ */
+.icon {
+	width: 1em;
+	height: 1em;
+}
+
 /**
  * 7.0 Accessibility
  */
@@ -690,7 +703,7 @@ blockquote {
 	margin-inline-end: 0;
 }
 
-.share-button i {
+.share-button .icon {
 	margin-inline-start: 6px;
 	font-size: 16px;
 	vertical-align: middle;
@@ -757,9 +770,9 @@ blockquote {
 		margin: 3px;
 	}
 
-	.share-button i {
+	.share-button .icon {
 		font-size: var(--font-size-large);
-		margin-left: 4px;
+		margin-inline-start: 4px;
 	}
 }
 
@@ -817,7 +830,7 @@ blockquote {
 	transform: translateY(-2px);
 }
 
-.social-icon i {
+.social-icon .icon {
 	font-size: 18px;
 }
 
@@ -916,7 +929,7 @@ blockquote {
 	flex-shrink: 0;
 }
 
-.search-button i {
+.search-button .icon {
 	color: var(--color-text-white);
 	font-size: var(--font-size-large);
 }
@@ -984,7 +997,7 @@ blockquote {
 		height: 36px;
 	}
 
-	.social-icon i {
+	.social-icon .icon {
 		font-size: 20px;
 	}
 }
