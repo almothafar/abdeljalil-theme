@@ -92,6 +92,14 @@ The theme has been rebuilt from the ground up to meet modern WordPress and web s
 ## 🛠️ Changelog
 
 ### Unreleased
+**Add theme.json and editor styles, and fix the WordPress 7.0 editor regression**
+
+- The post editor was composing in a serif, left-to-right browser default with no relation to the published page. WordPress 7.0 types the stylesheet it generates for a classic theme as the theme's own, so the editor skips its default styles on the assumption that the theme supplies them -- and this one supplied none. It now ships `editor-style.css`, so the canvas uses Noto Kufi Arabic, right to left, at the same size as the front end.
+- Added `theme.json`. The colours from `:root` are now offered as editor presets, the design tools are switched on through `appearanceTools`, and blocks know the article column is 828px wide rather than guessing. The front end is unchanged apart from one thing noted below.
+- Blocks inserted in the editor previously had no idea how wide the column they land in is. `layout.contentSize` is 828px, which is what 69% of the 1200px container actually measures, so a wide-aligned block now spans the container rather than overflowing it.
+- New theme supports: `custom-logo` (the Open Graph tags already looked for a logo the theme gave no way to set), `align-wide`, `customize-selective-refresh-widgets`, and `post-formats`.
+- Adding `theme.json` makes WordPress drop `classic-themes.css`, which was the only thing giving Button blocks their pill shape. That styling is restored through `styles.elements.button`, so buttons in existing posts look the same as before.
+
 **Correct the version headers and drop the dead html5 arguments**
 
 - `Requires at least` moves from 5.0 to 5.7, re-derived from what the theme actually calls. The newest core APIs in it are the `wp_robots` filter and `wp_robots_no_robots()`, both 5.7.0. Below that the theme did not fatal -- the filter simply never fired, so author, date and search archives quietly stopped being de-indexed.

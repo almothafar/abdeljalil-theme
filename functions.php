@@ -63,6 +63,38 @@ function abdeljalil_theme_setup() {
 	// Add theme support for responsive embeds
 	add_theme_support( 'responsive-embeds' );
 
+	// Style the editor canvas like the published page. Without this and
+	// theme.json, WordPress 7.0 and later hand the editor a generated
+	// stylesheet typed as the theme's own, so core's default editor styles
+	// are skipped and posts are composed in a serif LTR browser default.
+	add_theme_support( 'editor-styles' );
+	add_editor_style( 'editor-style.css' );
+
+	// Wide and full alignments for blocks that offer them.
+	add_theme_support( 'align-wide' );
+
+	// Widgets refresh in place in the Customizer preview.
+	add_theme_support( 'customize-selective-refresh-widgets' );
+
+	// The Open Graph output already reads get_theme_mod( 'custom_logo' ).
+	// Without this support there was no way to set one. Note that no template
+	// calls the_custom_logo(), so a logo set here feeds og:image only.
+	add_theme_support( 'custom-logo', array(
+		'width'       => 400,
+		'height'      => 100,
+		'flex-width'  => true,
+		'flex-height' => true,
+	) );
+
+	// No template branches on the format yet, so this adds the editor panel
+	// and the post_format term, not a different rendering.
+	add_theme_support( 'post-formats', array(
+		'aside',
+		'image',
+		'quote',
+		'link',
+	) );
+
 	// Add theme support for custom background
 	add_theme_support( 'custom-background', array(
 		'default-color' => 'fbfbfb',
