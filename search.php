@@ -14,7 +14,7 @@
 		</header>
 
 		<?php while ( have_posts() ) : the_post(); ?>
-			<article class="post" id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+			<article id="post-<?php the_ID(); ?>" <?php post_class( 'post' ); ?>>
 				<?php get_template_part( 'template-parts/post-meta' ); ?>
 				<div class="entry">
 					<div class="post-title">

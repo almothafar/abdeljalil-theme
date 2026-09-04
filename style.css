@@ -2,7 +2,7 @@
 Theme Name: Abdeljalil Theme
 Theme URI: https://github.com/almothafar/abdeljalil-theme
 Description: A modernized Arabic RTL WordPress theme with responsive design, HTML5 semantics, and enhanced security. Originally created by Abdeljalil, now maintained and modernized by Al-Mothafar Al-Hasan. Fully compatible with WordPress 6.8+ and PHP 8.4+.
-Version: 2.0
+Version: 2.1
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 7.4
@@ -1328,10 +1328,6 @@ img.avatar {
 	padding: 0;
 }
 
-.list-content {
-	padding-block-start: var(--spacing-sm);
-}
-
 .sidebox {
 	background-color: var(--color-bg-gray-alt);
 	border: 1px solid var(--color-border);
@@ -1398,6 +1394,14 @@ img.avatar {
 	font-weight: bold;
 	border-block-end: 1px solid var(--color-border);
 	padding-block-end: 7px;
+	/* The gap below the rule that .list-content used to hold. */
+	margin-block-end: var(--spacing-sm);
+}
+
+/* The widget body is a sibling of the title now that nothing wraps it, so its
+   own top margin would collapse with the title's and swallow the gap above. */
+.widgettitle + * {
+	margin-block-start: 0;
 }
 
 

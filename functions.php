@@ -5,7 +5,7 @@
  * Modernized for WordPress 6.8+ and PHP 8.4+
  *
  * @package Abdeljalil
- * @version 2.0
+ * @version 2.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -322,10 +322,17 @@ function abdeljalil_widgets_init() {
 		'name'          => __( 'السايدبار', 'abdeljalil' ),
 		'id'            => 'sidebar-1',
 		'description'   => __( 'Add widgets here to appear in your sidebar.', 'abdeljalil' ),
+		// One element opened, one closed. after_title used to open a .list-content
+		// wrapper that after_widget closed, but WordPress omits both title arguments
+		// when a widget has no title -- the default for several core widgets -- and
+		// the unmatched </div> then closed the sidebar itself, throwing every later
+		// widget out of it. Nothing can wrap only the widget body: there is no hook
+		// that fires after the title and also fires when there is no title. The gap
+		// .list-content provided lives on .widgettitle in style.css instead.
 		'before_widget' => '<div class="%2$s sidebox" id="%1$s">',
-		'after_widget'  => '</div></div>',
+		'after_widget'  => '</div>',
 		'before_title'  => '<div class="widgettitle">',
-		'after_title'   => '</div><div class="list-content">',
+		'after_title'   => '</div>',
 	) );
 }
 add_action( 'widgets_init', 'abdeljalil_widgets_init' );
@@ -336,7 +343,7 @@ add_action( 'widgets_init', 'abdeljalil_widgets_init' );
  **************************************************************/
 function abdeljalil_scripts() {
 	// Enqueue main stylesheet
-	wp_enqueue_style( 'abdeljalil-style', get_stylesheet_uri(), array(), '2.0' );
+	wp_enqueue_style( 'abdeljalil-style', get_stylesheet_uri(), array(), '2.1' );
 
 	// Enqueue Font Awesome for social icons
 	wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css', array(), '7.3.1' );
@@ -431,6 +438,49 @@ function abdeljalil_social_sharing_buttons() {
 }
 
 /***************************************************************
+ * SEO Helpers
+ **************************************************************/
+/**
+ * Reduce post content or an excerpt to plain text fit for a meta description.
+ *
+ * strip_tags() alone leaves shortcodes and block delimiters behind, so a post
+ * opening with [gallery] or any plugin shortcode gets that literal text as its
+ * description and its schema description.
+ *
+ * @param string $text Raw post content or excerpt.
+ * @return string Plain text, no markup, no shortcodes, no block delimiters.
+ */
+function almothafar_plain_text_summary( $text ) {
+	return wp_strip_all_tags( strip_shortcodes( excerpt_remove_blocks( $text ) ) );
+}
+
+/**
+ * A URL and the real dimensions of the file it points at.
+ *
+ * wp_get_attachment_image_src() returns both from one call, so the two always
+ * describe the same file. Attachment metadata does not: it reports the original
+ * upload, which stops being the linked file the moment WordPress generates a
+ * smaller size for it.
+ *
+ * @param int    $attachment_id Attachment to look up.
+ * @param string $size          Registered image size to link.
+ * @return array|false Keys url, width and height, or false if there is no such image.
+ */
+function almothafar_get_sized_image( $attachment_id, $size ) {
+	$image = wp_get_attachment_image_src( $attachment_id, $size );
+
+	if ( ! $image ) {
+		return false;
+	}
+
+	return array(
+		'url'    => $image[0],
+		'width'  => $image[1],
+		'height' => $image[2],
+	);
+}
+
+/***************************************************************
  * Meta Description
  **************************************************************/
 function almothafar_add_meta_description() {
@@ -445,7 +495,7 @@ function almothafar_add_meta_description() {
 				$description = get_the_excerpt( $post );
 			} else {
 				// Generate from content
-				$description = wp_trim_words( strip_tags( $post->post_content ), 30, '...' );
+				$description = wp_trim_words( almothafar_plain_text_summary( $post->post_content ), 30, '...' );
 			}
 		}
 	} elseif ( is_category() ) {
@@ -477,7 +527,7 @@ function almothafar_add_meta_description() {
 
 	// Clean and output
 	if ( $description ) {
-		$description = wp_strip_all_tags( $description );
+		$description = almothafar_plain_text_summary( $description );
 		$description = str_replace( array( "\r", "\n", "\t" ), ' ', $description );
 		$description = trim( preg_replace( '/\s+/', ' ', $description ) );
 		echo '<meta name="description" content="' . esc_attr( $description ) . '" />' . "\n";
@@ -490,15 +540,18 @@ add_action( 'wp_head', 'almothafar_add_meta_description', 1 );
  **************************************************************/
 function almothafar_add_structured_data() {
 	if ( is_singular( 'post' ) ) {
+		// No setup_postdata() here: on a singular request the main query has already
+		// set the loop up before wp_head fires, so the call achieves nothing.
 		global $post;
-		setup_postdata( $post );
 
 		$author_id = $post->post_author;
 		$schema = array(
 			'@context'      => 'https://schema.org',
 			'@type'         => 'Article',
 			'headline'      => get_the_title(),
-			'description'   => has_excerpt() ? get_the_excerpt() : wp_trim_words( strip_tags( $post->post_content ), 30 ),
+			'description'   => has_excerpt()
+				? almothafar_plain_text_summary( get_the_excerpt() )
+				: wp_trim_words( almothafar_plain_text_summary( $post->post_content ), 30 ),
 			'datePublished' => get_the_date( 'c' ),
 			'dateModified'  => get_the_modified_date( 'c' ),
 			'author'        => array(
@@ -520,16 +573,17 @@ function almothafar_add_structured_data() {
 			),
 		);
 
-		// Add image if available
+		// Add image if available.
 		if ( has_post_thumbnail() ) {
-			$image_url = get_the_post_thumbnail_url( $post->ID, 'large' );
-			$image_meta = wp_get_attachment_metadata( get_post_thumbnail_id( $post->ID ) );
-			$schema['image'] = array(
-				'@type'  => 'ImageObject',
-				'url'    => $image_url,
-				'width'  => isset( $image_meta['width'] ) ? $image_meta['width'] : 1200,
-				'height' => isset( $image_meta['height'] ) ? $image_meta['height'] : 630,
-			);
+			$image = almothafar_get_sized_image( get_post_thumbnail_id( $post->ID ), 'large' );
+			if ( $image ) {
+				$schema['image'] = array(
+					'@type'  => 'ImageObject',
+					'url'    => $image['url'],
+					'width'  => $image['width'],
+					'height' => $image['height'],
+				);
+			}
 		}
 
 		// Add article section (category)
@@ -553,7 +607,6 @@ function almothafar_add_structured_data() {
 		echo wp_json_encode( $schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT ) . "\n";
 		echo '</script>' . "\n";
 
-		wp_reset_postdata();
 	} elseif ( is_front_page() || is_home() ) {
 		// Website schema for homepage
 		$schema = array(
@@ -582,37 +635,46 @@ add_action( 'wp_head', 'almothafar_add_structured_data', 3 );
  **************************************************************/
 function almothafar_add_opengraph_tags() {
 	if ( is_singular() ) {
+		// No setup_postdata() here: on a singular request the main query has
+		// already set the loop up before wp_head fires, so the call achieves
+		// nothing but clobbering $authordata, $page, $pages and $multipage.
 		global $post;
-		setup_postdata( $post );
 
 		$og_title       = get_the_title();
-		$og_description = get_the_excerpt();
+		$og_description = almothafar_plain_text_summary( get_the_excerpt() );
 		$og_url         = get_permalink();
-		$og_image       = '';
+		$og_image       = false;
 
-		// Get featured image
+		// Featured image, taken at the size that is actually linked so the
+		// dimensions describe the file the URL points at.
 		if ( has_post_thumbnail() ) {
-			$og_image = get_the_post_thumbnail_url( $post->ID, 'large' );
+			$og_image = almothafar_get_sized_image( get_post_thumbnail_id( $post->ID ), 'large' );
 		}
 
-		// If no featured image, try to get first image from content
+		// No featured image: the first image in the content. Its real size is
+		// unknown -- it may be remote, or a crop this site never generated -- so
+		// no dimensions are sent. Facebook, LinkedIn and Slack lay the card out
+		// from those numbers and letterbox or crop the image when they are wrong,
+		// which is worse than omitting them and letting the crawler measure it.
 		if ( ! $og_image ) {
-			$content = $post->post_content;
-			preg_match( '/<img[^>]+src=[\'"]([^\'"]+)[\'"][^>]*>/i', $content, $matches );
+			preg_match( '/<img[^>]+src=[\'"]([^\'"]+)[\'"][^>]*>/i', $post->post_content, $matches );
 			if ( isset( $matches[1] ) ) {
-				$og_image = $matches[1];
+				$og_image = array(
+					'url'    => $matches[1],
+					'width'  => 0,
+					'height' => 0,
+				);
 			}
 		}
 
-		// Fallback to site logo or default image
+		// Last resort: the site logo, again at a known size.
 		if ( ! $og_image && has_custom_logo() ) {
-			$custom_logo_id = get_theme_mod( 'custom_logo' );
-			$og_image       = wp_get_attachment_image_url( $custom_logo_id, 'full' );
+			$og_image = almothafar_get_sized_image( get_theme_mod( 'custom_logo' ), 'full' );
 		}
 
 		// Clean up description
-		if ( ! $og_description ) {
-			$og_description = wp_trim_words( strip_tags( $post->post_content ), 30, '...' );
+		if ( '' === $og_description ) {
+			$og_description = wp_trim_words( almothafar_plain_text_summary( $post->post_content ), 30, '...' );
 		}
 
 		echo "\n<!-- Open Graph Meta Tags by Abdeljalil Theme -->\n";
@@ -623,9 +685,12 @@ function almothafar_add_opengraph_tags() {
 		echo '<meta property="og:site_name" content="' . esc_attr( get_bloginfo( 'name' ) ) . '" />' . "\n";
 
 		if ( $og_image ) {
-			echo '<meta property="og:image" content="' . esc_url( $og_image ) . '" />' . "\n";
-			echo '<meta property="og:image:width" content="1200" />' . "\n";
-			echo '<meta property="og:image:height" content="630" />' . "\n";
+			echo '<meta property="og:image" content="' . esc_url( $og_image['url'] ) . '" />' . "\n";
+
+			if ( $og_image['width'] && $og_image['height'] ) {
+				echo '<meta property="og:image:width" content="' . esc_attr( $og_image['width'] ) . '" />' . "\n";
+				echo '<meta property="og:image:height" content="' . esc_attr( $og_image['height'] ) . '" />' . "\n";
+			}
 		}
 
 		// Twitter Card tags
@@ -634,12 +699,10 @@ function almothafar_add_opengraph_tags() {
 		echo '<meta name="twitter:description" content="' . esc_attr( $og_description ) . '" />' . "\n";
 
 		if ( $og_image ) {
-			echo '<meta name="twitter:image" content="' . esc_url( $og_image ) . '" />' . "\n";
+			echo '<meta name="twitter:image" content="' . esc_url( $og_image['url'] ) . '" />' . "\n";
 		}
 
 		echo "<!-- / Open Graph Meta Tags -->\n\n";
-
-		wp_reset_postdata();
 	}
 }
 add_action( 'wp_head', 'almothafar_add_opengraph_tags' );
@@ -691,11 +754,35 @@ if ( ! isset( $content_width ) ) {
  * Custom Comment Template
  **************************************************************/
 function abdeljalil_comment( $comment, $args, $depth ) {
-	static $comment_counter = 0;
-	$comment_counter++;
+	// The number badge counts top-level comments only, continuing across comment
+	// pages. A single counter over every rendered comment numbered the first reply
+	// to comment 1 as comment 2, and restarted from 1 on page 2. Replies carry no
+	// number: they are nested under the comment they answer.
+	//
+	// The page and its size come from $args because wp_list_comments() has already
+	// resolved them -- including the page "Comments page displayed by default"
+	// opens on -- before handing them to the walker, and zeroes both when comment
+	// paging is off, which makes the offset 0 there.
+	//
+	// Assumes the default comment order, oldest first. Switch Discussion settings
+	// to show newer comments at the top of each page and a page's numbers run
+	// backwards -- the price of not issuing a second query to count the post's
+	// top-level comments.
+	static $top_level_counter = 0;
+	$number = 0;
 
-	$GLOBALS['comment'] = $comment;
-	$comment_class = ( 1 == $comment->user_id ) ? 'author-comment' : 'comment';
+	if ( 1 === $depth ) {
+		$page     = isset( $args['page'] ) ? (int) $args['page'] : 0;
+		$per_page = isset( $args['per_page'] ) ? (int) $args['per_page'] : 0;
+
+		$top_level_counter++;
+		$number = $top_level_counter + ( ( $page - 1 ) * $per_page );
+	}
+
+	// The badge marks the author of *this post*, not whoever happens to be user 1.
+	$post_author_id = (int) get_post_field( 'post_author', $comment->comment_post_ID );
+	$is_post_author = 0 !== (int) $comment->user_id && (int) $comment->user_id === $post_author_id;
+	$comment_class  = $is_post_author ? 'author-comment' : 'comment';
 	?>
 	<li <?php comment_class( $comment_class ); ?> id="comment-<?php comment_ID(); ?>">
 		<div class="comment-head">
@@ -714,7 +801,9 @@ function abdeljalil_comment( $comment, $args, $depth ) {
 					?>
 				</div>
 			</div>
-			<div class="comment-num"><?php echo esc_html( $comment_counter ); ?></div>
+			<?php if ( $number ) : ?>
+				<div class="comment-num"><?php echo esc_html( $number ); ?></div>
+			<?php endif; ?>
 		</div>
 		<div class="comment-entry">
 			<?php if ( '0' == $comment->comment_approved ) : ?>
@@ -739,16 +828,35 @@ function abdeljalil_comment( $comment, $args, $depth ) {
 }
 
 /***************************************************************
- * Fix Akismet Privacy Notice - Replace English "processed" with Arabic
+ * Translate the Akismet Comment-Form Privacy Notice
  **************************************************************/
-function almothafar_fix_akismet_text( $translated, $original, $domain ) {
-	// Fix Akismet's mixed Arabic/English text
-	if ( 'akismet' === $domain || 'default' === $domain ) {
-		// Replace "processed" with Arabic equivalent
-		$translated = str_replace( 'processed', 'تتم معالجتها', $translated );
+// Akismet ships no Arabic translation of the privacy notice under the comment
+// form, so it renders in English on an otherwise Arabic page. This supplies one.
+//
+// The filter runs on every translated string on the site, so it bails on the
+// domain first -- one string comparison for the thousands of core and plugin
+// strings that are not Akismet's. Matching on $original, the untranslated
+// source, rather than substring-replacing $translated, is what keeps it from
+// rewriting unrelated strings that happen to share a word.
+function almothafar_translate_akismet_privacy_notice( $translated, $original, $domain ) {
+	if ( 'akismet' !== $domain ) {
+		return $translated;
 	}
-	return $translated;
+
+	// Matched on the phrase rather than the whole source string: the wording has
+	// been stable across Akismet releases, the link's rel attribute has not.
+	if ( false === strpos( $original, 'Learn how your comment data is processed' ) ) {
+		return $translated;
+	}
+
+	// Akismet sprintf()s its privacy-policy URL into this string, so the
+	// replacement has to carry the one %s, in the href, and nowhere else.
+	return __(
+		/* translators: %s: URL of the Akismet privacy policy. */
+		'يستخدم هذا الموقع أكيسمت للحد من التعليقات المزعجة. <a href="%s" target="_blank" rel="nofollow noopener">تعرف على كيفية معالجة بيانات تعليقك.</a>',
+		'abdeljalil'
+	);
 }
-add_filter( 'gettext', 'almothafar_fix_akismet_text', 20, 3 );
+add_filter( 'gettext', 'almothafar_translate_akismet_privacy_notice', 20, 3 );
 
 // No closing tag: trailing whitespace after it would be sent as output.
