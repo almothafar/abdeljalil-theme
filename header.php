@@ -24,37 +24,37 @@
 			if ( ! empty( $github ) ) :
 			?>
 				<a href="https://github.com/<?php echo esc_attr( $github ); ?>" target="_blank" rel="noopener noreferrer" class="social-icon" title="GitHub">
-					<?php echo almothafar_icon( 'github' ); ?>
+					<?php almothafar_icon( 'github' ); ?>
 				</a>
 			<?php endif; ?>
 
 			<?php if ( ! empty( $linkedin ) ) : ?>
 				<a href="https://linkedin.com/in/<?php echo esc_attr( $linkedin ); ?>" target="_blank" rel="noopener noreferrer" class="social-icon" title="LinkedIn">
-					<?php echo almothafar_icon( 'linkedin-in' ); ?>
+					<?php almothafar_icon( 'linkedin-in' ); ?>
 				</a>
 			<?php endif; ?>
 
 			<?php if ( ! empty( $twitter ) ) : ?>
 				<a href="https://x.com/<?php echo esc_attr( $twitter ); ?>" target="_blank" rel="noopener noreferrer" class="social-icon" title="X">
-					<?php echo almothafar_icon( 'x-twitter' ); ?>
+					<?php almothafar_icon( 'x-twitter' ); ?>
 				</a>
 			<?php endif; ?>
 
 			<?php if ( ! empty( $facebook ) ) : ?>
 				<a href="https://fb.me/<?php echo esc_attr( $facebook ); ?>" target="_blank" rel="noopener noreferrer" class="social-icon" title="Facebook">
-					<?php echo almothafar_icon( 'facebook-f' ); ?>
+					<?php almothafar_icon( 'facebook-f' ); ?>
 				</a>
 			<?php endif; ?>
 
 			<?php if ( ! empty( $youtube ) ) : ?>
 				<a href="https://youtube.com/@<?php echo esc_attr( $youtube ); ?>" target="_blank" rel="noopener noreferrer" class="social-icon" title="YouTube">
-					<?php echo almothafar_icon( 'youtube' ); ?>
+					<?php almothafar_icon( 'youtube' ); ?>
 				</a>
 			<?php endif; ?>
 
 			<?php if ( ! empty( $steam ) ) : ?>
 				<a href="https://steamcommunity.com/id/<?php echo esc_attr( $steam ); ?>" target="_blank" rel="noopener noreferrer" class="social-icon" title="Steam">
-					<?php echo almothafar_icon( 'steam' ); ?>
+					<?php almothafar_icon( 'steam' ); ?>
 				</a>
 			<?php endif; ?>
 		</div>

@@ -394,17 +394,22 @@ add_action( 'wp_head', 'almothafar_preload_header_image', 2 );
  * button around each one supplies the name.
  *
  * The return value is a literal assembled from the table below; no caller
- * input reaches it, so it is echoed as-is.
+ * input reaches it, and there is no escaping function that fits -- esc_html()
+ * would print the tags and wp_kses_post() would strip them -- so it is printed
+ * as-is, by almothafar_icon() below.
  *
  * @param string $name Icon name, e.g. 'github'.
  * @return string Inline <svg> markup, or an empty string if $name is unknown.
  */
-function almothafar_icon( $name ) {
+function almothafar_get_icon( $name ) {
 	// The viewBox and the single path of each file, copied verbatim from
 	// Font Awesome Free 7.3.1: svgs/brands/*.svg, and svgs/solid for
 	// magnifying-glass. To replace an icon, copy those two values out of the
 	// new file; nothing else in the SVG differs between them.
-	$icons = array(
+	//
+	// static, because this runs up to twelve times a page and the table never
+	// varies.
+	static $icons = array(
 		'github'           => array(
 			'view_box' => '0 0 512 512',
 			'path'     => 'M216.5 362.5c-66-8-112.5-55.5-112.5-117 0-25 9-52 24-70-6.5-16.5-5.5-51.5 2-66 20-2.5 47 8 63 22.5 19-6 39-9 63.5-9s44.5 3 62.5 8.5c15.5-14 43-24.5 63-22 7 13.5 8 48.5 1.5 65.5 16 19 24.5 44.5 24.5 70.5 0 61.5-46.5 108-113.5 116.5 17 11 28.5 35 28.5 62.5l0 52C323 491.5 335.5 500 350.5 494 441 459.5 512 369 512 257 512 115.5 397 0 255.5 0S0 115.5 0 257c0 111 70.5 203 165.5 237.5 13.5 5 26.5-4 26.5-17.5l0-40c-7 3-16 5-24 5-33 0-52.5-18-66.5-51.5-5.5-13.5-11.5-21.5-23-23-6-.5-8-3-8-6 0-6 10-10.5 20-10.5 14.5 0 27 9 40 27.5 10 14.5 20.5 21 33 21s20.5-4.5 32-16c8.5-8.5 15-16 21-21z',
@@ -454,11 +459,27 @@ function almothafar_icon( $name ) {
 	$attribution = '<!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc. -->';
 
 	return sprintf(
-		'<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="%1$s" aria-hidden="true" focusable="false">%2$s<path fill="currentColor" d="%3$s"/></svg>',
+		'<svg class="almothafar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="%1$s" aria-hidden="true" focusable="false">%2$s<path fill="currentColor" d="%3$s"/></svg>',
 		$icons[ $name ]['view_box'],
 		$attribution,
 		$icons[ $name ]['path']
 	);
+}
+
+/**
+ * Print one of the theme's nine icons as inline SVG.
+ *
+ * The templates call this rather than echoing almothafar_get_icon() so that no
+ * call site carries a bare echo of unescaped markup. There is no escaping
+ * function that fits here -- wp_kses_post() strips <svg> outright -- so the
+ * safety argument lives in one place, on almothafar_get_icon(), instead of
+ * needing to be re-made at twelve call sites.
+ *
+ * @param string $name Icon name, e.g. 'github'.
+ * @return void
+ */
+function almothafar_icon( $name ) {
+	echo almothafar_get_icon( $name ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- literal markup from a fixed table; see almothafar_get_icon().
 }
 
 /***************************************************************
@@ -501,23 +522,23 @@ function abdeljalil_social_sharing_buttons() {
 	?>
 	<div class="social-share-buttons">
 		<a href="<?php echo esc_url( $facebook_url ); ?>" target="_blank" rel="noopener noreferrer" class="share-button facebook" title="<?php esc_attr_e( 'شارك على فيسبوك', 'abdeljalil' ); ?>">
-			<?php echo almothafar_icon( 'facebook-f' ); ?>
+			<?php almothafar_icon( 'facebook-f' ); ?>
 			<span>Facebook</span>
 		</a>
 		<a href="<?php echo esc_url( $twitter_url ); ?>" target="_blank" rel="noopener noreferrer" class="share-button twitter" title="<?php esc_attr_e( 'شارك على X (تويتر)', 'abdeljalil' ); ?>">
-			<?php echo almothafar_icon( 'x-twitter' ); ?>
+			<?php almothafar_icon( 'x-twitter' ); ?>
 			<span>X</span>
 		</a>
 		<a href="<?php echo esc_url( $linkedin_url ); ?>" target="_blank" rel="noopener noreferrer" class="share-button linkedin" title="<?php esc_attr_e( 'شارك على لينكد إن', 'abdeljalil' ); ?>">
-			<?php echo almothafar_icon( 'linkedin-in' ); ?>
+			<?php almothafar_icon( 'linkedin-in' ); ?>
 			<span>LinkedIn</span>
 		</a>
 		<a href="<?php echo esc_url( $telegram_url ); ?>" target="_blank" rel="noopener noreferrer" class="share-button telegram" title="<?php esc_attr_e( 'شارك على تيليجرام', 'abdeljalil' ); ?>">
-			<?php echo almothafar_icon( 'telegram' ); ?>
+			<?php almothafar_icon( 'telegram' ); ?>
 			<span>Telegram</span>
 		</a>
 		<a href="<?php echo esc_url( $whatsapp_url ); ?>" target="_blank" rel="noopener noreferrer" class="share-button whatsapp" title="<?php esc_attr_e( 'شارك على واتساب', 'abdeljalil' ); ?>">
-			<?php echo almothafar_icon( 'whatsapp' ); ?>
+			<?php almothafar_icon( 'whatsapp' ); ?>
 			<span>WhatsApp</span>
 		</a>
 	</div>
