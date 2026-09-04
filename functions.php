@@ -5,7 +5,7 @@
  * Modernized for WordPress 6.8+ and PHP 8.4+
  *
  * @package Abdeljalil
- * @version 2.0
+ * @version 2.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -454,6 +454,32 @@ function almothafar_plain_text_summary( $text ) {
 	return wp_strip_all_tags( strip_shortcodes( excerpt_remove_blocks( $text ) ) );
 }
 
+/**
+ * A URL and the real dimensions of the file it points at.
+ *
+ * wp_get_attachment_image_src() returns both from one call, so the two always
+ * describe the same file. Attachment metadata does not: it reports the original
+ * upload, which stops being the linked file the moment WordPress generates a
+ * smaller size for it.
+ *
+ * @param int    $attachment_id Attachment to look up.
+ * @param string $size          Registered image size to link.
+ * @return array|false Keys url, width and height, or false if there is no such image.
+ */
+function almothafar_get_sized_image( $attachment_id, $size ) {
+	$image = wp_get_attachment_image_src( $attachment_id, $size );
+
+	if ( ! $image ) {
+		return false;
+	}
+
+	return array(
+		'url'    => $image[0],
+		'width'  => $image[1],
+		'height' => $image[2],
+	);
+}
+
 /***************************************************************
  * Meta Description
  **************************************************************/
@@ -547,18 +573,15 @@ function almothafar_add_structured_data() {
 			),
 		);
 
-		// Add image if available. wp_get_attachment_image_src() returns the URL and
-		// the dimensions of one and the same size, so the two cannot disagree; the
-		// metadata this used to read describes the original upload, not the 'large'
-		// file the URL points at.
+		// Add image if available.
 		if ( has_post_thumbnail() ) {
-			$image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'large' );
+			$image = almothafar_get_sized_image( get_post_thumbnail_id( $post->ID ), 'large' );
 			if ( $image ) {
 				$schema['image'] = array(
 					'@type'  => 'ImageObject',
-					'url'    => $image[0],
-					'width'  => $image[1],
-					'height' => $image[2],
+					'url'    => $image['url'],
+					'width'  => $image['width'],
+					'height' => $image['height'],
 				);
 			}
 		}
@@ -620,19 +643,12 @@ function almothafar_add_opengraph_tags() {
 		$og_title       = get_the_title();
 		$og_description = almothafar_plain_text_summary( get_the_excerpt() );
 		$og_url         = get_permalink();
-		$og_image       = '';
-		$og_width       = 0;
-		$og_height      = 0;
+		$og_image       = false;
 
 		// Featured image, taken at the size that is actually linked so the
 		// dimensions describe the file the URL points at.
 		if ( has_post_thumbnail() ) {
-			$image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'large' );
-			if ( $image ) {
-				$og_image  = $image[0];
-				$og_width  = $image[1];
-				$og_height = $image[2];
-			}
+			$og_image = almothafar_get_sized_image( get_post_thumbnail_id( $post->ID ), 'large' );
 		}
 
 		// No featured image: the first image in the content. Its real size is
@@ -643,18 +659,17 @@ function almothafar_add_opengraph_tags() {
 		if ( ! $og_image ) {
 			preg_match( '/<img[^>]+src=[\'"]([^\'"]+)[\'"][^>]*>/i', $post->post_content, $matches );
 			if ( isset( $matches[1] ) ) {
-				$og_image = $matches[1];
+				$og_image = array(
+					'url'    => $matches[1],
+					'width'  => 0,
+					'height' => 0,
+				);
 			}
 		}
 
 		// Last resort: the site logo, again at a known size.
 		if ( ! $og_image && has_custom_logo() ) {
-			$image = wp_get_attachment_image_src( get_theme_mod( 'custom_logo' ), 'full' );
-			if ( $image ) {
-				$og_image  = $image[0];
-				$og_width  = $image[1];
-				$og_height = $image[2];
-			}
+			$og_image = almothafar_get_sized_image( get_theme_mod( 'custom_logo' ), 'full' );
 		}
 
 		// Clean up description
@@ -670,11 +685,11 @@ function almothafar_add_opengraph_tags() {
 		echo '<meta property="og:site_name" content="' . esc_attr( get_bloginfo( 'name' ) ) . '" />' . "\n";
 
 		if ( $og_image ) {
-			echo '<meta property="og:image" content="' . esc_url( $og_image ) . '" />' . "\n";
+			echo '<meta property="og:image" content="' . esc_url( $og_image['url'] ) . '" />' . "\n";
 
-			if ( $og_width && $og_height ) {
-				echo '<meta property="og:image:width" content="' . esc_attr( $og_width ) . '" />' . "\n";
-				echo '<meta property="og:image:height" content="' . esc_attr( $og_height ) . '" />' . "\n";
+			if ( $og_image['width'] && $og_image['height'] ) {
+				echo '<meta property="og:image:width" content="' . esc_attr( $og_image['width'] ) . '" />' . "\n";
+				echo '<meta property="og:image:height" content="' . esc_attr( $og_image['height'] ) . '" />' . "\n";
 			}
 		}
 
@@ -684,7 +699,7 @@ function almothafar_add_opengraph_tags() {
 		echo '<meta name="twitter:description" content="' . esc_attr( $og_description ) . '" />' . "\n";
 
 		if ( $og_image ) {
-			echo '<meta name="twitter:image" content="' . esc_url( $og_image ) . '" />' . "\n";
+			echo '<meta name="twitter:image" content="' . esc_url( $og_image['url'] ) . '" />' . "\n";
 		}
 
 		echo "<!-- / Open Graph Meta Tags -->\n\n";
@@ -774,7 +789,7 @@ function abdeljalil_comment( $comment, $args, $depth ) {
 	// backwards -- the price of not issuing a second query to count the post's
 	// top-level comments.
 	static $top_level_counter = 0;
-	$number = '';
+	$number = 0;
 
 	if ( 1 === $depth ) {
 		$top_level_counter++;
@@ -803,7 +818,7 @@ function abdeljalil_comment( $comment, $args, $depth ) {
 					?>
 				</div>
 			</div>
-			<?php if ( '' !== $number ) : ?>
+			<?php if ( $number ) : ?>
 				<div class="comment-num"><?php echo esc_html( $number ); ?></div>
 			<?php endif; ?>
 		</div>
@@ -840,7 +855,7 @@ function abdeljalil_comment( $comment, $args, $depth ) {
 // strings that are not Akismet's. Matching on $original, the untranslated
 // source, rather than substring-replacing $translated, is what keeps it from
 // rewriting unrelated strings that happen to share a word.
-function almothafar_fix_akismet_text( $translated, $original, $domain ) {
+function almothafar_translate_akismet_privacy_notice( $translated, $original, $domain ) {
 	if ( 'akismet' !== $domain ) {
 		return $translated;
 	}
@@ -859,6 +874,6 @@ function almothafar_fix_akismet_text( $translated, $original, $domain ) {
 		'abdeljalil'
 	);
 }
-add_filter( 'gettext', 'almothafar_fix_akismet_text', 20, 3 );
+add_filter( 'gettext', 'almothafar_translate_akismet_privacy_notice', 20, 3 );
 
 // No closing tag: trailing whitespace after it would be sent as output.
