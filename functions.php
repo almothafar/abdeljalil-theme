@@ -81,11 +81,16 @@ function abdeljalil_theme_setup() {
 	add_theme_support( 'customize-selective-refresh-widgets' );
 
 	// The Open Graph output already reads get_theme_mod( 'custom_logo' ).
-	// Without this support there was no way to set one. Note that no template
-	// calls the_custom_logo(), so a logo set here feeds og:image only.
+	// Without this support there was no way to set one. No template calls
+	// the_custom_logo(), so the only thing a logo does here is stand in as
+	// og:image for posts with no featured image -- which is why these
+	// dimensions are square and large rather than a header banner's shape.
+	// Facebook and X reject a sharing image below 200x200; 512 is the
+	// smallest size that stays sharp after their re-encoding.
+	// almothafar_describe_custom_logo_control() says so in the Customizer.
 	add_theme_support( 'custom-logo', array(
-		'width'       => 400,
-		'height'      => 100,
+		'width'       => 512,
+		'height'      => 512,
 		'flex-width'  => true,
 		'flex-height' => true,
 	) );
@@ -315,6 +320,30 @@ function almothafar_header_colors_customize_register( $wp_customize ) {
 	) );
 }
 add_action( 'customize_register', 'almothafar_header_colors_customize_register' );
+
+/**
+ * Says what the Logo control is actually for.
+ *
+ * Core's Site Identity section offers a logo as soon as a theme declares
+ * custom-logo support, and every other theme puts that logo in the header.
+ * This one does not render it anywhere, so without a word of explanation the
+ * control is a trap: you set a logo, nothing appears, and the size to upload
+ * is anybody's guess. It feeds og:image for posts with no featured image.
+ *
+ * Priority 20 because core registers the control on this same hook.
+ *
+ * @param WP_Customize_Manager $wp_customize Customizer instance.
+ */
+function almothafar_describe_custom_logo_control( $wp_customize ) {
+	$control = $wp_customize->get_control( 'custom_logo' );
+
+	if ( ! $control ) {
+		return;
+	}
+
+	$control->description = __( 'Used as the sharing image on Facebook, X and LinkedIn for posts that have no featured image. It is not shown anywhere on the site itself, so it does not need to be a header banner: a square image of at least 512 by 512 pixels works best.', 'abdeljalil' );
+}
+add_action( 'customize_register', 'almothafar_describe_custom_logo_control', 20 );
 
 /***************************************************************
  * Apply Header Text Colors from Customizer
