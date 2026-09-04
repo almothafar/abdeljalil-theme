@@ -431,6 +431,23 @@ function abdeljalil_social_sharing_buttons() {
 }
 
 /***************************************************************
+ * SEO Helpers
+ **************************************************************/
+/**
+ * Reduce post content or an excerpt to plain text fit for a meta description.
+ *
+ * strip_tags() alone leaves shortcodes and block delimiters behind, so a post
+ * opening with [gallery] or any plugin shortcode gets that literal text as its
+ * description and its schema description.
+ *
+ * @param string $text Raw post content or excerpt.
+ * @return string Plain text, no markup, no shortcodes, no block delimiters.
+ */
+function almothafar_plain_text_summary( $text ) {
+	return wp_strip_all_tags( strip_shortcodes( excerpt_remove_blocks( $text ) ) );
+}
+
+/***************************************************************
  * Meta Description
  **************************************************************/
 function almothafar_add_meta_description() {
@@ -445,7 +462,7 @@ function almothafar_add_meta_description() {
 				$description = get_the_excerpt( $post );
 			} else {
 				// Generate from content
-				$description = wp_trim_words( strip_tags( $post->post_content ), 30, '...' );
+				$description = wp_trim_words( almothafar_plain_text_summary( $post->post_content ), 30, '...' );
 			}
 		}
 	} elseif ( is_category() ) {
@@ -477,7 +494,7 @@ function almothafar_add_meta_description() {
 
 	// Clean and output
 	if ( $description ) {
-		$description = wp_strip_all_tags( $description );
+		$description = almothafar_plain_text_summary( $description );
 		$description = str_replace( array( "\r", "\n", "\t" ), ' ', $description );
 		$description = trim( preg_replace( '/\s+/', ' ', $description ) );
 		echo '<meta name="description" content="' . esc_attr( $description ) . '" />' . "\n";
@@ -490,15 +507,18 @@ add_action( 'wp_head', 'almothafar_add_meta_description', 1 );
  **************************************************************/
 function almothafar_add_structured_data() {
 	if ( is_singular( 'post' ) ) {
+		// No setup_postdata() here: on a singular request the main query has already
+		// set the loop up before wp_head fires, so the call achieves nothing.
 		global $post;
-		setup_postdata( $post );
 
 		$author_id = $post->post_author;
 		$schema = array(
 			'@context'      => 'https://schema.org',
 			'@type'         => 'Article',
 			'headline'      => get_the_title(),
-			'description'   => has_excerpt() ? get_the_excerpt() : wp_trim_words( strip_tags( $post->post_content ), 30 ),
+			'description'   => has_excerpt()
+				? almothafar_plain_text_summary( get_the_excerpt() )
+				: wp_trim_words( almothafar_plain_text_summary( $post->post_content ), 30 ),
 			'datePublished' => get_the_date( 'c' ),
 			'dateModified'  => get_the_modified_date( 'c' ),
 			'author'        => array(
@@ -520,16 +540,20 @@ function almothafar_add_structured_data() {
 			),
 		);
 
-		// Add image if available
+		// Add image if available. wp_get_attachment_image_src() returns the URL and
+		// the dimensions of one and the same size, so the two cannot disagree; the
+		// metadata this used to read describes the original upload, not the 'large'
+		// file the URL points at.
 		if ( has_post_thumbnail() ) {
-			$image_url = get_the_post_thumbnail_url( $post->ID, 'large' );
-			$image_meta = wp_get_attachment_metadata( get_post_thumbnail_id( $post->ID ) );
-			$schema['image'] = array(
-				'@type'  => 'ImageObject',
-				'url'    => $image_url,
-				'width'  => isset( $image_meta['width'] ) ? $image_meta['width'] : 1200,
-				'height' => isset( $image_meta['height'] ) ? $image_meta['height'] : 630,
-			);
+			$image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'large' );
+			if ( $image ) {
+				$schema['image'] = array(
+					'@type'  => 'ImageObject',
+					'url'    => $image[0],
+					'width'  => $image[1],
+					'height' => $image[2],
+				);
+			}
 		}
 
 		// Add article section (category)
@@ -553,7 +577,6 @@ function almothafar_add_structured_data() {
 		echo wp_json_encode( $schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT ) . "\n";
 		echo '</script>' . "\n";
 
-		wp_reset_postdata();
 	} elseif ( is_front_page() || is_home() ) {
 		// Website schema for homepage
 		$schema = array(
@@ -582,37 +605,54 @@ add_action( 'wp_head', 'almothafar_add_structured_data', 3 );
  **************************************************************/
 function almothafar_add_opengraph_tags() {
 	if ( is_singular() ) {
+		// No setup_postdata() here: on a singular request the main query has
+		// already set the loop up before wp_head fires, so the call achieves
+		// nothing but clobbering $authordata, $page, $pages and $multipage.
 		global $post;
-		setup_postdata( $post );
 
 		$og_title       = get_the_title();
-		$og_description = get_the_excerpt();
+		$og_description = almothafar_plain_text_summary( get_the_excerpt() );
 		$og_url         = get_permalink();
 		$og_image       = '';
+		$og_width       = 0;
+		$og_height      = 0;
 
-		// Get featured image
+		// Featured image, taken at the size that is actually linked so the
+		// dimensions describe the file the URL points at.
 		if ( has_post_thumbnail() ) {
-			$og_image = get_the_post_thumbnail_url( $post->ID, 'large' );
+			$image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'large' );
+			if ( $image ) {
+				$og_image  = $image[0];
+				$og_width  = $image[1];
+				$og_height = $image[2];
+			}
 		}
 
-		// If no featured image, try to get first image from content
+		// No featured image: the first image in the content. Its real size is
+		// unknown -- it may be remote, or a crop this site never generated -- so
+		// no dimensions are sent. Facebook, LinkedIn and Slack lay the card out
+		// from those numbers and letterbox or crop the image when they are wrong,
+		// which is worse than omitting them and letting the crawler measure it.
 		if ( ! $og_image ) {
-			$content = $post->post_content;
-			preg_match( '/<img[^>]+src=[\'"]([^\'"]+)[\'"][^>]*>/i', $content, $matches );
+			preg_match( '/<img[^>]+src=[\'"]([^\'"]+)[\'"][^>]*>/i', $post->post_content, $matches );
 			if ( isset( $matches[1] ) ) {
 				$og_image = $matches[1];
 			}
 		}
 
-		// Fallback to site logo or default image
+		// Last resort: the site logo, again at a known size.
 		if ( ! $og_image && has_custom_logo() ) {
-			$custom_logo_id = get_theme_mod( 'custom_logo' );
-			$og_image       = wp_get_attachment_image_url( $custom_logo_id, 'full' );
+			$image = wp_get_attachment_image_src( get_theme_mod( 'custom_logo' ), 'full' );
+			if ( $image ) {
+				$og_image  = $image[0];
+				$og_width  = $image[1];
+				$og_height = $image[2];
+			}
 		}
 
 		// Clean up description
-		if ( ! $og_description ) {
-			$og_description = wp_trim_words( strip_tags( $post->post_content ), 30, '...' );
+		if ( '' === $og_description ) {
+			$og_description = wp_trim_words( almothafar_plain_text_summary( $post->post_content ), 30, '...' );
 		}
 
 		echo "\n<!-- Open Graph Meta Tags by Abdeljalil Theme -->\n";
@@ -624,8 +664,11 @@ function almothafar_add_opengraph_tags() {
 
 		if ( $og_image ) {
 			echo '<meta property="og:image" content="' . esc_url( $og_image ) . '" />' . "\n";
-			echo '<meta property="og:image:width" content="1200" />' . "\n";
-			echo '<meta property="og:image:height" content="630" />' . "\n";
+
+			if ( $og_width && $og_height ) {
+				echo '<meta property="og:image:width" content="' . esc_attr( $og_width ) . '" />' . "\n";
+				echo '<meta property="og:image:height" content="' . esc_attr( $og_height ) . '" />' . "\n";
+			}
 		}
 
 		// Twitter Card tags
@@ -638,8 +681,6 @@ function almothafar_add_opengraph_tags() {
 		}
 
 		echo "<!-- / Open Graph Meta Tags -->\n\n";
-
-		wp_reset_postdata();
 	}
 }
 add_action( 'wp_head', 'almothafar_add_opengraph_tags' );
