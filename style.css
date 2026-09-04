@@ -19,6 +19,10 @@ GitHub: https://github.com/almothafar
 LinkedIn: https://linkedin.com/in/almothafar
 Twitter/X: https://twitter.com/almothafar
 
+Bundled resources, loaded from the theme directory and from nowhere else:
+Icons: Font Awesome Free 7.3.1 (https://fontawesome.com), CC BY 4.0, inlined as SVG in functions.php
+Fonts: Noto Kufi Arabic, SIL Open Font License 1.1, in fonts/
+
 This theme, like WordPress, is licensed under the GPL.
 Use it freely, modify it, and share it!
 */
@@ -163,6 +167,29 @@ h3 a {
 
 .mejs-controls {
 	direction: ltr;
+}
+
+/* ICONS */
+
+/*
+ * almothafar_icon() prints an inline <svg class="almothafar-icon">. Height in
+ * em keeps the font-size rules on .social-icon, .share-button and
+ * .search-button in charge of it, the way they were when these were Font
+ * Awesome <i> elements; each path carries fill="currentColor", so colour is
+ * inherited as well.
+ *
+ * width: auto is what makes it match a webfont glyph rather than merely being
+ * about the right size. Five of the nine viewBoxes are not square -- YouTube
+ * is 576x512, Facebook 320x512 -- and a glyph is one em tall with its own
+ * natural advance width. Forcing width: 1em would letterbox those inside a
+ * square box: YouTube would draw 11% short and the narrow icons would carry
+ * invisible padding. The viewBox gives the intrinsic aspect ratio, so auto
+ * resolves to the same width the font used.
+ */
+.almothafar-icon {
+	height: 1em;
+	width: auto;
+	flex-shrink: 0;
 }
 
 /**
@@ -690,7 +717,7 @@ blockquote {
 	margin-inline-end: 0;
 }
 
-.share-button i {
+.share-button .almothafar-icon {
 	margin-inline-start: 6px;
 	font-size: 16px;
 	vertical-align: middle;
@@ -757,9 +784,9 @@ blockquote {
 		margin: 3px;
 	}
 
-	.share-button i {
+	.share-button .almothafar-icon {
 		font-size: var(--font-size-large);
-		margin-left: 4px;
+		margin-inline-end: 4px;
 	}
 }
 
@@ -817,7 +844,7 @@ blockquote {
 	transform: translateY(-2px);
 }
 
-.social-icon i {
+.social-icon .almothafar-icon {
 	font-size: 18px;
 }
 
@@ -916,7 +943,7 @@ blockquote {
 	flex-shrink: 0;
 }
 
-.search-button i {
+.search-button .almothafar-icon {
 	color: var(--color-text-white);
 	font-size: var(--font-size-large);
 }
@@ -984,7 +1011,7 @@ blockquote {
 		height: 36px;
 	}
 
-	.social-icon i {
+	.social-icon .almothafar-icon {
 		font-size: 20px;
 	}
 }

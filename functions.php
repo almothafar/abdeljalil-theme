@@ -345,9 +345,6 @@ function abdeljalil_scripts() {
 	// Enqueue main stylesheet
 	wp_enqueue_style( 'abdeljalil-style', get_stylesheet_uri(), array(), '2.1' );
 
-	// Enqueue Font Awesome for social icons
-	wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css', array(), '7.3.1' );
-
 	// Enqueue comment reply script
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
@@ -373,6 +370,117 @@ function almothafar_preload_header_image() {
 	);
 }
 add_action( 'wp_head', 'almothafar_preload_header_image', 2 );
+
+/***************************************************************
+ * Inline SVG Icons
+ **************************************************************/
+/**
+ * Return one of the theme's nine icons as inline SVG.
+ *
+ * The theme draws nine pictures. Font Awesome charged 318 KB for them -- a
+ * render-blocking cross-origin stylesheet plus two complete icon fonts of
+ * several thousand glyphs each -- and disclosed every visitor's IP address to
+ * a CDN to do it. These are the same nine glyphs, taken from Font Awesome
+ * Free 7.3.1, and they cost about 7 KB of markup with no request at all.
+ *
+ * Two of the class names the theme used had already been renamed upstream:
+ * fa-search is the version 4 name for magnifying-glass, and fa-telegram-plane
+ * the version 5 name for telegram. Both resolved only through Font Awesome's
+ * v4 compatibility shim and would have vanished silently the day it is
+ * dropped. The current names are what this table uses.
+ *
+ * The icons are decorative -- aria-hidden keeps them out of the accessibility
+ * tree and focusable="false" keeps them out of the tab order, so the link or
+ * button around each one supplies the name.
+ *
+ * The return value is a literal assembled from the table below; no caller
+ * input reaches it, and there is no escaping function that fits -- esc_html()
+ * would print the tags and wp_kses_post() would strip them -- so it is printed
+ * as-is, by almothafar_icon() below.
+ *
+ * @param string $name Icon name, e.g. 'github'.
+ * @return string Inline <svg> markup, or an empty string if $name is unknown.
+ */
+function almothafar_get_icon( $name ) {
+	// The viewBox and the single path of each file, copied verbatim from
+	// Font Awesome Free 7.3.1: svgs/brands/*.svg, and svgs/solid for
+	// magnifying-glass. To replace an icon, copy those two values out of the
+	// new file; nothing else in the SVG differs between them.
+	//
+	// static, because this runs up to twelve times a page and the table never
+	// varies.
+	static $icons = array(
+		'github'           => array(
+			'view_box' => '0 0 512 512',
+			'path'     => 'M216.5 362.5c-66-8-112.5-55.5-112.5-117 0-25 9-52 24-70-6.5-16.5-5.5-51.5 2-66 20-2.5 47 8 63 22.5 19-6 39-9 63.5-9s44.5 3 62.5 8.5c15.5-14 43-24.5 63-22 7 13.5 8 48.5 1.5 65.5 16 19 24.5 44.5 24.5 70.5 0 61.5-46.5 108-113.5 116.5 17 11 28.5 35 28.5 62.5l0 52C323 491.5 335.5 500 350.5 494 441 459.5 512 369 512 257 512 115.5 397 0 255.5 0S0 115.5 0 257c0 111 70.5 203 165.5 237.5 13.5 5 26.5-4 26.5-17.5l0-40c-7 3-16 5-24 5-33 0-52.5-18-66.5-51.5-5.5-13.5-11.5-21.5-23-23-6-.5-8-3-8-6 0-6 10-10.5 20-10.5 14.5 0 27 9 40 27.5 10 14.5 20.5 21 33 21s20.5-4.5 32-16c8.5-8.5 15-16 21-21z',
+		),
+		'linkedin-in'      => array(
+			'view_box' => '0 0 448 512',
+			'path'     => 'M100.3 448l-92.9 0 0-299.1 92.9 0 0 299.1zM53.8 108.1C24.1 108.1 0 83.5 0 53.8 0 39.5 5.7 25.9 15.8 15.8s23.8-15.8 38-15.8 27.9 5.7 38 15.8 15.8 23.8 15.8 38c0 29.7-24.1 54.3-53.8 54.3zM447.9 448l-92.7 0 0-145.6c0-34.7-.7-79.2-48.3-79.2-48.3 0-55.7 37.7-55.7 76.7l0 148.1-92.8 0 0-299.1 89.1 0 0 40.8 1.3 0c12.4-23.5 42.7-48.3 87.9-48.3 94 0 111.3 61.9 111.3 142.3l0 164.3-.1 0z',
+		),
+		'x-twitter'        => array(
+			'view_box' => '0 0 448 512',
+			'path'     => 'M357.2 48L427.8 48 273.6 224.2 455 464 313 464 201.7 318.6 74.5 464 3.8 464 168.7 275.5-5.2 48 140.4 48 240.9 180.9 357.2 48zM332.4 421.8l39.1 0-252.4-333.8-42 0 255.3 333.8z',
+		),
+		'facebook-f'       => array(
+			'view_box' => '0 0 320 512',
+			'path'     => 'M80 299.3l0 212.7 116 0 0-212.7 86.5 0 18-97.8-104.5 0 0-34.6c0-51.7 20.3-71.5 72.7-71.5 16.3 0 29.4 .4 37 1.2l0-88.7C291.4 4 256.4 0 236.2 0 129.3 0 80 50.5 80 159.4l0 42.1-66 0 0 97.8 66 0z',
+		),
+		'youtube'          => array(
+			'view_box' => '0 0 576 512',
+			'path'     => 'M549.7 124.1C543.5 100.4 524.9 81.8 501.4 75.5 458.9 64 288.1 64 288.1 64S117.3 64 74.7 75.5C51.2 81.8 32.7 100.4 26.4 124.1 15 167 15 256.4 15 256.4s0 89.4 11.4 132.3c6.3 23.6 24.8 41.5 48.3 47.8 42.6 11.5 213.4 11.5 213.4 11.5s170.8 0 213.4-11.5c23.5-6.3 42-24.2 48.3-47.8 11.4-42.9 11.4-132.3 11.4-132.3s0-89.4-11.4-132.3zM232.2 337.6l0-162.4 142.7 81.2-142.7 81.2z',
+		),
+		'steam'            => array(
+			'view_box' => '0 0 512 512',
+			'path'     => 'M504 256c0 137-111.2 248-248.4 248-113.8 0-209.6-76.3-239-180.4l95.2 39.3c6.4 32.1 34.9 56.4 68.9 56.4 39.2 0 71.9-32.4 70.2-73.5l84.5-60.2c52.1 1.3 95.8-40.9 95.8-93.5 0-51.6-42-93.5-93.7-93.5s-93.7 42-93.7 93.5l0 1.2-59.2 85.7c-15.5-.9-30.7 3.4-43.5 12.1L8 236.1C18.2 108.4 125.1 8 255.6 8 392.8 8 504 119 504 256zM163.7 384.3l-30.5-12.6c5.6 11.6 15.3 20.8 27.2 25.8 26.9 11.2 57.8-1.6 69-28.4 5.4-13 5.5-27.3 .1-40.3S214 305.6 201 300.2c-12.9-5.4-26.7-5.2-38.9-.6l31.5 13c19.8 8.2 29.2 30.9 20.9 50.7-8.3 19.9-31 29.2-50.8 21zM337.5 129.8a62.3 62.3 0 1 1 0 124.6 62.3 62.3 0 1 1 0-124.6zm.1 109a46.8 46.8 0 1 0 0-93.6 46.8 46.8 0 1 0 0 93.6z',
+		),
+		'telegram'         => array(
+			'view_box' => '0 0 512 512',
+			'path'     => 'M256 8a248 248 0 1 0 0 496 248 248 0 1 0 0-496zM371 176.7c-3.7 39.2-19.9 134.4-28.1 178.3-3.5 18.6-10.3 24.8-16.9 25.4-14.4 1.3-25.3-9.5-39.3-18.7-21.8-14.3-34.2-23.2-55.3-37.2-24.5-16.1-8.6-25 5.3-39.5 3.7-3.8 67.1-61.5 68.3-66.7 .2-.7 .3-3.1-1.2-4.4s-3.6-.8-5.1-.5c-2.2 .5-37.1 23.5-104.6 69.1-9.9 6.8-18.9 10.1-26.9 9.9-8.9-.2-25.9-5-38.6-9.1-15.5-5-27.9-7.7-26.8-16.3 .6-4.5 6.7-9 18.4-13.7 72.3-31.5 120.5-52.3 144.6-62.3 68.9-28.6 83.2-33.6 92.5-33.8 2.1 0 6.6 .5 9.6 2.9 2 1.7 3.2 4.1 3.5 6.7 .5 3.2 .6 6.5 .4 9.8z',
+		),
+		'whatsapp'         => array(
+			'view_box' => '0 0 448 512',
+			'path'     => 'M380.9 97.1c-41.9-42-97.7-65.1-157-65.1-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480 117.7 449.1c32.4 17.7 68.9 27 106.1 27l.1 0c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3 18.6-68.1-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1s56.2 81.2 56.1 130.5c0 101.8-84.9 184.6-186.6 184.6zM325.1 300.5c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8s-14.3 18-17.6 21.8c-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7s-12.5-30.1-17.1-41.2c-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2s-9.7 1.4-14.8 6.9c-5.1 5.6-19.4 19-19.4 46.3s19.9 53.7 22.6 57.4c2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4s4.6-24.1 3.2-26.4c-1.3-2.5-5-3.9-10.5-6.6z',
+		),
+		'magnifying-glass' => array(
+			'view_box' => '0 0 512 512',
+			'path'     => 'M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376C296.3 401.1 253.9 416 208 416 93.1 416 0 322.9 0 208S93.1 0 208 0 416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z',
+		),
+	);
+
+	if ( ! isset( $icons[ $name ] ) ) {
+		return '';
+	}
+
+	// Font Awesome Free's own attribution comment, kept in the output rather
+	// than only in this file: CC BY 4.0 asks for attribution wherever the work
+	// is distributed, and the rendered page is where these icons are
+	// distributed.
+	$attribution = '<!--! Font Awesome Free 7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2026 Fonticons, Inc. -->';
+
+	return sprintf(
+		'<svg class="almothafar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="%1$s" aria-hidden="true" focusable="false">%2$s<path fill="currentColor" d="%3$s"/></svg>',
+		$icons[ $name ]['view_box'],
+		$attribution,
+		$icons[ $name ]['path']
+	);
+}
+
+/**
+ * Print one of the theme's nine icons as inline SVG.
+ *
+ * The templates call this rather than echoing almothafar_get_icon() so that no
+ * call site carries a bare echo of unescaped markup. There is no escaping
+ * function that fits here -- wp_kses_post() strips <svg> outright -- so the
+ * safety argument lives in one place, on almothafar_get_icon(), instead of
+ * needing to be re-made at twelve call sites.
+ *
+ * @param string $name Icon name, e.g. 'github'.
+ * @return void
+ */
+function almothafar_icon( $name ) {
+	echo almothafar_get_icon( $name ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- literal markup from a fixed table; see almothafar_get_icon().
+}
 
 /***************************************************************
  * Social Sharing Buttons
@@ -414,23 +522,23 @@ function abdeljalil_social_sharing_buttons() {
 	?>
 	<div class="social-share-buttons">
 		<a href="<?php echo esc_url( $facebook_url ); ?>" target="_blank" rel="noopener noreferrer" class="share-button facebook" title="<?php esc_attr_e( 'شارك على فيسبوك', 'abdeljalil' ); ?>">
-			<i class="fab fa-facebook-f"></i>
+			<?php almothafar_icon( 'facebook-f' ); ?>
 			<span>Facebook</span>
 		</a>
 		<a href="<?php echo esc_url( $twitter_url ); ?>" target="_blank" rel="noopener noreferrer" class="share-button twitter" title="<?php esc_attr_e( 'شارك على X (تويتر)', 'abdeljalil' ); ?>">
-			<i class="fab fa-x-twitter"></i>
+			<?php almothafar_icon( 'x-twitter' ); ?>
 			<span>X</span>
 		</a>
 		<a href="<?php echo esc_url( $linkedin_url ); ?>" target="_blank" rel="noopener noreferrer" class="share-button linkedin" title="<?php esc_attr_e( 'شارك على لينكد إن', 'abdeljalil' ); ?>">
-			<i class="fab fa-linkedin-in"></i>
+			<?php almothafar_icon( 'linkedin-in' ); ?>
 			<span>LinkedIn</span>
 		</a>
 		<a href="<?php echo esc_url( $telegram_url ); ?>" target="_blank" rel="noopener noreferrer" class="share-button telegram" title="<?php esc_attr_e( 'شارك على تيليجرام', 'abdeljalil' ); ?>">
-			<i class="fab fa-telegram-plane"></i>
+			<?php almothafar_icon( 'telegram' ); ?>
 			<span>Telegram</span>
 		</a>
 		<a href="<?php echo esc_url( $whatsapp_url ); ?>" target="_blank" rel="noopener noreferrer" class="share-button whatsapp" title="<?php esc_attr_e( 'شارك على واتساب', 'abdeljalil' ); ?>">
-			<i class="fab fa-whatsapp"></i>
+			<?php almothafar_icon( 'whatsapp' ); ?>
 			<span>WhatsApp</span>
 		</a>
 	</div>

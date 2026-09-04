@@ -92,6 +92,12 @@ The theme has been rebuilt from the ground up to meet modern WordPress and web s
 ## 🛠️ Changelog
 
 ### Unreleased
+**Drop the Font Awesome CDN and inline the nine icons as SVG**
+
+- Removed the Font Awesome stylesheet that was loaded from cdnjs on every page. It cost 325,244 bytes across three render-blocking cross-origin requests -- a 90 KB stylesheet and two complete icon fonts -- and disclosed every visitor's IP address to Cloudflare, to draw nine pictures. The theme now makes no third-party requests at all.
+- The nine icons ship inline, from `almothafar_icon()`, at about 9 KB on a post page. They are Font Awesome Free 7.3.1 paths under CC BY 4.0; each keeps its attribution comment in the rendered output. See Credits below.
+- Two of the class names the theme used were legacy aliases that only resolved through Font Awesome's version 4 compatibility shim: `fa-search` (now `magnifying-glass`) and `fa-telegram-plane` (now `telegram`). Both would have broken silently when upstream drops the shim.
+
 **Stop duplicating what WordPress core already does**
 
 - Removed the duplicate `<link rel="canonical">`. Core's `rel_canonical()` is the only one now, and archive pages no longer get a theme-invented canonical.
@@ -152,6 +158,13 @@ The theme has been rebuilt from the ground up to meet modern WordPress and web s
 - Original release by Abdeljalil
 
 ## 👨‍💻 Credits
+
+### Bundled Resources
+
+The theme ships these and loads nothing from a third party at runtime.
+
+- **Icons** -- nine [Font Awesome Free](https://fontawesome.com) 7.3.1 icons, inlined as SVG in `functions.php`. Icons are licensed [CC BY 4.0](https://fontawesome.com/license/free); each one carries its attribution comment in the rendered page.
+- **Fonts** -- [Noto Kufi Arabic](https://fonts.google.com/noto/specimen/Noto+Kufi+Arabic), licensed [SIL Open Font License 1.1](https://openfontlicense.org), in `fonts/`.
 
 ### Original Theme
 - **Author**: Abdeljalil
