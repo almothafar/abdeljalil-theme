@@ -855,7 +855,7 @@ function almothafar_fix_akismet_text( $translated, $original, $domain ) {
 	// replacement has to carry the one %s, in the href, and nowhere else.
 	return __(
 		/* translators: %s: URL of the Akismet privacy policy. */
-		'يستخدم هذا الموقع أكيسمت للحد من التعليقات المزعجة. <a href="%s" target="_blank" rel="nofollow noopener">تعرف على كيفية معالجة بيانات تعليقك</a>.',
+		'يستخدم هذا الموقع أكيسمت للحد من التعليقات المزعجة. <a href="%s" target="_blank" rel="nofollow noopener">تعرف على كيفية معالجة بيانات تعليقك.</a>',
 		'abdeljalil'
 	);
 }
