@@ -322,10 +322,17 @@ function abdeljalil_widgets_init() {
 		'name'          => __( 'السايدبار', 'abdeljalil' ),
 		'id'            => 'sidebar-1',
 		'description'   => __( 'Add widgets here to appear in your sidebar.', 'abdeljalil' ),
+		// One element opened, one closed. after_title used to open a .list-content
+		// wrapper that after_widget closed, but WordPress omits both title arguments
+		// when a widget has no title -- the default for several core widgets -- and
+		// the unmatched </div> then closed the sidebar itself, throwing every later
+		// widget out of it. Nothing can wrap only the widget body: there is no hook
+		// that fires after the title and also fires when there is no title. The gap
+		// .list-content provided lives on .widgettitle in style.css instead.
 		'before_widget' => '<div class="%2$s sidebox" id="%1$s">',
-		'after_widget'  => '</div></div>',
+		'after_widget'  => '</div>',
 		'before_title'  => '<div class="widgettitle">',
-		'after_title'   => '</div><div class="list-content">',
+		'after_title'   => '</div>',
 	) );
 }
 add_action( 'widgets_init', 'abdeljalil_widgets_init' );
@@ -336,7 +343,7 @@ add_action( 'widgets_init', 'abdeljalil_widgets_init' );
  **************************************************************/
 function abdeljalil_scripts() {
 	// Enqueue main stylesheet
-	wp_enqueue_style( 'abdeljalil-style', get_stylesheet_uri(), array(), '2.0' );
+	wp_enqueue_style( 'abdeljalil-style', get_stylesheet_uri(), array(), '2.1' );
 
 	// Enqueue Font Awesome for social icons
 	wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css', array(), '7.3.1' );
