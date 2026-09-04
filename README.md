@@ -3,7 +3,7 @@
 A modernized Arabic RTL WordPress theme with responsive design, HTML5 semantics, and enhanced security.
 
 ![Version](https://img.shields.io/badge/version-2.0-blue.svg)
-![WordPress](https://img.shields.io/badge/WordPress-6.8%2B-21759b.svg)
+![WordPress](https://img.shields.io/badge/WordPress-5.7%2B-21759b.svg)
 ![PHP](https://img.shields.io/badge/PHP-7.4%2B-777bb4.svg)
 ![License](https://img.shields.io/badge/license-GPL--2.0%2B-green.svg)
 ![RTL](https://img.shields.io/badge/RTL-yes-success.svg)
@@ -21,8 +21,8 @@ The theme has been rebuilt from the ground up to meet modern WordPress and web s
 - ✅ **Fully Responsive** - Mobile-first design with comprehensive breakpoints
 - ✅ **HTML5 Semantic Markup** - Modern, accessible code
 - ✅ **Security Hardened** - Removed malware, added input sanitization
-- ✅ **WordPress 6.8+ Compatible** - Uses latest WordPress APIs
-- ✅ **PHP 8.4+ Compatible** - No deprecated functions
+- ✅ **WordPress 5.7+ Compatible** - Uses current WordPress APIs
+- ✅ **PHP 7.4+ Compatible** - No deprecated functions
 - ✅ **Modern Social Sharing** - Facebook, X, LinkedIn, Telegram, WhatsApp
 - ✅ **Customizable Social Media Links** - Add your social profiles via Theme Customizer
 - ✅ **Social Icons in Header** - Display GitHub, LinkedIn, X, Facebook, Steam icons
@@ -92,6 +92,13 @@ The theme has been rebuilt from the ground up to meet modern WordPress and web s
 ## 🛠️ Changelog
 
 ### Unreleased
+**Correct the version headers and drop the dead html5 arguments**
+
+- `Requires at least` moves from 5.0 to 5.7, re-derived from what the theme actually calls. The newest core APIs in it are the `wp_robots` filter and `wp_robots_no_robots()`, both 5.7.0. Below that the theme did not fatal -- the filter simply never fired, so author, date and search archives quietly stopped being de-indexed.
+- The requirements are now declared in one place, the `style.css` theme header. The `functions.php` docblock and the theme description used to restate them, and had drifted to claiming "WordPress 6.8+ and PHP 8.4+", which contradicted the headers three lines below.
+- Dropped the `html5` feature's `style` and `script` arguments, which WordPress 7.0 deprecated and ignores. On 5.7 to 6.9 this puts a redundant `type='text/css'` back on the stylesheet link, and on 5.7 to 6.3 a `type='text/javascript'` on the comment-reply script; both are valid HTML5 and nothing behaves differently.
+- Theme version 2.1 to 2.2. The previous release changed `style.css` without moving the version, so caches still holding 2.1 were rendering the new inline SVG icons unsized.
+
 **Drop the Font Awesome CDN and inline the nine icons as SVG**
 
 - Removed the Font Awesome stylesheet that was loaded from cdnjs on every page. It cost 325,244 bytes across three render-blocking cross-origin requests -- a 90 KB stylesheet and two complete icon fonts -- and disclosed every visitor's IP address to Cloudflare, to draw nine pictures. The theme now makes no third-party requests at all.

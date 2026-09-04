@@ -2,7 +2,7 @@
 /**
  * Abdeljalil Theme Functions
  *
- * Requires WordPress 5.7 or later and PHP 7.4 or later
+ * Requirements are declared once, in the style.css theme header.
  *
  * @package Abdeljalil
  * @version 2.2
@@ -821,7 +821,7 @@ add_action( 'wp_head', 'almothafar_add_opengraph_tags' );
 // collects rather than printing a second, competing tag.
 //
 // This filter and wp_robots_no_robots() are the newest core APIs the theme
-// calls, so they are what set Requires at least: 5.7 in style.css.
+// calls, so they are what set the Requires at least header in style.css.
 //
 // wp_robots_no_robots() is core's own helper for this case: it sets noindex
 // and pairs it with follow or nofollow according to blog_public. Setting
