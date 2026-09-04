@@ -11,7 +11,15 @@ rather than on `:root` -- a `:root` rule would be rewritten to
 Only what the editor canvas can show belongs here. Layout, the sidebar and
 anything outside the post content is style.css's job.
 
-This file is RTL-first, like style.css, and ships no -rtl variant.
+Everything below mirrors style.css and will drift if that file changes without
+this one: the two @font-face blocks mirror the ones at the top of style.css,
+and the body, h1, .entry a, blockquote, pre and .wp-block-code rules mirror
+their namesakes there. The canvas is a separate iframe that cannot see
+style.css, so copying is the only way to show an author what they are writing.
+
+This file is RTL-first, like style.css, and ships no -rtl variant. WordPress
+also asks for editor-style-rtl.css on an RTL site and skips it when, as here,
+it does not exist.
 */
 
 /* The editor canvas runs in its own iframe, so it needs its own copy of the
@@ -72,7 +80,10 @@ blockquote {
 	border-inline-start: 4px solid var(--color-primary);
 	border-inline-end: 1px solid var(--color-border);
 	border-block: 1px solid var(--color-border);
-	padding: var(--spacing-xs) 12px var(--spacing-xs) var(--spacing-sm);
+	/* style.css:596 writes the same padding as a physical shorthand. In RTL
+	   its 12px right is the inline start and its 10px left the inline end. */
+	padding-block: var(--spacing-xs);
+	padding-inline: 12px var(--spacing-sm);
 }
 
 /* Code reads left to right whatever the surrounding text does. */

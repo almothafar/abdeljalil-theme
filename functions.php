@@ -33,6 +33,10 @@ if ( ! defined( 'ALMOTHAFAR_THUMBNAIL_HEIGHT' ) ) {
 	define( 'ALMOTHAFAR_THUMBNAIL_HEIGHT', 400 );
 }
 
+// The outer container, and what $content_width reports to oEmbed -- not the
+// width of the article column. That column is 69% of this, less the 20px
+// padding-inline on .entry, which is the 788px theme.json declares as
+// layout.contentSize. The two numbers describe different boxes.
 if ( ! defined( 'ALMOTHAFAR_CONTENT_WIDTH' ) ) {
 	define( 'ALMOTHAFAR_CONTENT_WIDTH', 1200 );
 }
@@ -86,8 +90,12 @@ function abdeljalil_theme_setup() {
 		'flex-height' => true,
 	) );
 
-	// No template branches on the format yet, so this adds the editor panel
-	// and the post_format term, not a different rendering.
+	// Requested by issue #10. No template branches on the format yet, so this
+	// adds the editor panel and the post_format term without changing how
+	// anything renders; #16, which extracts template-parts/content.php, is
+	// where that branching would go. Formats set now survive a theme switch
+	// as terms nothing reads, so drop this rather than leave it unused if
+	// #16 does not land.
 	add_theme_support( 'post-formats', array(
 		'aside',
 		'image',

@@ -4,55 +4,55 @@
 	"settings": {
 		"appearanceTools": true,
 		"layout": {
-			"contentSize": "828px",
-			"wideSize": "1200px"
+			"contentSize": "788px",
+			"wideSize": "788px"
 		},
 		"color": {
 			"palette": [
 				{
 					"slug": "primary",
 					"color": "#39a4cc",
-					"name": "أزرق أساسي"
+					"name": "Primary Blue"
 				},
 				{
 					"slug": "primary-dark",
 					"color": "#2d8ab3",
-					"name": "أزرق داكن"
+					"name": "Primary Blue Dark"
 				},
 				{
 					"slug": "primary-darker",
 					"color": "#236a8a",
-					"name": "أزرق أغمق"
+					"name": "Primary Blue Darker"
 				},
 				{
 					"slug": "accent",
 					"color": "#d32f2f",
-					"name": "أحمر مميز"
+					"name": "Accent Red"
 				},
 				{
 					"slug": "text",
 					"color": "#686868",
-					"name": "لون النص"
+					"name": "Body Text"
 				},
 				{
 					"slug": "text-dark",
 					"color": "#555555",
-					"name": "نص داكن"
+					"name": "Body Text Dark"
 				},
 				{
 					"slug": "border",
 					"color": "#e6e6e6",
-					"name": "لون الحدود"
+					"name": "Border"
 				},
 				{
 					"slug": "background-light",
 					"color": "#fbfbfb",
-					"name": "خلفية فاتحة"
+					"name": "Background Light"
 				},
 				{
 					"slug": "background-dark",
 					"color": "#2d2d2d",
-					"name": "خلفية داكنة"
+					"name": "Background Dark"
 				}
 			]
 		},
