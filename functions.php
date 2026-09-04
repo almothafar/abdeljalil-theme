@@ -753,36 +753,16 @@ if ( ! isset( $content_width ) ) {
 /***************************************************************
  * Custom Comment Template
  **************************************************************/
-/**
- * How many top-level comments precede the page being rendered.
- *
- * WordPress pages comments by top-level comment, and cpage numbers those pages
- * from the oldest regardless of which one "Comments page displayed by default"
- * opens on. Every page before this one therefore holds exactly comments_per_page
- * top-level comments.
- *
- * @return int Number of top-level comments on earlier pages, 0 if not paged.
- */
-function almothafar_comment_page_offset() {
-	if ( ! get_option( 'page_comments' ) ) {
-		return 0;
-	}
-
-	$page     = (int) get_query_var( 'cpage' );
-	$per_page = (int) get_option( 'comments_per_page' );
-
-	if ( $page < 2 || $per_page < 1 ) {
-		return 0;
-	}
-
-	return ( $page - 1 ) * $per_page;
-}
-
 function abdeljalil_comment( $comment, $args, $depth ) {
 	// The number badge counts top-level comments only, continuing across comment
 	// pages. A single counter over every rendered comment numbered the first reply
 	// to comment 1 as comment 2, and restarted from 1 on page 2. Replies carry no
 	// number: they are nested under the comment they answer.
+	//
+	// The page and its size come from $args because wp_list_comments() has already
+	// resolved them -- including the page "Comments page displayed by default"
+	// opens on -- before handing them to the walker, and zeroes both when comment
+	// paging is off, which makes the offset 0 there.
 	//
 	// Assumes the default comment order, oldest first. Switch Discussion settings
 	// to show newer comments at the top of each page and a page's numbers run
@@ -792,8 +772,11 @@ function abdeljalil_comment( $comment, $args, $depth ) {
 	$number = 0;
 
 	if ( 1 === $depth ) {
+		$page     = isset( $args['page'] ) ? (int) $args['page'] : 0;
+		$per_page = isset( $args['per_page'] ) ? (int) $args['per_page'] : 0;
+
 		$top_level_counter++;
-		$number = $top_level_counter + almothafar_comment_page_offset();
+		$number = $top_level_counter + ( ( $page - 1 ) * $per_page );
 	}
 
 	// The badge marks the author of *this post*, not whoever happens to be user 1.
