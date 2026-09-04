@@ -33,6 +33,10 @@ if ( ! defined( 'ALMOTHAFAR_THUMBNAIL_HEIGHT' ) ) {
 	define( 'ALMOTHAFAR_THUMBNAIL_HEIGHT', 400 );
 }
 
+// The outer container, and what $content_width reports to oEmbed -- not the
+// width of the article column. That column is 69% of this, less the 20px
+// padding-inline on .entry, which is the 788px theme.json declares as
+// layout.contentSize. The two numbers describe different boxes.
 if ( ! defined( 'ALMOTHAFAR_CONTENT_WIDTH' ) ) {
 	define( 'ALMOTHAFAR_CONTENT_WIDTH', 1200 );
 }
@@ -62,6 +66,47 @@ function abdeljalil_theme_setup() {
 
 	// Add theme support for responsive embeds
 	add_theme_support( 'responsive-embeds' );
+
+	// Style the editor canvas like the published page. Without this and
+	// theme.json, WordPress 7.0 and later hand the editor a generated
+	// stylesheet typed as the theme's own, so core's default editor styles
+	// are skipped and posts are composed in a serif LTR browser default.
+	add_theme_support( 'editor-styles' );
+	add_editor_style( 'editor-style.css' );
+
+	// Wide and full alignments for blocks that offer them.
+	add_theme_support( 'align-wide' );
+
+	// Widgets refresh in place in the Customizer preview.
+	add_theme_support( 'customize-selective-refresh-widgets' );
+
+	// The Open Graph output already reads get_theme_mod( 'custom_logo' ).
+	// Without this support there was no way to set one. No template calls
+	// the_custom_logo(), so the only thing a logo does here is stand in as
+	// og:image for posts with no featured image -- which is why these
+	// dimensions are square and large rather than a header banner's shape.
+	// Facebook and X reject a sharing image below 200x200; 512 is the
+	// smallest size that stays sharp after their re-encoding.
+	// almothafar_describe_custom_logo_control() says so in the Customizer.
+	add_theme_support( 'custom-logo', array(
+		'width'       => 512,
+		'height'      => 512,
+		'flex-width'  => true,
+		'flex-height' => true,
+	) );
+
+	// Requested by issue #10. No template branches on the format yet, so this
+	// adds the editor panel and the post_format term without changing how
+	// anything renders; #16, which extracts template-parts/content.php, is
+	// where that branching would go. Formats set now survive a theme switch
+	// as terms nothing reads, so drop this rather than leave it unused if
+	// #16 does not land.
+	add_theme_support( 'post-formats', array(
+		'aside',
+		'image',
+		'quote',
+		'link',
+	) );
 
 	// Add theme support for custom background
 	add_theme_support( 'custom-background', array(
@@ -275,6 +320,30 @@ function almothafar_header_colors_customize_register( $wp_customize ) {
 	) );
 }
 add_action( 'customize_register', 'almothafar_header_colors_customize_register' );
+
+/**
+ * Says what the Logo control is actually for.
+ *
+ * Core's Site Identity section offers a logo as soon as a theme declares
+ * custom-logo support, and every other theme puts that logo in the header.
+ * This one does not render it anywhere, so without a word of explanation the
+ * control is a trap: you set a logo, nothing appears, and the size to upload
+ * is anybody's guess. It feeds og:image for posts with no featured image.
+ *
+ * Priority 20 because core registers the control on this same hook.
+ *
+ * @param WP_Customize_Manager $wp_customize Customizer instance.
+ */
+function almothafar_describe_custom_logo_control( $wp_customize ) {
+	$control = $wp_customize->get_control( 'custom_logo' );
+
+	if ( ! $control ) {
+		return;
+	}
+
+	$control->description = __( 'Used as the sharing image on Facebook, X and LinkedIn for posts that have no featured image. It is not shown anywhere on the site itself, so it does not need to be a header banner: a square image of at least 512 by 512 pixels works best.', 'abdeljalil' );
+}
+add_action( 'customize_register', 'almothafar_describe_custom_logo_control', 20 );
 
 /***************************************************************
  * Apply Header Text Colors from Customizer

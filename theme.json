@@ -1,0 +1,84 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/theme.json",
+	"version": 3,
+	"settings": {
+		"appearanceTools": true,
+		"layout": {
+			"contentSize": "788px",
+			"wideSize": "788px"
+		},
+		"color": {
+			"palette": [
+				{
+					"slug": "primary",
+					"color": "#39a4cc",
+					"name": "Primary Blue"
+				},
+				{
+					"slug": "primary-dark",
+					"color": "#2d8ab3",
+					"name": "Primary Blue Dark"
+				},
+				{
+					"slug": "primary-darker",
+					"color": "#236a8a",
+					"name": "Primary Blue Darker"
+				},
+				{
+					"slug": "accent",
+					"color": "#d32f2f",
+					"name": "Accent Red"
+				},
+				{
+					"slug": "text",
+					"color": "#686868",
+					"name": "Body Text"
+				},
+				{
+					"slug": "text-dark",
+					"color": "#555555",
+					"name": "Body Text Dark"
+				},
+				{
+					"slug": "border",
+					"color": "#e6e6e6",
+					"name": "Border"
+				},
+				{
+					"slug": "background-light",
+					"color": "#fbfbfb",
+					"name": "Background Light"
+				},
+				{
+					"slug": "background-dark",
+					"color": "#2d2d2d",
+					"name": "Background Dark"
+				}
+			]
+		},
+		"spacing": {
+			"units": [ "px", "em", "rem", "%", "vh", "vw" ]
+		},
+		"typography": {
+			"fontFamilies": [
+				{
+					"slug": "primary",
+					"name": "Noto Kufi Arabic",
+					"fontFamily": "'Noto Kufi Arabic', tahoma, sans-serif"
+				}
+			]
+		}
+	},
+	"styles": {
+		"elements": {
+			"button": {
+				"border": {
+					"radius": "9999px"
+				},
+				"typography": {
+					"fontSize": "1.125em"
+				}
+			}
+		}
+	}
+}

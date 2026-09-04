@@ -1,8 +1,8 @@
-# Abdeljalil Theme v2.0
+# Abdeljalil Theme v2.2
 
 A modernized Arabic RTL WordPress theme with responsive design, HTML5 semantics, and enhanced security.
 
-![Version](https://img.shields.io/badge/version-2.0-blue.svg)
+![Version](https://img.shields.io/badge/version-2.2-blue.svg)
 ![WordPress](https://img.shields.io/badge/WordPress-5.7%2B-21759b.svg)
 ![PHP](https://img.shields.io/badge/PHP-7.4%2B-777bb4.svg)
 ![License](https://img.shields.io/badge/license-GPL--2.0%2B-green.svg)
@@ -76,6 +76,14 @@ The theme has been rebuilt from the ground up to meet modern WordPress and web s
 2. Choose from 8 pre-installed headers or upload your own (1200×190px recommended)
 3. Toggle header text visibility
 
+Note: until you pick a header explicitly, the box labelled "Current header" stays empty even though the site is showing one. The theme falls back to `plane.jpg` when nothing has been chosen; the Customizer only reports a header you selected yourself. Choosing any of the eight fills it in.
+
+### Logo (sharing image)
+1. Go to **Appearance → Customize → Site Identity → Logo**
+2. Upload a square image, at least 512×512px
+
+The logo does **not** appear in the header, and no template renders it. It is used as the Open Graph image — the picture Facebook, X and LinkedIn show when someone shares a post that has no featured image. Below 200×200px those services reject it outright.
+
 ### Custom Background
 1. Go to **Appearance → Background**
 2. Choose a color or upload an image
@@ -92,6 +100,14 @@ The theme has been rebuilt from the ground up to meet modern WordPress and web s
 ## 🛠️ Changelog
 
 ### Unreleased
+**Add theme.json and editor styles, and fix the WordPress 7.0 editor regression**
+
+- The post editor was composing in a serif, left-to-right browser default with no relation to the published page. WordPress 7.0 types the stylesheet it generates for a classic theme as the theme's own, so the editor skips its default styles on the assumption that the theme supplies them -- and this one supplied none. It now ships `editor-style.css`, so the canvas uses Noto Kufi Arabic, right to left, at the same size as the front end.
+- Added `theme.json`. The colours from `:root` are now offered as editor presets, the design tools are switched on through `appearanceTools`, and blocks know the article column is 788px wide rather than guessing. The front end is unchanged apart from one thing noted below.
+- Blocks inserted in the editor previously had no idea how wide the column they land in is. `layout.contentSize` is 788px: 69% of the 1200px container, less the 20px `padding-inline` that `.entry` puts on either side. `wideSize` is the same number, because this layout is one fixed column with no full-bleed area to expand into -- a wide block fills the column instead of overflowing it and being clipped.
+- New theme supports: `custom-logo`, `align-wide`, `customize-selective-refresh-widgets` and `post-formats`. The logo is the one worth reading about: the Open Graph tags already looked for one, but nothing let you set it. It is used as the sharing image for posts with no featured image and is deliberately not rendered in the header, which the Customizer control now says in as many words.
+- Adding `theme.json` makes WordPress drop `classic-themes.css`, which was the only thing giving Button blocks their pill shape. That styling is restored through `styles.elements.button`, so buttons in existing posts look the same as before.
+
 **Correct the version headers and drop the dead html5 arguments**
 
 - `Requires at least` moves from 5.0 to 5.7, re-derived from what the theme actually calls. The newest core APIs in it are the `wp_robots` filter and `wp_robots_no_robots()`, both 5.7.0. Below that the theme did not fatal -- the filter simply never fired, so author, date and search archives quietly stopped being de-indexed.
