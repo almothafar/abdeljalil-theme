@@ -739,15 +739,34 @@ function abdeljalil_comment( $comment, $args, $depth ) {
 }
 
 /***************************************************************
- * Fix Akismet Privacy Notice - Replace English "processed" with Arabic
+ * Translate the Akismet Comment-Form Privacy Notice
  **************************************************************/
+// Akismet ships no Arabic translation of the privacy notice under the comment
+// form, so it renders in English on an otherwise Arabic page. This supplies one.
+//
+// The filter runs on every translated string on the site, so it bails on the
+// domain first -- one string comparison for the thousands of core and plugin
+// strings that are not Akismet's. Matching on $original, the untranslated
+// source, rather than substring-replacing $translated, is what keeps it from
+// rewriting unrelated strings that happen to share a word.
 function almothafar_fix_akismet_text( $translated, $original, $domain ) {
-	// Fix Akismet's mixed Arabic/English text
-	if ( 'akismet' === $domain || 'default' === $domain ) {
-		// Replace "processed" with Arabic equivalent
-		$translated = str_replace( 'processed', 'تتم معالجتها', $translated );
+	if ( 'akismet' !== $domain ) {
+		return $translated;
 	}
-	return $translated;
+
+	// Matched on the phrase rather than the whole source string: the wording has
+	// been stable across Akismet releases, the link's rel attribute has not.
+	if ( false === strpos( $original, 'Learn how your comment data is processed' ) ) {
+		return $translated;
+	}
+
+	// Akismet sprintf()s its privacy-policy URL into this string, so the
+	// replacement has to carry the one %s, in the href, and nowhere else.
+	return __(
+		/* translators: %s: URL of the Akismet privacy policy. */
+		'يستخدم هذا الموقع أكيسمت للحد من التعليقات المزعجة. <a href="%s" target="_blank" rel="nofollow noopener">تعرف على كيفية معالجة بيانات تعليقك</a>.',
+		'abdeljalil'
+	);
 }
 add_filter( 'gettext', 'almothafar_fix_akismet_text', 20, 3 );
 
