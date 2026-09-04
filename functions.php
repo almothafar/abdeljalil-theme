@@ -731,12 +731,53 @@ if ( ! isset( $content_width ) ) {
 /***************************************************************
  * Custom Comment Template
  **************************************************************/
-function abdeljalil_comment( $comment, $args, $depth ) {
-	static $comment_counter = 0;
-	$comment_counter++;
+/**
+ * How many top-level comments precede the page being rendered.
+ *
+ * WordPress pages comments by top-level comment, and cpage numbers those pages
+ * from the oldest regardless of which one "Comments page displayed by default"
+ * opens on. Every page before this one therefore holds exactly comments_per_page
+ * top-level comments.
+ *
+ * @return int Number of top-level comments on earlier pages, 0 if not paged.
+ */
+function almothafar_comment_page_offset() {
+	if ( ! get_option( 'page_comments' ) ) {
+		return 0;
+	}
 
-	$GLOBALS['comment'] = $comment;
-	$comment_class = ( 1 == $comment->user_id ) ? 'author-comment' : 'comment';
+	$page     = (int) get_query_var( 'cpage' );
+	$per_page = (int) get_option( 'comments_per_page' );
+
+	if ( $page < 2 || $per_page < 1 ) {
+		return 0;
+	}
+
+	return ( $page - 1 ) * $per_page;
+}
+
+function abdeljalil_comment( $comment, $args, $depth ) {
+	// The number badge counts top-level comments only, continuing across comment
+	// pages. A single counter over every rendered comment numbered the first reply
+	// to comment 1 as comment 2, and restarted from 1 on page 2. Replies carry no
+	// number: they are nested under the comment they answer.
+	//
+	// Assumes the default comment order, oldest first. Switch Discussion settings
+	// to show newer comments at the top of each page and a page's numbers run
+	// backwards -- the price of not issuing a second query to count the post's
+	// top-level comments.
+	static $top_level_counter = 0;
+	$number = '';
+
+	if ( 1 === $depth ) {
+		$top_level_counter++;
+		$number = $top_level_counter + almothafar_comment_page_offset();
+	}
+
+	// The badge marks the author of *this post*, not whoever happens to be user 1.
+	$post_author_id = (int) get_post_field( 'post_author', $comment->comment_post_ID );
+	$is_post_author = 0 !== (int) $comment->user_id && (int) $comment->user_id === $post_author_id;
+	$comment_class  = $is_post_author ? 'author-comment' : 'comment';
 	?>
 	<li <?php comment_class( $comment_class ); ?> id="comment-<?php comment_ID(); ?>">
 		<div class="comment-head">
@@ -755,7 +796,9 @@ function abdeljalil_comment( $comment, $args, $depth ) {
 					?>
 				</div>
 			</div>
-			<div class="comment-num"><?php echo esc_html( $comment_counter ); ?></div>
+			<?php if ( '' !== $number ) : ?>
+				<div class="comment-num"><?php echo esc_html( $number ); ?></div>
+			<?php endif; ?>
 		</div>
 		<div class="comment-entry">
 			<?php if ( '0' == $comment->comment_approved ) : ?>
