@@ -1,8 +1,8 @@
-# Abdeljalil Theme v2.3
+# Abdeljalil Theme v2.4
 
 A modernized Arabic RTL WordPress theme with responsive design, HTML5 semantics, and enhanced security.
 
-![Version](https://img.shields.io/badge/version-2.3-blue.svg)
+![Version](https://img.shields.io/badge/version-2.4-blue.svg)
 ![WordPress](https://img.shields.io/badge/WordPress-5.7%2B-21759b.svg)
 ![PHP](https://img.shields.io/badge/PHP-7.4%2B-777bb4.svg)
 ![License](https://img.shields.io/badge/license-GPL--2.0%2B-green.svg)
@@ -46,7 +46,7 @@ The theme has been rebuilt from the ground up to meet modern WordPress and web s
 ## 📱 Responsive Breakpoints
 
 - **Desktop**: > 1200px (full layout with sidebar)
-- **Tablet**: 600px - 1200px (adjusted sidebar width)
+- **Tablet**: 601px - 1200px (narrower sidebar, with a gutter on its outer edge)
 - **Mobile**: ≤ 600px (stacked single-column layout)
 
 ## 🔒 Security Improvements (v2.0)
@@ -109,6 +109,15 @@ The logo does **not** appear in the header, and no template renders it. It is us
 - Added the twelve `translators:` comments `wp i18n make-pot` was warning about, so a translator seeing `%s` or `%1$s` in the catalogue is told what it stands for. The POT now generates with no warnings. Two of the `printf()` calls in `archive.php` are split across lines for this: the comment attaches to whichever gettext call follows it, and on one line those statements held two, so the comment was landing on the `F Y` and `Y` date patterns as well, neither of which takes a placeholder.
 - The POT's `Report-Msgid-Bugs-To` points at this repository's issues. `wp i18n make-pot` defaults it to a `wordpress.org/support/theme/` URL, which assumes the theme is in the .org directory; it is not, and that page does not exist.
 - `.gitattributes` gains `*.mo binary`, so the repository-wide `* text=auto eol=lf` cannot normalise line endings inside a compiled catalogue and corrupt its string table.
+
+**Fix the tablet breakpoint, which had never applied, and correct the theme tags**
+
+- The `@media` condition at the tablet breakpoint was `(max-width: var(--container-max-width))`. Custom properties are substituted at computed-value time and a media query is evaluated well before that, so the condition was invalid and browsers dropped the whole block. It had never applied on any browser, at any width, since the custom properties were introduced. The 1200 is now written out, and the comment above it in `style.css` says why it cannot be read from `:root`.
+- Enabling the block revealed that neither rule inside it did what it looked like: one was a no-op and has been removed, and the sidebar's `width` never applied at all, which would have left the row overflowing by 1% once the query started matching. The sidebar now sets `flex-basis`, which is what the rule was reaching for. The comment on that rule carries the reasoning; it is the one place to change if the numbers ever move.
+- The visible effect between 601px and 1200px is a 1% gutter on the outer edge of the sidebar -- the left of the screen in RTL -- where the wrapper is flush to the viewport instead of centred in it. From 1201px up, and at or below 600px, nothing changes.
+- Dropped `right-to-left`, `arabic` and `responsive-layout` from the `Tags:` header. None is on the theme directory's allowed list: `responsive-layout` was removed when the list was revamped, and the other two were never official tags -- `rtl-language-support`, which the theme already lists, is the real one for RTL, and languages are not expressed as tags at all.
+- Also dropped `accessibility-ready`, which is a valid tag the theme does not currently earn. It carries a specific set of requirements, and the M4 issues exist precisely because those are not met yet; claiming it is a stronger statement than the other tags make. It should go back the moment that work lands. The six that remain are both valid and true. Nothing about the theme changes either way; tags only matter at .org review.
+- Theme version 2.3 to 2.4. `style.css` changed, so a cache still holding 2.3 would keep serving a stylesheet whose tablet breakpoint does nothing.
 
 **Ship the fonts as subsetted, preloaded WOFF2**
 

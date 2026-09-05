@@ -5,7 +5,7 @@
  * Requirements are declared once, in the style.css theme header.
  *
  * @package Abdeljalil
- * @version 2.3
+ * @version 2.4
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -427,7 +427,7 @@ add_action( 'widgets_init', 'abdeljalil_widgets_init' );
  **************************************************************/
 function abdeljalil_scripts() {
 	// Enqueue main stylesheet
-	wp_enqueue_style( 'abdeljalil-style', get_stylesheet_uri(), array(), '2.3' );
+	wp_enqueue_style( 'abdeljalil-style', get_stylesheet_uri(), array(), '2.4' );
 
 	// Enqueue comment reply script
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
