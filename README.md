@@ -109,6 +109,7 @@ The logo does **not** appear in the header, and no template renders it. It is us
 - Added the twelve `translators:` comments `wp i18n make-pot` was warning about, so a translator seeing `%s` or `%1$s` in the catalogue is told what it stands for. The POT now generates with no warnings. Two of the `printf()` calls in `archive.php` are split across lines for this: the comment attaches to whichever gettext call follows it, and on one line those statements held two, so the comment was landing on the `F Y` and `Y` date patterns as well, neither of which takes a placeholder.
 - The POT's `Report-Msgid-Bugs-To` points at this repository's issues. `wp i18n make-pot` defaults it to a `wordpress.org/support/theme/` URL, which assumes the theme is in the .org directory; it is not, and that page does not exist.
 - `.gitattributes` gains `*.mo binary`, so the repository-wide `* text=auto eol=lf` cannot normalise line endings inside a compiled catalogue and corrupt its string table.
+- `ar.po` pins `POT-Creation-Date`. Without it `wp i18n make-mo` stamps the compile time into `ar.mo`, so recompiling an unchanged catalogue produced a different binary every time and showed up as a phantom change in `git diff`. Pinned, two consecutive builds are byte-identical.
 
 **Fix the tablet breakpoint, which had never applied, and correct the theme tags**
 
