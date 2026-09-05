@@ -26,7 +26,7 @@ jobs:
         # is not blamed on the wrong end of the range.
         php: [ '7.4', '8.2', '8.4' ]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: shivammathur/setup-php@v2
         with:
@@ -42,11 +42,26 @@ jobs:
     name: EditorConfig
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      # This action only installs the binary; the check is the step after it.
-      - uses: editorconfig-checker/action-editorconfig-checker@v2
+      # Installed straight from the release rather than through
+      # editorconfig-checker/action-editorconfig-checker. That action's newest
+      # tagged major, v2, looks for a release asset named ec-linux-amd64, which
+      # no longer exists: the project renamed its binaries, so the action fails
+      # with "The binary 'ec-linux-amd64*' not found" against anything current.
+      # Its README says to use @main, which is not a pin. Dependabot cannot
+      # bump the version below, so it is pinned here and checked by hand.
+      - name: Install editorconfig-checker
+        env:
+          EC_VERSION: v4.0.1
+        run: |
+          curl -fsSL -o ec.tar.gz "https://github.com/editorconfig-checker/editorconfig-checker/releases/download/${EC_VERSION}/editorconfig-checker-linux-amd64.tar.gz"
+          tar -xzf ec.tar.gz editorconfig-checker
+          sudo install editorconfig-checker /usr/local/bin/editorconfig-checker
+          editorconfig-checker --version
 
+      # Configured by .editorconfig-checker.json; see the comment in there for
+      # why LICENSE is excluded and why indentation is left to PHPCS.
       - run: editorconfig-checker
 
   phpcs:
@@ -55,7 +70,7 @@ jobs:
     # The gate is the diff, and a push to main has nothing to diff against.
     if: github.event_name == 'pull_request'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           # PHPCS runs over the files this PR touches, so the merge base has
           # to be in the clone.
