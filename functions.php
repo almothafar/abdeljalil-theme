@@ -33,12 +33,22 @@ if ( ! defined( 'ALMOTHAFAR_THUMBNAIL_HEIGHT' ) ) {
 	define( 'ALMOTHAFAR_THUMBNAIL_HEIGHT', 400 );
 }
 
-// The outer container, and what $content_width reports to oEmbed -- not the
-// width of the article column. That column is 69% of this, less the 20px
-// padding-inline on .entry, which is the 788px theme.json declares as
-// layout.contentSize. The two numbers describe different boxes.
+// The outer page container -- the max-width .site-wrapper, the site header and
+// the footer share. This is not the number $content_width wants; see
+// ALMOTHAFAR_ARTICLE_WIDTH below. Kept defined because a child theme may
+// already reference it.
 if ( ! defined( 'ALMOTHAFAR_CONTENT_WIDTH' ) ) {
 	define( 'ALMOTHAFAR_CONTENT_WIDTH', 1200 );
+}
+
+// The article column, and what $content_width reports: 69% of the container,
+// less the 20px padding-inline on .entry, which is the 788px theme.json
+// declares as layout.contentSize. Everything core reads $content_width for --
+// the width it requests from an oEmbed provider, and the cap
+// image_constrain_size_for_editor() applies -- is about this box rather than
+// the container. Move this and theme.json's contentSize together.
+if ( ! defined( 'ALMOTHAFAR_ARTICLE_WIDTH' ) ) {
+	define( 'ALMOTHAFAR_ARTICLE_WIDTH', 788 );
 }
 
 /***************************************************************
@@ -940,7 +950,7 @@ add_filter( 'the_generator', 'abdeljalil_remove_version' );
  * Content Width
  **************************************************************/
 if ( ! isset( $content_width ) ) {
-	$content_width = ALMOTHAFAR_CONTENT_WIDTH;
+	$content_width = ALMOTHAFAR_ARTICLE_WIDTH;
 }
 
 
