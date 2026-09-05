@@ -9,3 +9,7 @@
 *.gif binary
 *.ttf binary
 *.woff2 binary
+
+# Compiled gettext catalogues. Binary, so `* text=auto eol=lf` above must not
+# touch them -- a normalised CRLF inside a .mo corrupts the string table.
+*.mo binary

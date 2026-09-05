@@ -1,0 +1,456 @@
+# Arabic translation of the Abdeljalil Theme.
+# Copyright (C) 2026 Al-Mothafar Al-Hasan
+# This file is distributed under the GNU General Public License v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Abdeljalil Theme\n"
+"Report-Msgid-Bugs-To: https://github.com/almothafar/abdeljalil-theme/issues\n"
+"Last-Translator: Al-Mothafar Al-Hasan <almothafar@users.noreply.github.com>\n"
+"Language-Team: Arabic\n"
+"Language: ar\n"
+"POT-Creation-Date: 2026-09-05T22:57:47+00:00\n"
+"PO-Revision-Date: 2026-09-06 00:00+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
+"X-Domain: abdeljalil\n"
+
+#. Theme Name of the theme
+#: style.css
+msgid "Abdeljalil Theme"
+msgstr ""
+
+#. Theme URI of the theme
+#: style.css
+msgid "https://github.com/almothafar/abdeljalil-theme"
+msgstr ""
+
+#. Description of the theme
+#: style.css
+msgid "A modernized Arabic RTL WordPress theme with responsive design, HTML5 semantics, and enhanced security. Originally created by Abdeljalil, now maintained and modernized by Al-Mothafar Al-Hasan."
+msgstr "قالب ووردبريس عربي حديث يدعم الكتابة من اليمين إلى اليسار، بتصميم متجاوب وبنية HTML5 وحماية محسّنة. أنشأه عبد الجليل في الأصل، ويطوره ويصونه الآن المظفر الحسن."
+
+#. Author of the theme
+#: style.css
+msgid "Al-Mothafar Al-Hasan"
+msgstr ""
+
+#. Author URI of the theme
+#: style.css
+msgid "https://almothafar.com"
+msgstr ""
+
+#: 404.php:16
+msgid "404 - الصفحة غير موجودة"
+msgstr ""
+
+#: 404.php:20
+msgid "عذراً، الصفحة التي تبحث عنها غير موجودة. ربما تم حذفها، أو تغير عنوانها، أو أنها غير متوفرة مؤقتاً."
+msgstr ""
+
+#: 404.php:27
+msgid "🔍 البحث في الموقع"
+msgstr ""
+
+#: 404.php:34
+msgid "📝 أحدث المقالات"
+msgstr ""
+
+#: 404.php:62
+msgid "لا توجد مقالات متاحة حالياً"
+msgstr ""
+
+#: 404.php:81
+msgid "🗂️ تصفح حسب التصنيف"
+msgstr ""
+
+#: 404.php:103
+msgid "🏠 العودة للصفحة الرئيسية"
+msgstr ""
+
+#. translators: %s: author name.
+#: archive.php:16
+#, php-format
+msgid "المؤلف: %s"
+msgstr ""
+
+#. translators: %s: the date of the day being viewed.
+#: archive.php:20
+#, php-format
+msgid "يومي: %s"
+msgstr ""
+
+#. translators: %s: the month being viewed.
+#: archive.php:24
+#, php-format
+msgid "شهري: %s"
+msgstr ""
+
+#: archive.php:25
+msgctxt "monthly archives date format"
+msgid "F Y"
+msgstr ""
+
+#. translators: %s: the year being viewed.
+#: archive.php:30
+#, php-format
+msgid "سنوي: %s"
+msgstr ""
+
+#: archive.php:31
+msgctxt "yearly archives date format"
+msgid "Y"
+msgstr ""
+
+#: archive.php:34
+msgid "الأرشيف"
+msgstr ""
+
+#: archive.php:58
+#: index.php:17
+#: page.php:14
+#: single.php:15
+msgid "الصفحات:"
+msgstr ""
+
+#. translators: %s: post title.
+#: comments.php:20
+#, php-format
+msgctxt "comments title"
+msgid "تعليق واحد على &ldquo;%s&rdquo;"
+msgstr ""
+
+#. translators: 1: comment count, 2: post title.
+#: comments.php:24
+#, php-format
+msgctxt "comments title"
+msgid "%1$s تعليق على &ldquo;%2$s&rdquo;"
+msgid_plural "%1$s تعليق على &ldquo;%2$s&rdquo;"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#: comments.php:56
+msgid "التعليقات مغلقة."
+msgstr ""
+
+#: comments.php:61
+msgid "أكتب تعليقك"
+msgstr ""
+
+#. translators: %s: comment author name.
+#: comments.php:63
+#, php-format
+msgid "الرد على %s"
+msgstr ""
+
+#: comments.php:64
+msgid "إلغاء الرد"
+msgstr ""
+
+#: comments.php:65
+msgid "إرسال التعليق"
+msgstr ""
+
+#: comments.php:66
+msgctxt "noun"
+msgid "التعليق"
+msgstr ""
+
+#: comments.php:68
+msgid "الاسم"
+msgstr ""
+
+#: comments.php:69
+msgid "البريد الإلكتروني"
+msgstr ""
+
+#: comments.php:70
+msgid "الموقع"
+msgstr ""
+
+#. translators: 1: theme name, 2: maintainer name. Both arrive already wrapped in links.
+#: footer.php:19
+#, php-format
+msgid "قالب %1$s، مُحدّث بواسطة %2$s"
+msgstr ""
+
+#: functions.php:149
+msgid "Berries"
+msgstr "التوت"
+
+#: functions.php:154
+msgid "Cherry Blossoms"
+msgstr "أزهار الكرز"
+
+#: functions.php:159
+msgid "Fern"
+msgstr "السرخس"
+
+#: functions.php:164
+msgid "Forest Floor"
+msgstr "أرض الغابة"
+
+#: functions.php:169
+msgid "Inkwell"
+msgstr "المحبرة"
+
+#: functions.php:174
+msgid "Path"
+msgstr "الممر"
+
+#: functions.php:179
+msgid "Sunset"
+msgstr "الغروب"
+
+#: functions.php:184
+msgid "Plane"
+msgstr "الطائرة"
+
+#: functions.php:190
+msgid "Primary Menu"
+msgstr "القائمة الرئيسية"
+
+#: functions.php:201
+msgid "روابط التواصل الاجتماعي"
+msgstr ""
+
+#: functions.php:202
+msgid "أدخل اسم المستخدم فقط، بدون الرابط الكامل"
+msgstr ""
+
+#: functions.php:212
+msgid "GitHub"
+msgstr ""
+
+#: functions.php:215
+msgid "اسم المستخدم فقط (مثال: almothafar) - يصبح الرابط: github.com/almothafar"
+msgstr ""
+
+#: functions.php:227
+msgid "LinkedIn"
+msgstr ""
+
+#: functions.php:230
+msgid "اسم المستخدم فقط (مثال: almothafar) - يصبح الرابط: linkedin.com/in/almothafar"
+msgstr ""
+
+#: functions.php:242
+msgid "X"
+msgstr ""
+
+#: functions.php:245
+msgid "اسم المستخدم فقط (مثال: almothafar) - يصبح الرابط: x.com/almothafar"
+msgstr ""
+
+#: functions.php:257
+msgid "Facebook"
+msgstr ""
+
+#: functions.php:260
+msgid "اسم المستخدم فقط (مثال: almothafar) - يصبح الرابط: fb.me/almothafar"
+msgstr ""
+
+#: functions.php:272
+msgid "Steam"
+msgstr ""
+
+#: functions.php:275
+msgid "اسم المستخدم فقط (مثال: almothafar) - يصبح الرابط: steamcommunity.com/id/almothafar"
+msgstr ""
+
+#: functions.php:287
+msgid "YouTube"
+msgstr ""
+
+#: functions.php:290
+msgid "اسم القناة فقط (مثال: almothafar) - يصبح الرابط: youtube.com/@almothafar"
+msgstr ""
+
+#: functions.php:304
+msgid "ألوان نصوص الترويسة"
+msgstr ""
+
+#: functions.php:314
+msgid "لون عنوان الموقع"
+msgstr ""
+
+#: functions.php:324
+msgid "لون وصف الموقع"
+msgstr ""
+
+#: functions.php:334
+msgid "تفعيل ظل النص"
+msgstr ""
+
+#: functions.php:361
+msgid "Used as the sharing image on Facebook, X and LinkedIn for posts that have no featured image. It is not shown anywhere on the site itself, so it does not need to be a header banner: a square image of at least 512 by 512 pixels works best."
+msgstr "تُستخدم كصورة المشاركة على فيسبوك و X ولينكد إن للمقالات التي ليس لها صورة بارزة. لا تظهر في أي مكان على الموقع نفسه، لذا لا يلزم أن تكون شعاراً عريضاً للترويسة: الأفضل صورة مربعة لا تقل عن 512 في 512 بكسل."
+
+#: functions.php:406
+msgid "السايدبار"
+msgstr ""
+
+#: functions.php:408
+msgid "Add widgets here to appear in your sidebar."
+msgstr "أضف المربعات هنا لتظهر في القائمة الجانبية."
+
+#: functions.php:624
+msgid "شارك على فيسبوك"
+msgstr ""
+
+#: functions.php:628
+msgid "شارك على X (تويتر)"
+msgstr ""
+
+#: functions.php:632
+msgid "شارك على لينكد إن"
+msgstr ""
+
+#: functions.php:636
+msgid "شارك على تيليجرام"
+msgstr ""
+
+#: functions.php:640
+msgid "شارك على واتساب"
+msgstr ""
+
+#. translators: %s: category name.
+#: functions.php:714
+#, php-format
+msgid "تصفح جميع المقالات في تصنيف %s"
+msgstr ""
+
+#. translators: %s: tag name.
+#: functions.php:721
+#, php-format
+msgid "تصفح جميع المقالات الموسومة بـ %s"
+msgstr ""
+
+#. translators: %s: author display name.
+#: functions.php:729
+#, php-format
+msgid "تصفح جميع مقالات الكاتب %s"
+msgstr ""
+
+#. translators: %s: the search query.
+#: functions.php:737
+#: search.php:9
+#, php-format
+msgid "نتائج البحث عن: %s"
+msgstr ""
+
+#. translators: %s: URL of the Akismet privacy policy.
+#: functions.php:1069
+#, php-format
+msgid "يستخدم هذا الموقع أكيسمت للحد من التعليقات المزعجة. <a href=\"%s\" target=\"_blank\" rel=\"nofollow noopener\">تعرف على كيفية معالجة بيانات تعليقك.</a>"
+msgstr ""
+
+#: page.php:31
+msgid "الصفحة التي تبحث عنها غير موجودة"
+msgstr ""
+
+#: search.php:38
+msgid "لا توجد نتائج، لما لا تجرب كلمات أخرى؟"
+msgstr ""
+
+#: searchform.php:3
+msgid "البحث عن:"
+msgstr ""
+
+#: searchform.php:4
+msgctxt "placeholder"
+msgid "إبحث..."
+msgstr ""
+
+#: searchform.php:8
+msgid "بحث"
+msgstr ""
+
+#: sidebar.php:15
+msgid "القائمة الجانبية"
+msgstr ""
+
+#. translators: %s: link to the Widgets admin screen.
+#: sidebar.php:20
+#, php-format
+msgid "لإضافة مربعات القائمة الجانبية، توجه إلى %s، ثم اسحب المربعات إلى \"السايدبار\"."
+msgstr ""
+
+#: sidebar.php:22
+msgid "المظهر > مربعات القائمة الجانبية"
+msgstr ""
+
+#: template-parts/comment-navigation.php:3
+msgid "&rarr; تعليقات أقدم"
+msgstr ""
+
+#: template-parts/comment-navigation.php:4
+msgid "تعليقات أحدث &larr;"
+msgstr ""
+
+#: template-parts/no-posts.php:2
+msgid "لا توجد حالياً أية تدوينات"
+msgstr ""
+
+#: template-parts/pagination.php:5
+msgid "&laquo; السابق"
+msgstr ""
+
+#: template-parts/pagination.php:6
+msgid "التالي &raquo;"
+msgstr ""
+
+#: theme.json
+msgctxt "Color name"
+msgid "Primary Blue"
+msgstr "الأزرق الأساسي"
+
+#: theme.json
+msgctxt "Color name"
+msgid "Primary Blue Dark"
+msgstr "الأزرق الأساسي الداكن"
+
+#: theme.json
+msgctxt "Color name"
+msgid "Primary Blue Darker"
+msgstr "الأزرق الأساسي الأشد دكنة"
+
+#: theme.json
+msgctxt "Color name"
+msgid "Accent Red"
+msgstr "الأحمر المميّز"
+
+#: theme.json
+msgctxt "Color name"
+msgid "Body Text"
+msgstr "نص المتن"
+
+#: theme.json
+msgctxt "Color name"
+msgid "Body Text Dark"
+msgstr "نص المتن الداكن"
+
+#: theme.json
+msgctxt "Color name"
+msgid "Border"
+msgstr "الحدود"
+
+#: theme.json
+msgctxt "Color name"
+msgid "Background Light"
+msgstr "خلفية فاتحة"
+
+#: theme.json
+msgctxt "Color name"
+msgid "Background Dark"
+msgstr "خلفية داكنة"
+
+#: theme.json
+msgctxt "Font family name"
+msgid "Noto Kufi Arabic"
+msgstr ""
