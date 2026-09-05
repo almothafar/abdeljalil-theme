@@ -1,0 +1,19 @@
+version: 2
+
+# #21 skipped Dependabot because the repository had no manifest for any
+# ecosystem to watch. The workflows added in #23 are that manifest: actions are
+# pinned to a major tag, so a bump arrives as a reviewable pull request rather
+# than as silent drift inside a floating tag.
+#
+# Nothing else here has an ecosystem. The theme ships no package manager, and
+# PHPCS is installed inside the workflow rather than from a committed
+# composer.json, so there is deliberately no composer entry.
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: "Bump"
+    labels:
+      - area:ci
