@@ -46,7 +46,7 @@ The theme has been rebuilt from the ground up to meet modern WordPress and web s
 ## 📱 Responsive Breakpoints
 
 - **Desktop**: > 1200px (full layout with sidebar)
-- **Tablet**: 600px - 1200px (adjusted sidebar width)
+- **Tablet**: 601px - 1200px (narrower sidebar, with a gutter on its outer edge)
 - **Mobile**: ≤ 600px (stacked single-column layout)
 
 ## 🔒 Security Improvements (v2.0)
@@ -100,12 +100,13 @@ The logo does **not** appear in the header, and no template renders it. It is us
 ## 🛠️ Changelog
 
 ### Unreleased
-**Fix the tablet breakpoint, which had never applied, and drop three invalid theme tags**
+**Fix the tablet breakpoint, which had never applied, and correct the theme tags**
 
-- The `@media` condition at the tablet breakpoint was `(max-width: var(--container-max-width))`. Custom properties are substituted at computed-value time and a media query is evaluated well before that, so the condition was invalid and browsers dropped the whole block. It had never applied on any browser, at any width, since the custom properties were introduced. The 1200 is now written out, with a comment saying why it cannot be read from `:root`.
-- Enabling the block revealed that neither of its two rules did what it looked like. `.site-wrapper { width: 100%; max-width: 100% }` is a no-op below 1200px -- the base rule's `width: 1200px; max-width: 100%` already resolves to the same number -- and has been removed. `.site-sidebar { width: calc(var(--sidebar-width) - 1%) }` never narrowed anything either: the base rule sets `flex: 0 0 var(--sidebar-width)`, and a flex item with a definite `flex-basis` ignores `width`. Left as written, the surviving `margin-inline-end: 1%` would have pushed the row to 101% and been clipped by `overflow-x: hidden`. It is now `flex-basis: calc(var(--sidebar-width) - 1%)`, which is what the rule was reaching for: 69 + 2 + 28 + 1 = 100%.
-- The visible effect between 601px and 1199px is a 1% gutter on the outer edge of the sidebar -- the left of the screen in RTL -- where the wrapper is flush to the viewport instead of centred in it. Above 1200px and at or below 600px nothing changes.
-- Dropped `right-to-left`, `arabic` and `responsive-layout` from the `Tags:` header. None is on the theme directory's allowed list: `responsive-layout` was removed when the list was revamped, and the other two were never official tags -- `rtl-language-support`, which the theme already lists, is the real one for RTL, and languages are not expressed as tags at all. The remaining seven are valid. Nothing about the theme changes; unrecognised tags only matter at .org review.
+- The `@media` condition at the tablet breakpoint was `(max-width: var(--container-max-width))`. Custom properties are substituted at computed-value time and a media query is evaluated well before that, so the condition was invalid and browsers dropped the whole block. It had never applied on any browser, at any width, since the custom properties were introduced. The 1200 is now written out, and the comment above it in `style.css` says why it cannot be read from `:root`.
+- Enabling the block revealed that neither rule inside it did what it looked like: one was a no-op and has been removed, and the sidebar's `width` never applied at all, which would have left the row overflowing by 1% once the query started matching. The sidebar now sets `flex-basis`, which is what the rule was reaching for. The comment on that rule carries the reasoning; it is the one place to change if the numbers ever move.
+- The visible effect between 601px and 1200px is a 1% gutter on the outer edge of the sidebar -- the left of the screen in RTL -- where the wrapper is flush to the viewport instead of centred in it. From 1201px up, and at or below 600px, nothing changes.
+- Dropped `right-to-left`, `arabic` and `responsive-layout` from the `Tags:` header. None is on the theme directory's allowed list: `responsive-layout` was removed when the list was revamped, and the other two were never official tags -- `rtl-language-support`, which the theme already lists, is the real one for RTL, and languages are not expressed as tags at all.
+- Also dropped `accessibility-ready`, which is a valid tag the theme does not currently earn. It carries a specific set of requirements, and the M4 issues exist precisely because those are not met yet; claiming it is a stronger statement than the other tags make. It should go back the moment that work lands. The six that remain are both valid and true. Nothing about the theme changes either way; tags only matter at .org review.
 - Theme version 2.3 to 2.4. `style.css` changed, so a cache still holding 2.3 would keep serving a stylesheet whose tablet breakpoint does nothing.
 
 **Ship the fonts as subsetted, preloaded WOFF2**
