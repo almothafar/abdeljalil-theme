@@ -1,0 +1,114 @@
+name: Lint
+
+# Verification here has always been manual, which is how #22 shipped thirteen
+# fixes across ten files that were never syntax-checked. These jobs are the
+# parts a machine can do; AGENTS.md still owns the front-end passes, WP_DEBUG,
+# view-source and RTL, none of which CI can see.
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  php-lint:
+    name: PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    strategy:
+      # Every version is worth a result, so do not cancel the rest on one red.
+      fail-fast: false
+      matrix:
+        # 7.4 is what style.css declares under Requires PHP, and is also
+        # WordPress 7.1's own floor. 8.4 is the newest stable the theme is
+        # expected to run under. 8.2 sits between them so a mid-range failure
+        # is not blamed on the wrong end of the range.
+        php: [ '7.4', '8.2', '8.4' ]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+
+      # xargs exits non-zero if any single php -l did, so one bad file fails
+      # the job without the loop having to track status itself.
+      - name: php -l over every PHP file
+        run: find . -name '*.php' -not -path './.git/*' -print0 | xargs -0 -r -n1 php -l
+
+  editorconfig:
+    name: EditorConfig
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # This action only installs the binary; the check is the step after it.
+      - uses: editorconfig-checker/action-editorconfig-checker@v2
+
+      - run: editorconfig-checker
+
+  phpcs:
+    name: WordPress coding standards
+    runs-on: ubuntu-latest
+    # The gate is the diff, and a push to main has nothing to diff against.
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # PHPCS runs over the files this PR touches, so the merge base has
+          # to be in the clone.
+          fetch-depth: 0
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+          tools: cs2pr
+
+      # Installed into a scratch directory rather than through a composer.json
+      # at the root. The theme is served exactly as committed and has no
+      # package manager; a manifest in the repository would imply an install
+      # step that does not exist. allow-plugins is required or the standards
+      # installer is blocked and phpcs never learns where WPCS lives.
+      - name: Install PHPCS and the WordPress standards
+        run: |
+          dir="${RUNNER_TEMP}/phpcs"
+          mkdir -p "$dir"
+          cat > "$dir/composer.json" <<'JSON'
+          {
+            "require-dev": {
+              "squizlabs/php_codesniffer": "^3.11",
+              "wp-coding-standards/wpcs": "^3.1",
+              "dealerdirect/phpcodesniffer-composer-installer": "^1.0"
+            },
+            "config": {
+              "allow-plugins": {
+                "dealerdirect/phpcodesniffer-composer-installer": true
+              }
+            }
+          }
+          JSON
+          composer --no-interaction --working-dir="$dir" install
+          echo "$dir/vendor/bin" >> "$GITHUB_PATH"
+
+      # Changed files only, which is what #23 asked for: new and modified code
+      # is held to the standard and the rest is grandfathered until touched.
+      # ACMR skips deletions, which cannot be linted.
+      - name: Collect the PHP files this pull request touches
+        id: changed
+        run: |
+          git diff --name-only --diff-filter=ACMR \
+            "${{ github.event.pull_request.base.sha }}" \
+            "${{ github.event.pull_request.head.sha }}" -- '*.php' > changed.txt
+          echo "count=$(wc -l < changed.txt)" >> "$GITHUB_OUTPUT"
+          echo "PHP files in this diff:"; cat changed.txt
+
+      - name: PHPCS
+        if: steps.changed.outputs.count != '0'
+        run: |
+          # phpcs exits non-zero on findings; cs2pr turns the report into
+          # inline annotations and owns the pass/fail decision instead.
+          phpcs --report-full --report-checkstyle=phpcs-report.xml $(cat changed.txt) || true
+          cs2pr --graceful-warnings phpcs-report.xml

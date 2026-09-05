@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<ruleset name="Abdeljalil Theme">
+	<description>The parts of the WordPress standard that AGENTS.md actually documents.</description>
+
+	<!--
+		This is deliberately not the whole WordPress ruleset. Run bare against
+		this tree it reports 126 errors, 112 of them from one sniff family,
+		PEAR.Functions.FunctionCallSignature, which wants a particular layout
+		for multi-line calls. The theme already has a consistent layout of its
+		own, AGENTS.md does not mandate WPCS's, and a job that is red on
+		arrival gets ignored — which #23 says in as many words.
+
+		So the exclusions below are all "the repo has its own settled style
+		here", and everything left is a rule AGENTS.md states.
+	-->
+
+	<file>.</file>
+	<exclude-pattern>/.git/</exclude-pattern>
+	<exclude-pattern>/languages/</exclude-pattern>
+
+	<arg name="extensions" value="php"/>
+	<arg name="basepath" value="."/>
+	<arg name="colors"/>
+	<arg value="sp"/>
+
+	<!-- PHP 7.4 is the floor style.css declares under Requires PHP. -->
+	<config name="testVersion" value="7.4-"/>
+
+	<rule ref="WordPress-Core">
+		<!--
+			Multi-line call layout. 112 violations, every one of them a
+			disagreement about where a closing bracket sits, not a defect.
+		-->
+		<exclude name="PEAR.Functions.FunctionCallSignature"/>
+
+		<!--
+			Alignment of => and = across consecutive lines. The theme aligns
+			these in most places and not in others; WPCS wants it everywhere.
+			Cosmetic, and not something AGENTS.md asks for.
+		-->
+		<exclude name="WordPress.Arrays.MultipleStatementAlignment"/>
+		<exclude name="Generic.Formatting.MultipleStatementAlignment"/>
+
+		<!--
+			Filenames. This is a WordPress theme, so the template names are
+			fixed by core (404.php, single.php) and not ours to change.
+		-->
+		<exclude name="WordPress.Files.FileName"/>
+	</rule>
+
+	<!--
+		AGENTS.md: "Every user-facing string goes through the abdeljalil text
+		domain". Tell the sniff which domain is ours so a wrong one is caught.
+	-->
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="abdeljalil"/>
+			</property>
+		</properties>
+	</rule>
+</ruleset>

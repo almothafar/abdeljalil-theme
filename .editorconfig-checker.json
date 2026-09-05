@@ -1,0 +1,36 @@
+{
+	"_comment": [
+		"Config for the EditorConfig job in .github/workflows/lint.yml.",
+		"",
+		"Exclude: LICENSE and fonts/OFL.txt are verbatim licence texts that",
+		"AGENTS.md says stay byte-identical to what the licensor published, so",
+		"they are not ours to reindent. languages/*.mo is a compiled gettext",
+		"catalogue, i.e. binary, and screenshot.png likewise.",
+		"",
+		"Disable.Indentation: .editorconfig sets indent_style = tab for every",
+		"file, which is right for PHP and CSS code but wrong for the things it",
+		"also catches: alignment spaces inside CSS and PHP comment blocks,",
+		"indented code fences in Markdown, and the shell command in the pull",
+		"request template. Tabs in PHP are enforced by PHPCS instead, where the",
+		"rule can apply to code and not to prose. What is left here still",
+		"catches the things that actually bite: CRLF, missing final newlines,",
+		"trailing whitespace and non-UTF-8 bytes."
+	],
+
+	"Exclude": [
+		"^LICENSE$",
+		"^fonts/OFL\\.txt$",
+		"\\.mo$",
+		"\\.png$",
+		"\\.jpg$",
+		"\\.gif$",
+		"\\.ttf$",
+		"\\.woff2$"
+	],
+
+	"Disable": {
+		"Indentation": true,
+		"IndentSize": true,
+		"MaxLineLength": true
+	}
+}
