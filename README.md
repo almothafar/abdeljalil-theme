@@ -100,6 +100,15 @@ The logo does **not** appear in the header, and no template renders it. It is us
 ## 🛠️ Changelog
 
 ### Unreleased
+**Load the text domain and ship the translation files**
+
+- The theme wrapped its strings properly but never loaded a catalogue: no `languages/` directory, no `.pot`, and no `load_theme_textdomain()` call. `translate()` returned every source string unchanged, so an Arabic site displayed the English ones -- the eight header image names, `Primary Menu`, the sidebar and logo descriptions -- in English. `abdeljalil_theme_setup()` now registers the path, on `after_setup_theme`, which is the hook WordPress 6.7 and later exempt from the "translation loading was triggered too early" notice.
+- Added `languages/abdeljalil.pot`, `languages/ar.po` and the compiled `languages/ar.mo`, generated with `wp i18n make-pot` and `wp i18n make-mo` and committed, since there is no build step. A theme's own directory uses `<locale>.mo`, so the file is `ar.mo` and not `abdeljalil-ar.mo`, which is the naming for `wp-content/languages`.
+- The `theme.json` palette is covered without any `__()` call: core runs the fields its `theme-i18n.json` lists through `translate()` against the theme's domain, with a context of `Color name`, and `wp i18n make-pot` extracts them with that same context. The nine colour names now have Arabic in the catalogue.
+- Only the English msgids are translated. The 74 entries whose msgid is already Arabic are listed with an empty `msgstr` on purpose -- gettext falls back to the msgid, so those strings render exactly as they do today. Wrapping the remaining hard-coded Arabic and moving it into `ar.po` behind English msgids is the separate, larger pass, and is deliberately not started here.
+- Added the twelve `translators:` comments `wp i18n make-pot` was warning about, so a translator seeing `%s` or `%1$s` in the catalogue is told what it stands for. The POT now generates with no warnings.
+- `.gitattributes` gains `*.mo binary`, so the repository-wide `* text=auto eol=lf` cannot normalise line endings inside a compiled catalogue and corrupt its string table.
+
 **Ship the fonts as subsetted, preloaded WOFF2**
 
 - The two TrueType files were 357,068 bytes, fetched on every first visit before Arabic could render in the intended face. They are replaced by two WOFF2 files totalling 110,988 bytes, a 69% reduction. Nothing was removed to get there: every glyph, codepoint and OpenType feature of the original survives, and only the container changed. The TrueType files are gone rather than kept as a fallback, because every browser that understands the logical properties and custom properties this stylesheet is built on has supported WOFF2 for years.
