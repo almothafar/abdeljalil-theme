@@ -2,7 +2,7 @@
 Theme Name: Abdeljalil Theme
 Theme URI: https://github.com/almothafar/abdeljalil-theme
 Description: A modernized Arabic RTL WordPress theme with responsive design, HTML5 semantics, and enhanced security. Originally created by Abdeljalil, now maintained and modernized by Al-Mothafar Al-Hasan.
-Version: 2.2
+Version: 2.3
 Requires at least: 5.7
 Tested up to: 6.8
 Requires PHP: 7.4
@@ -21,16 +21,22 @@ Twitter/X: https://twitter.com/almothafar
 
 Bundled resources, loaded from the theme directory and from nowhere else:
 Icons: Font Awesome Free 7.3.1 (https://fontawesome.com), CC BY 4.0, inlined as SVG in functions.php
-Fonts: Noto Kufi Arabic, SIL Open Font License 1.1, in fonts/
+Fonts: Noto Kufi Arabic 2.109, SIL Open Font License 1.1, subsetted to WOFF2 in fonts/ (licence in fonts/OFL.txt)
 
 This theme, like WordPress, is licensed under the GPL.
 Use it freely, modify it, and share it!
 */
 
-/* Font Declarations */
+/* Font Declarations
+   Noto Kufi Arabic 2.109 in WOFF2, converted from the upstream TrueType with
+   pyftsubset -- fonts/README.md records the exact command and fonts/OFL.txt
+   carries the licence. Every glyph, codepoint and OpenType feature of the
+   original is retained; only the container changed. There is deliberately no
+   unicode-range here, and fonts/README.md says why. Noto Kufi Arabic declares
+   no Reserved Font Name, so these keep the family name. */
 @font-face {
 	font-family: 'Noto Kufi Arabic';
-	src: url('fonts/NotoKufiArabic-Regular.ttf') format('truetype');
+	src: url('fonts/NotoKufiArabic-Regular.woff2') format('woff2');
 	font-weight: 400;
 	font-style: normal;
 	font-display: swap;
@@ -38,7 +44,7 @@ Use it freely, modify it, and share it!
 
 @font-face {
 	font-family: 'Noto Kufi Arabic';
-	src: url('fonts/NotoKufiArabic-Bold.ttf') format('truetype');
+	src: url('fonts/NotoKufiArabic-Bold.woff2') format('woff2');
 	font-weight: 700;
 	font-style: normal;
 	font-display: swap;

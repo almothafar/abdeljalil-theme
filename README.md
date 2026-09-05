@@ -1,8 +1,8 @@
-# Abdeljalil Theme v2.2
+# Abdeljalil Theme v2.3
 
 A modernized Arabic RTL WordPress theme with responsive design, HTML5 semantics, and enhanced security.
 
-![Version](https://img.shields.io/badge/version-2.2-blue.svg)
+![Version](https://img.shields.io/badge/version-2.3-blue.svg)
 ![WordPress](https://img.shields.io/badge/WordPress-5.7%2B-21759b.svg)
 ![PHP](https://img.shields.io/badge/PHP-7.4%2B-777bb4.svg)
 ![License](https://img.shields.io/badge/license-GPL--2.0%2B-green.svg)
@@ -100,6 +100,14 @@ The logo does **not** appear in the header, and no template renders it. It is us
 ## 🛠️ Changelog
 
 ### Unreleased
+**Ship the fonts as subsetted, preloaded WOFF2**
+
+- The two TrueType files were 357,068 bytes, fetched on every first visit before Arabic could render in the intended face. They are replaced by two WOFF2 files totalling 110,988 bytes, a 69% reduction. Nothing was removed to get there: every glyph, codepoint and OpenType feature of the original survives, and only the container changed. The TrueType files are gone rather than kept as a fallback, because every browser that understands the logical properties and custom properties this stylesheet is built on has supported WOFF2 for years.
+- There is deliberately no `unicode-range` subsetting. Splitting Arabic from Latin was built, measured on the live site and reverted: all four files loaded on every page anyway, because `U+0020` sits in the Latin subset, so the split was worth 3,892 bytes for twice the requests. It also carried a failure mode these files do not -- ranges that drift from the font's character map drop codepoints to the next font in the stack silently, mid-word, and the first attempt did exactly that with Google Fonts' published ranges for this family, which miss 142 codepoints it covers. `fonts/README.md` records the numbers.
+- The regular weight is now preloaded from `wp_head`. Fonts referenced only from a stylesheet cannot be seen by the preload scanner until that stylesheet has been fetched and parsed, which put the face two round trips behind the page. Bold is left to normal discovery, since it styles headings rather than body text. The header-image preload was folded into the same function, which is what the section is now called.
+- `fonts/README.md` records the exact `pyftsubset` command, why none of its flags is optional, why there is no `unicode-range`, and one measured thing that was deliberately not done. `fonts/OFL.txt` carries the licence, which the theme was redistributing the font without.
+- Theme version 2.2 to 2.3. `style.css` no longer references the TrueType files, so a cache still holding 2.2 would ask for fonts that are no longer there and fall back to tahoma.
+
 **Add theme.json and editor styles, and fix the WordPress 7.0 editor regression**
 
 - The post editor was composing in a serif, left-to-right browser default with no relation to the published page. WordPress 7.0 types the stylesheet it generates for a classic theme as the theme's own, so the editor skips its default styles on the assumption that the theme supplies them -- and this one supplied none. It now ships `editor-style.css`, so the canvas uses Noto Kufi Arabic, right to left, at the same size as the front end.
@@ -187,7 +195,7 @@ The logo does **not** appear in the header, and no template renders it. It is us
 The theme ships these and loads nothing from a third party at runtime.
 
 - **Icons** -- nine [Font Awesome Free](https://fontawesome.com) 7.3.1 icons, inlined as SVG in `functions.php`. Icons are licensed [CC BY 4.0](https://fontawesome.com/license/free); each one carries its attribution comment in the rendered page.
-- **Fonts** -- [Noto Kufi Arabic](https://fonts.google.com/noto/specimen/Noto+Kufi+Arabic), licensed [SIL Open Font License 1.1](https://openfontlicense.org), in `fonts/`.
+- **Fonts** -- [Noto Kufi Arabic](https://fonts.google.com/noto/specimen/Noto+Kufi+Arabic) 2.109, licensed [SIL Open Font License 1.1](https://openfontlicense.org), converted to WOFF2 in `fonts/`. The licence text is in `fonts/OFL.txt` and `fonts/README.md` records how the files were built.
 
 ### Original Theme
 - **Author**: Abdeljalil

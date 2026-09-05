@@ -5,7 +5,7 @@
  * Requirements are declared once, in the style.css theme header.
  *
  * @package Abdeljalil
- * @version 2.2
+ * @version 2.3
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -410,7 +410,7 @@ add_action( 'widgets_init', 'abdeljalil_widgets_init' );
  **************************************************************/
 function abdeljalil_scripts() {
 	// Enqueue main stylesheet
-	wp_enqueue_style( 'abdeljalil-style', get_stylesheet_uri(), array(), '2.2' );
+	wp_enqueue_style( 'abdeljalil-style', get_stylesheet_uri(), array(), '2.3' );
 
 	// Enqueue comment reply script
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
@@ -420,23 +420,39 @@ function abdeljalil_scripts() {
 add_action( 'wp_enqueue_scripts', 'abdeljalil_scripts' );
 
 /***************************************************************
- * Preload the Header Image
+ * Preload Critical Assets
  **************************************************************/
-// The header image is normally the LCP element, but it is applied as an inline
-// background-image, which the preload scanner cannot see. Announce it early.
-function almothafar_preload_header_image() {
+// Two things here the preload scanner cannot find for itself. The header image
+// is normally the LCP element but is applied as an inline background-image, and
+// the body font is named only inside style.css, so it is not discovered until
+// that file has been fetched and parsed.
+//
+// Only the regular weight is announced. Bold is left to normal discovery: it
+// styles headings rather than body text, and putting another 54 KB in front of
+// the header image would cost more than the swap it saves.
+//
+// The font href has to match what style.css resolves its @font-face src to,
+// character for character and with no version query string, or the browser
+// fetches the file twice. crossorigin is required because fonts are fetched in
+// CORS mode even from the same origin. The files live in the parent theme, so
+// this is get_template_directory_uri() rather than the stylesheet directory,
+// which points at the child theme when one is active.
+function almothafar_preload_critical_assets() {
 	$header_image = get_header_image();
 
-	if ( ! $header_image ) {
-		return;
+	if ( $header_image ) {
+		printf(
+			'<link rel="preload" as="image" href="%s" fetchpriority="high" />' . "\n",
+			esc_url( $header_image )
+		);
 	}
 
 	printf(
-		'<link rel="preload" as="image" href="%s" fetchpriority="high" />' . "\n",
-		esc_url( $header_image )
+		'<link rel="preload" as="font" type="font/woff2" href="%s" crossorigin />' . "\n",
+		esc_url( get_template_directory_uri() . '/fonts/NotoKufiArabic-Regular.woff2' )
 	);
 }
-add_action( 'wp_head', 'almothafar_preload_header_image', 2 );
+add_action( 'wp_head', 'almothafar_preload_critical_assets', 2 );
 
 /***************************************************************
  * Inline SVG Icons

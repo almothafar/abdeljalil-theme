@@ -23,10 +23,11 @@ it does not exist.
 */
 
 /* The editor canvas runs in its own iframe, so it needs its own copy of the
-   font. Relative URLs are rewritten against the theme directory by core. */
+   font. These two rules mirror the ones in style.css exactly. Relative URLs
+   are rewritten against the theme directory by core. */
 @font-face {
 	font-family: 'Noto Kufi Arabic';
-	src: url('fonts/NotoKufiArabic-Regular.ttf') format('truetype');
+	src: url('fonts/NotoKufiArabic-Regular.woff2') format('woff2');
 	font-weight: 400;
 	font-style: normal;
 	font-display: swap;
@@ -34,7 +35,7 @@ it does not exist.
 
 @font-face {
 	font-family: 'Noto Kufi Arabic';
-	src: url('fonts/NotoKufiArabic-Bold.ttf') format('truetype');
+	src: url('fonts/NotoKufiArabic-Bold.woff2') format('woff2');
 	font-weight: 700;
 	font-style: normal;
 	font-display: swap;
