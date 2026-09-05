@@ -5,7 +5,7 @@
  * Requirements are declared once, in the style.css theme header.
  *
  * @package Abdeljalil
- * @version 2.2
+ * @version 2.3
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -410,7 +410,7 @@ add_action( 'widgets_init', 'abdeljalil_widgets_init' );
  **************************************************************/
 function abdeljalil_scripts() {
 	// Enqueue main stylesheet
-	wp_enqueue_style( 'abdeljalil-style', get_stylesheet_uri(), array(), '2.2' );
+	wp_enqueue_style( 'abdeljalil-style', get_stylesheet_uri(), array(), '2.3' );
 
 	// Enqueue comment reply script
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
@@ -420,7 +420,7 @@ function abdeljalil_scripts() {
 add_action( 'wp_enqueue_scripts', 'abdeljalil_scripts' );
 
 /***************************************************************
- * Preload the Header Image
+ * Preload Critical Assets
  **************************************************************/
 // The header image is normally the LCP element, but it is applied as an inline
 // background-image, which the preload scanner cannot see. Announce it early.
@@ -437,6 +437,22 @@ function almothafar_preload_header_image() {
 	);
 }
 add_action( 'wp_head', 'almothafar_preload_header_image', 2 );
+
+// The body face. It is referenced only from style.css, so the preload scanner
+// cannot see it until that file has been fetched and parsed. Every page of an
+// Arabic blog needs the Arabic subset of the regular weight, so preloading that
+// one is never wasted; the Latin subset and both bold subsets are left to
+// normal discovery. The href must match what the stylesheet resolves to exactly
+// -- no version query string -- or the browser fetches the file twice, and the
+// crossorigin attribute is required because fonts are fetched in CORS mode even
+// from the same origin.
+function almothafar_preload_fonts() {
+	printf(
+		'<link rel="preload" as="font" type="font/woff2" href="%s" crossorigin />' . "\n",
+		esc_url( get_stylesheet_directory_uri() . '/fonts/NotoKufiArabic-Regular-arabic.woff2' )
+	);
+}
+add_action( 'wp_head', 'almothafar_preload_fonts', 2 );
 
 /***************************************************************
  * Inline SVG Icons

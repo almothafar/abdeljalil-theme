@@ -1,8 +1,8 @@
-# Abdeljalil Theme v2.2
+# Abdeljalil Theme v2.3
 
 A modernized Arabic RTL WordPress theme with responsive design, HTML5 semantics, and enhanced security.
 
-![Version](https://img.shields.io/badge/version-2.2-blue.svg)
+![Version](https://img.shields.io/badge/version-2.3-blue.svg)
 ![WordPress](https://img.shields.io/badge/WordPress-5.7%2B-21759b.svg)
 ![PHP](https://img.shields.io/badge/PHP-7.4%2B-777bb4.svg)
 ![License](https://img.shields.io/badge/license-GPL--2.0%2B-green.svg)
@@ -100,6 +100,14 @@ The logo does **not** appear in the header, and no template renders it. It is us
 ## 🛠️ Changelog
 
 ### Unreleased
+**Ship the fonts as subsetted, preloaded WOFF2**
+
+- The two TrueType files were 357,068 bytes, fetched on every first visit before Arabic could render in the intended face. They are replaced by four WOFF2 subsets totalling 107,096 bytes, a 70% reduction on identical outlines. The TrueType files are gone rather than kept as a fallback: every browser that understands the logical properties and custom properties this stylesheet is built on has supported WOFF2 for years.
+- Arabic and Latin are separate files with `unicode-range`, so a page fetches only the scripts it uses. The ranges are derived from the font's own character map and partition it exactly. Google Fonts' published ranges for this family were tried first and are wrong for it -- they miss 142 codepoints it covers, including Latin Extended-A and the dotted circle a lone combining mark renders on, each of which would have fallen back to tahoma mid-word without any error.
+- The regular Arabic subset is now preloaded from `wp_head`. Fonts referenced only from a stylesheet cannot be seen by the preload scanner until that stylesheet has been fetched and parsed, which put the face two round trips behind the page.
+- `fonts/README.md` records the exact `pyftsubset` command, why three of its flags are not optional, and two measured things that were deliberately not done. `fonts/OFL.txt` carries the licence, which the theme was redistributing the font without.
+- Theme version 2.2 to 2.3. `style.css` no longer references the TrueType files, so a cache still holding 2.2 would ask for fonts that are no longer there and fall back to tahoma.
+
 **Add theme.json and editor styles, and fix the WordPress 7.0 editor regression**
 
 - The post editor was composing in a serif, left-to-right browser default with no relation to the published page. WordPress 7.0 types the stylesheet it generates for a classic theme as the theme's own, so the editor skips its default styles on the assumption that the theme supplies them -- and this one supplied none. It now ships `editor-style.css`, so the canvas uses Noto Kufi Arabic, right to left, at the same size as the front end.
@@ -187,7 +195,7 @@ The logo does **not** appear in the header, and no template renders it. It is us
 The theme ships these and loads nothing from a third party at runtime.
 
 - **Icons** -- nine [Font Awesome Free](https://fontawesome.com) 7.3.1 icons, inlined as SVG in `functions.php`. Icons are licensed [CC BY 4.0](https://fontawesome.com/license/free); each one carries its attribution comment in the rendered page.
-- **Fonts** -- [Noto Kufi Arabic](https://fonts.google.com/noto/specimen/Noto+Kufi+Arabic), licensed [SIL Open Font License 1.1](https://openfontlicense.org), in `fonts/`.
+- **Fonts** -- [Noto Kufi Arabic](https://fonts.google.com/noto/specimen/Noto+Kufi+Arabic) 2.109, licensed [SIL Open Font License 1.1](https://openfontlicense.org), subsetted to WOFF2 in `fonts/`. The licence text is in `fonts/OFL.txt` and `fonts/README.md` records how the subsets were built.
 
 ### Original Theme
 - **Author**: Abdeljalil

@@ -2,7 +2,7 @@
 Theme Name: Abdeljalil Theme
 Theme URI: https://github.com/almothafar/abdeljalil-theme
 Description: A modernized Arabic RTL WordPress theme with responsive design, HTML5 semantics, and enhanced security. Originally created by Abdeljalil, now maintained and modernized by Al-Mothafar Al-Hasan.
-Version: 2.2
+Version: 2.3
 Requires at least: 5.7
 Tested up to: 6.8
 Requires PHP: 7.4
@@ -21,27 +21,56 @@ Twitter/X: https://twitter.com/almothafar
 
 Bundled resources, loaded from the theme directory and from nowhere else:
 Icons: Font Awesome Free 7.3.1 (https://fontawesome.com), CC BY 4.0, inlined as SVG in functions.php
-Fonts: Noto Kufi Arabic, SIL Open Font License 1.1, in fonts/
+Fonts: Noto Kufi Arabic 2.109, SIL Open Font License 1.1, subsetted to WOFF2 in fonts/ (licence in fonts/OFL.txt)
 
 This theme, like WordPress, is licensed under the GPL.
 Use it freely, modify it, and share it!
 */
 
-/* Font Declarations */
+/* Font Declarations
+   Subsets of Noto Kufi Arabic 2.109 in WOFF2. fonts/README.md records the exact
+   pyftsubset command that produced them and fonts/OFL.txt carries the licence.
+   Arabic and Latin are separate files so a page downloads only the scripts it
+   uses. The ranges below are derived from the font's own character map and
+   partition it exactly: every codepoint the original TrueType could render is
+   claimed by one file, and none by both. Google Fonts' published ranges for
+   this family miss 142 codepoints it covers, so do not substitute them; see
+   fonts/README.md. Noto Kufi Arabic declares no Reserved Font Name, so the
+   subsets keep the family name. */
 @font-face {
 	font-family: 'Noto Kufi Arabic';
-	src: url('fonts/NotoKufiArabic-Regular.ttf') format('truetype');
+	src: url('fonts/NotoKufiArabic-Regular-arabic.woff2') format('woff2');
 	font-weight: 400;
 	font-style: normal;
 	font-display: swap;
+	unicode-range: U+0600-06FF, U+0750-077F, U+0870-08FF, U+FB50-FDFF, U+FE70-FEFF, U+10EFD-10EFF;
 }
 
 @font-face {
 	font-family: 'Noto Kufi Arabic';
-	src: url('fonts/NotoKufiArabic-Bold.ttf') format('truetype');
+	src: url('fonts/NotoKufiArabic-Regular-latin.woff2') format('woff2');
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+	unicode-range: U+0000-017E, U+0218-0237, U+02C6-0328, U+1E80-1E9E, U+1EF2-1EF3, U+2009-204F, U+20AC, U+2122, U+2212-221A, U+25CC, U+2E41;
+}
+
+@font-face {
+	font-family: 'Noto Kufi Arabic';
+	src: url('fonts/NotoKufiArabic-Bold-arabic.woff2') format('woff2');
 	font-weight: 700;
 	font-style: normal;
 	font-display: swap;
+	unicode-range: U+0600-06FF, U+0750-077F, U+0870-08FF, U+FB50-FDFF, U+FE70-FEFF, U+10EFD-10EFF;
+}
+
+@font-face {
+	font-family: 'Noto Kufi Arabic';
+	src: url('fonts/NotoKufiArabic-Bold-latin.woff2') format('woff2');
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
+	unicode-range: U+0000-017E, U+0218-0237, U+02C6-0328, U+1E80-1E9E, U+1EF2-1EF3, U+2009-204F, U+20AC, U+2122, U+2212-221A, U+25CC, U+2E41;
 }
 
 /* CSS Variables */
