@@ -59,4 +59,28 @@
 			</property>
 		</properties>
 	</rule>
+
+	<!--
+		AGENTS.md leads with "Escape at output, with the function that matches
+		the context", and these sniffs are the ones that check it. They are NOT
+		in WordPress-Core, which is formatting; they live in WordPress-Extra,
+		most of which is not wanted here. Pulled in individually so the headline
+		rule of the guide is the one rule CI definitely enforces.
+
+		Verified rather than assumed: a probe file containing echo $_GET['q'];
+		passed the ruleset without them.
+	-->
+	<rule ref="WordPress.Security.EscapeOutput">
+		<!--
+			WPCS treats _e() as unsafe and wants esc_html_e() everywhere.
+			AGENTS.md names _e() as one of the four accepted forms, and the
+			strings it prints come from this theme's own catalogue rather than
+			from a request, so the guide wins over the sniff here. The rest of
+			EscapeOutput stays on: OutputNotEscaped is the sub-sniff that
+			catches genuinely unescaped output, which is the rule that matters.
+		-->
+		<exclude name="WordPress.Security.EscapeOutput.UnsafePrintingFunction"/>
+	</rule>
+	<rule ref="WordPress.Security.ValidatedSanitizedInput"/>
+	<rule ref="WordPress.Security.NonceVerification"/>
 </ruleset>
