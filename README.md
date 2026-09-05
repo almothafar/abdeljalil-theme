@@ -1,8 +1,8 @@
-# Abdeljalil Theme v2.3
+# Abdeljalil Theme v2.4
 
 A modernized Arabic RTL WordPress theme with responsive design, HTML5 semantics, and enhanced security.
 
-![Version](https://img.shields.io/badge/version-2.3-blue.svg)
+![Version](https://img.shields.io/badge/version-2.4-blue.svg)
 ![WordPress](https://img.shields.io/badge/WordPress-5.7%2B-21759b.svg)
 ![PHP](https://img.shields.io/badge/PHP-7.4%2B-777bb4.svg)
 ![License](https://img.shields.io/badge/license-GPL--2.0%2B-green.svg)
@@ -100,6 +100,14 @@ The logo does **not** appear in the header, and no template renders it. It is us
 ## 🛠️ Changelog
 
 ### Unreleased
+**Fix the tablet breakpoint, which had never applied, and drop three invalid theme tags**
+
+- The `@media` condition at the tablet breakpoint was `(max-width: var(--container-max-width))`. Custom properties are substituted at computed-value time and a media query is evaluated well before that, so the condition was invalid and browsers dropped the whole block. It had never applied on any browser, at any width, since the custom properties were introduced. The 1200 is now written out, with a comment saying why it cannot be read from `:root`.
+- Enabling the block revealed that neither of its two rules did what it looked like. `.site-wrapper { width: 100%; max-width: 100% }` is a no-op below 1200px -- the base rule's `width: 1200px; max-width: 100%` already resolves to the same number -- and has been removed. `.site-sidebar { width: calc(var(--sidebar-width) - 1%) }` never narrowed anything either: the base rule sets `flex: 0 0 var(--sidebar-width)`, and a flex item with a definite `flex-basis` ignores `width`. Left as written, the surviving `margin-inline-end: 1%` would have pushed the row to 101% and been clipped by `overflow-x: hidden`. It is now `flex-basis: calc(var(--sidebar-width) - 1%)`, which is what the rule was reaching for: 69 + 2 + 28 + 1 = 100%.
+- The visible effect between 601px and 1199px is a 1% gutter on the outer edge of the sidebar -- the left of the screen in RTL -- where the wrapper is flush to the viewport instead of centred in it. Above 1200px and at or below 600px nothing changes.
+- Dropped `right-to-left`, `arabic` and `responsive-layout` from the `Tags:` header. None is on the theme directory's allowed list: `responsive-layout` was removed when the list was revamped, and the other two were never official tags -- `rtl-language-support`, which the theme already lists, is the real one for RTL, and languages are not expressed as tags at all. The remaining seven are valid. Nothing about the theme changes; unrecognised tags only matter at .org review.
+- Theme version 2.3 to 2.4. `style.css` changed, so a cache still holding 2.3 would keep serving a stylesheet whose tablet breakpoint does nothing.
+
 **Ship the fonts as subsetted, preloaded WOFF2**
 
 - The two TrueType files were 357,068 bytes, fetched on every first visit before Arabic could render in the intended face. They are replaced by two WOFF2 files totalling 110,988 bytes, a 69% reduction. Nothing was removed to get there: every glyph, codepoint and OpenType feature of the original survives, and only the container changed. The TrueType files are gone rather than kept as a fallback, because every browser that understands the logical properties and custom properties this stylesheet is built on has supported WOFF2 for years.

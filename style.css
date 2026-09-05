@@ -2,7 +2,7 @@
 Theme Name: Abdeljalil Theme
 Theme URI: https://github.com/almothafar/abdeljalil-theme
 Description: A modernized Arabic RTL WordPress theme with responsive design, HTML5 semantics, and enhanced security. Originally created by Abdeljalil, now maintained and modernized by Al-Mothafar Al-Hasan.
-Version: 2.3
+Version: 2.4
 Requires at least: 5.7
 Tested up to: 6.8
 Requires PHP: 7.4
@@ -11,7 +11,7 @@ Author URI: https://almothafar.com
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: abdeljalil
-Tags: rtl-language-support, right-to-left, arabic, blog, custom-header, custom-background, threaded-comments, translation-ready, responsive-layout, accessibility-ready
+Tags: rtl-language-support, blog, custom-header, custom-background, threaded-comments, translation-ready, accessibility-ready
 
 Original Theme: Abdeljalil Theme (2016)
 Modernized & Maintained by: Al-Mothafar Al-Hasan (https://almothafar.com)
@@ -1609,16 +1609,25 @@ video {
 	height: auto;
 }
 
-/* Tablets and smaller (max-width: --container-max-width) */
-@media (max-width: var(--container-max-width)) {
-	.site-wrapper {
-		width: 100%;
-		max-width: 100%;
-	}
+/* Tablets and smaller.
 
+   The 1200 is written out rather than read from --container-max-width, and
+   has to be. A media query condition is evaluated before custom properties
+   are substituted, so var() here is not a value the browser resolves later:
+   the condition is invalid and it drops the whole block. That is why none of
+   this had ever applied. Keep the number in step with --container-max-width
+   in :root by hand. */
+@media (max-width: 1200px) {
 	.site-sidebar {
+		/* Below 1200 the wrapper is flush to the viewport instead of
+		   centred in it, so inset the sidebar's outer edge -- in RTL,
+		   inline-end is the left of the screen. flex-basis rather than
+		   width: the base rule sets flex: 0 0 var(--sidebar-width), and a
+		   flex item with a definite flex-basis ignores width, so the
+		   narrowing this block was written to do never happened. 28% + 1%
+		   keeps the row at 69 + 2 + 28 + 1 = 100% and out of overflow. */
+		flex-basis: calc(var(--sidebar-width) - 1%);
 		margin-inline-end: 1%;
-		width: calc(var(--sidebar-width) - 1%);
 	}
 }
 
