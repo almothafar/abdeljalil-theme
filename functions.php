@@ -55,6 +55,13 @@ if ( ! defined( 'ALMOTHAFAR_ARTICLE_WIDTH' ) ) {
  * Theme Setup
  **************************************************************/
 function abdeljalil_theme_setup() {
+	// Translations live in the theme's own languages/ directory, so the files
+	// are named <locale>.mo -- ar.mo, not abdeljalil-ar.mo, which is the naming
+	// for wp-content/languages. Registering the path here rather than earlier
+	// matters: since WordPress 6.7 a domain loaded before after_setup_theme
+	// raises a _doing_it_wrong notice, and this hook is exempt from it.
+	load_theme_textdomain( 'abdeljalil', get_template_directory() . '/languages' );
+
 	// Add theme support for HTML5
 	add_theme_support( 'html5', array(
 		'search-form',
@@ -703,12 +710,14 @@ function almothafar_add_meta_description() {
 		// Category archive
 		$description = category_description();
 		if ( ! $description ) {
+			/* translators: %s: category name. */
 			$description = sprintf( __( 'تصفح جميع المقالات في تصنيف %s', 'abdeljalil' ), single_cat_title( '', false ) );
 		}
 	} elseif ( is_tag() ) {
 		// Tag archive
 		$description = tag_description();
 		if ( ! $description ) {
+			/* translators: %s: tag name. */
 			$description = sprintf( __( 'تصفح جميع المقالات الموسومة بـ %s', 'abdeljalil' ), single_tag_title( '', false ) );
 		}
 	} elseif ( is_author() ) {
@@ -716,6 +725,7 @@ function almothafar_add_meta_description() {
 		$author = get_queried_object();
 		$description = get_the_author_meta( 'description', $author->ID );
 		if ( ! $description ) {
+			/* translators: %s: author display name. */
 			$description = sprintf( __( 'تصفح جميع مقالات الكاتب %s', 'abdeljalil' ), get_the_author_meta( 'display_name', $author->ID ) );
 		}
 	} elseif ( is_home() || is_front_page() ) {
@@ -723,6 +733,7 @@ function almothafar_add_meta_description() {
 		$description = get_bloginfo( 'description' );
 	} elseif ( is_search() ) {
 		// Search results
+		/* translators: %s: the search query. */
 		$description = sprintf( __( 'نتائج البحث عن: %s', 'abdeljalil' ), get_search_query() );
 	}
 

@@ -16,9 +16,11 @@ if ( post_password_required() ) {
 			<?php
 			$comments_number = get_comments_number();
 			if ( 1 === $comments_number ) {
+				/* translators: %s: post title. */
 				printf( _x( 'تعليق واحد على &ldquo;%s&rdquo;', 'comments title', 'abdeljalil' ), get_the_title() );
 			} else {
 				printf(
+					/* translators: 1: comment count, 2: post title. */
 					_nx(
 						'%1$s تعليق على &ldquo;%2$s&rdquo;',
 						'%1$s تعليق على &ldquo;%2$s&rdquo;',
@@ -57,6 +59,7 @@ if ( post_password_required() ) {
 	<?php
 	comment_form( array(
 		'title_reply'          => __( 'أكتب تعليقك', 'abdeljalil' ),
+		/* translators: %s: comment author name. */
 		'title_reply_to'       => __( 'الرد على %s', 'abdeljalil' ),
 		'cancel_reply_link'    => __( 'إلغاء الرد', 'abdeljalil' ),
 		'label_submit'         => __( 'إرسال التعليق', 'abdeljalil' ),

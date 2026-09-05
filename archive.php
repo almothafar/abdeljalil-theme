@@ -12,14 +12,24 @@
 						single_tag_title();
 					} elseif ( is_author() ) {
 						the_post();
+						/* translators: %s: author name. */
 						printf( __( 'المؤلف: %s', 'abdeljalil' ), '<span class="vcard">' . get_the_author() . '</span>' );
 						rewind_posts();
 					} elseif ( is_day() ) {
+						/* translators: %s: the date of the day being viewed. */
 						printf( __( 'يومي: %s', 'abdeljalil' ), '<span>' . get_the_date() . '</span>' );
 					} elseif ( is_month() ) {
-						printf( __( 'شهري: %s', 'abdeljalil' ), '<span>' . get_the_date( _x( 'F Y', 'monthly archives date format', 'abdeljalil' ) ) . '</span>' );
+						printf(
+							/* translators: %s: the month being viewed. */
+							__( 'شهري: %s', 'abdeljalil' ),
+							'<span>' . get_the_date( _x( 'F Y', 'monthly archives date format', 'abdeljalil' ) ) . '</span>'
+						);
 					} elseif ( is_year() ) {
-						printf( __( 'سنوي: %s', 'abdeljalil' ), '<span>' . get_the_date( _x( 'Y', 'yearly archives date format', 'abdeljalil' ) ) . '</span>' );
+						printf(
+							/* translators: %s: the year being viewed. */
+							__( 'سنوي: %s', 'abdeljalil' ),
+							'<span>' . get_the_date( _x( 'Y', 'yearly archives date format', 'abdeljalil' ) ) . '</span>'
+						);
 					} else {
 						_e( 'الأرشيف', 'abdeljalil' );
 					}
