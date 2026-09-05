@@ -422,37 +422,46 @@ add_action( 'wp_enqueue_scripts', 'abdeljalil_scripts' );
 /***************************************************************
  * Preload Critical Assets
  **************************************************************/
-// The header image is normally the LCP element, but it is applied as an inline
-// background-image, which the preload scanner cannot see. Announce it early.
-function almothafar_preload_header_image() {
+// Two things here the preload scanner cannot find for itself. The header image
+// is normally the LCP element but is applied as an inline background-image, and
+// the body font is named only inside style.css, so it is not discovered until
+// that file has been fetched and parsed.
+//
+// Both regular-weight subsets are announced, not just the Arabic one. U+0020
+// lives in the Latin subset, so any page with a space between two words needs
+// that file as well; there is no page on this blog that wants one and not the
+// other. The bold subsets are left to normal discovery -- they style headings
+// rather than body text.
+//
+// Each font href has to match what style.css resolves its @font-face src to,
+// character for character and with no version query string, or the browser
+// fetches the file twice. crossorigin is required because fonts are fetched in
+// CORS mode even from the same origin. The files live in the parent theme, so
+// this is get_template_directory_uri() rather than the stylesheet directory,
+// which points at the child theme when one is active.
+function almothafar_preload_critical_assets() {
 	$header_image = get_header_image();
 
-	if ( ! $header_image ) {
-		return;
+	if ( $header_image ) {
+		printf(
+			'<link rel="preload" as="image" href="%s" fetchpriority="high" />' . "\n",
+			esc_url( $header_image )
+		);
 	}
 
-	printf(
-		'<link rel="preload" as="image" href="%s" fetchpriority="high" />' . "\n",
-		esc_url( $header_image )
+	$fonts = array(
+		'NotoKufiArabic-Regular-arabic.woff2',
+		'NotoKufiArabic-Regular-latin.woff2',
 	);
-}
-add_action( 'wp_head', 'almothafar_preload_header_image', 2 );
 
-// The body face. It is referenced only from style.css, so the preload scanner
-// cannot see it until that file has been fetched and parsed. Every page of an
-// Arabic blog needs the Arabic subset of the regular weight, so preloading that
-// one is never wasted; the Latin subset and both bold subsets are left to
-// normal discovery. The href must match what the stylesheet resolves to exactly
-// -- no version query string -- or the browser fetches the file twice, and the
-// crossorigin attribute is required because fonts are fetched in CORS mode even
-// from the same origin.
-function almothafar_preload_fonts() {
-	printf(
-		'<link rel="preload" as="font" type="font/woff2" href="%s" crossorigin />' . "\n",
-		esc_url( get_stylesheet_directory_uri() . '/fonts/NotoKufiArabic-Regular-arabic.woff2' )
-	);
+	foreach ( $fonts as $font ) {
+		printf(
+			'<link rel="preload" as="font" type="font/woff2" href="%s" crossorigin />' . "\n",
+			esc_url( get_template_directory_uri() . '/fonts/' . $font )
+		);
+	}
 }
-add_action( 'wp_head', 'almothafar_preload_fonts', 2 );
+add_action( 'wp_head', 'almothafar_preload_critical_assets', 2 );
 
 /***************************************************************
  * Inline SVG Icons
