@@ -427,13 +427,11 @@ add_action( 'wp_enqueue_scripts', 'abdeljalil_scripts' );
 // the body font is named only inside style.css, so it is not discovered until
 // that file has been fetched and parsed.
 //
-// Both regular-weight subsets are announced, not just the Arabic one. U+0020
-// lives in the Latin subset, so any page with a space between two words needs
-// that file as well; there is no page on this blog that wants one and not the
-// other. The bold subsets are left to normal discovery -- they style headings
-// rather than body text.
+// Only the regular weight is announced. Bold is left to normal discovery: it
+// styles headings rather than body text, and putting another 54 KB in front of
+// the header image would cost more than the swap it saves.
 //
-// Each font href has to match what style.css resolves its @font-face src to,
+// The font href has to match what style.css resolves its @font-face src to,
 // character for character and with no version query string, or the browser
 // fetches the file twice. crossorigin is required because fonts are fetched in
 // CORS mode even from the same origin. The files live in the parent theme, so
@@ -449,17 +447,10 @@ function almothafar_preload_critical_assets() {
 		);
 	}
 
-	$fonts = array(
-		'NotoKufiArabic-Regular-arabic.woff2',
-		'NotoKufiArabic-Regular-latin.woff2',
+	printf(
+		'<link rel="preload" as="font" type="font/woff2" href="%s" crossorigin />' . "\n",
+		esc_url( get_template_directory_uri() . '/fonts/NotoKufiArabic-Regular.woff2' )
 	);
-
-	foreach ( $fonts as $font ) {
-		printf(
-			'<link rel="preload" as="font" type="font/woff2" href="%s" crossorigin />' . "\n",
-			esc_url( get_template_directory_uri() . '/fonts/' . $font )
-		);
-	}
 }
 add_action( 'wp_head', 'almothafar_preload_critical_assets', 2 );
 

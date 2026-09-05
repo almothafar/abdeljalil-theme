@@ -12,7 +12,7 @@ Only what the editor canvas can show belongs here. Layout, the sidebar and
 anything outside the post content is style.css's job.
 
 Everything below mirrors style.css and will drift if that file changes without
-this one: the four @font-face blocks mirror the ones at the top of style.css,
+this one: the two @font-face blocks mirror the ones at the top of style.css,
 and the body, h1, .entry a, blockquote, pre and .wp-block-code rules mirror
 their namesakes there. The canvas is a separate iframe that cannot see
 style.css, so copying is the only way to show an author what they are writing.
@@ -23,43 +23,22 @@ it does not exist.
 */
 
 /* The editor canvas runs in its own iframe, so it needs its own copy of the
-   font. These four rules mirror the ones in style.css exactly, subsets and
-   unicode-range included; see fonts/README.md for how the files were built.
-   Relative URLs are rewritten against the theme directory by core. */
+   font. These two rules mirror the ones in style.css exactly. Relative URLs
+   are rewritten against the theme directory by core. */
 @font-face {
 	font-family: 'Noto Kufi Arabic';
-	src: url('fonts/NotoKufiArabic-Regular-arabic.woff2') format('woff2');
+	src: url('fonts/NotoKufiArabic-Regular.woff2') format('woff2');
 	font-weight: 400;
 	font-style: normal;
 	font-display: swap;
-	unicode-range: U+0600-06FF, U+0750-077F, U+0870-08FF, U+FB50-FDFF, U+FE70-FEFF, U+10EFD-10EFF;
 }
 
 @font-face {
 	font-family: 'Noto Kufi Arabic';
-	src: url('fonts/NotoKufiArabic-Regular-latin.woff2') format('woff2');
-	font-weight: 400;
-	font-style: normal;
-	font-display: swap;
-	unicode-range: U+0000-017E, U+0218-0237, U+02C6-0328, U+1E80-1E9E, U+1EF2-1EF3, U+2009-204F, U+20AC, U+2122, U+2212-221A, U+25CC, U+2E41;
-}
-
-@font-face {
-	font-family: 'Noto Kufi Arabic';
-	src: url('fonts/NotoKufiArabic-Bold-arabic.woff2') format('woff2');
+	src: url('fonts/NotoKufiArabic-Bold.woff2') format('woff2');
 	font-weight: 700;
 	font-style: normal;
 	font-display: swap;
-	unicode-range: U+0600-06FF, U+0750-077F, U+0870-08FF, U+FB50-FDFF, U+FE70-FEFF, U+10EFD-10EFF;
-}
-
-@font-face {
-	font-family: 'Noto Kufi Arabic';
-	src: url('fonts/NotoKufiArabic-Bold-latin.woff2') format('woff2');
-	font-weight: 700;
-	font-style: normal;
-	font-display: swap;
-	unicode-range: U+0000-017E, U+0218-0237, U+02C6-0328, U+1E80-1E9E, U+1EF2-1EF3, U+2009-204F, U+20AC, U+2122, U+2212-221A, U+25CC, U+2E41;
 }
 
 body {
