@@ -23,15 +23,38 @@
 	<arg name="colors"/>
 	<arg value="sp"/>
 
-	<!-- PHP 7.4 is the floor style.css declares under Requires PHP. -->
-	<config name="testVersion" value="7.4-"/>
+	<!--
+		There is deliberately no testVersion here. It is PHPCompatibility's
+		setting, PHPCompatibility is not installed by the workflow, and
+		installing it would not help: the newest release, 9.3.5, has no data
+		for anything after PHP 7.4, which is the floor style.css declares,
+		so against this theme it can report nothing by construction. The floor
+		is checked by running php -l on a real 7.4 in the matrix instead.
+		API-level compatibility is not checked by anything; that is a gap, not
+		a thing this file is quietly covering.
+	-->
 
 	<rule ref="WordPress-Core">
 		<!--
 			Multi-line call layout. 112 violations, every one of them a
 			disagreement about where a closing bracket sits, not a defect.
+
+			Excluded by sub-code rather than as a whole sniff, because
+			PEAR.Functions.FunctionCallSignature is also what carries
+			requiredSpacesAfterOpen and requiredSpacesBeforeClose. It is
+			how WPCS enforces "Spaces inside parentheses: function foo( $bar )",
+			one of the five rules AGENTS.md states and #23 exists to enforce.
+			Excluding the sniff outright let foo($bar) through clean. Keeping
+			the two spacing sub-codes on costs nothing: neither fires anywhere
+			in the tree today.
 		-->
-		<exclude name="PEAR.Functions.FunctionCallSignature"/>
+		<exclude name="PEAR.Functions.FunctionCallSignature.CloseBracketLine"/>
+		<exclude name="PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket"/>
+		<exclude name="PEAR.Functions.FunctionCallSignature.EmptyLine"/>
+		<exclude name="PEAR.Functions.FunctionCallSignature.FirstArgumentPosition"/>
+		<exclude name="PEAR.Functions.FunctionCallSignature.Indent"/>
+		<exclude name="PEAR.Functions.FunctionCallSignature.MultipleArguments"/>
+		<exclude name="PEAR.Functions.FunctionCallSignature.OpeningIndent"/>
 
 		<!--
 			Alignment of => and = across consecutive lines. The theme aligns

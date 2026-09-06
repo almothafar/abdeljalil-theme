@@ -21,14 +21,14 @@ jobs:
       fail-fast: false
       matrix:
         # 7.4 is what style.css declares under Requires PHP, and is also
-        # WordPress 7.1's own floor. 8.4 is the newest stable the theme is
-        # expected to run under. 8.2 sits between them so a mid-range failure
-        # is not blamed on the wrong end of the range.
-        php: [ '7.4', '8.2', '8.4' ]
+        # WordPress 7.1's own floor. 8.5 is the newest stable the theme is
+        # expected to run under. 8.2 and 8.4 sit between them so a mid-range
+        # failure is not blamed on the wrong end of the range.
+        php: [ '7.4', '8.2', '8.4', '8.5' ]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
         with:
           php-version: ${{ matrix.php }}
           coverage: none
@@ -42,7 +42,7 @@ jobs:
     name: EditorConfig
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       # Installed straight from the release rather than through
       # editorconfig-checker/action-editorconfig-checker. That action's newest
@@ -50,19 +50,24 @@ jobs:
       # no longer exists: the project renamed its binaries, so the action fails
       # with "The binary 'ec-linux-amd64*' not found" against anything current.
       # Its README says to use @main, which is not a pin. Dependabot cannot
-      # bump the version below, so it is pinned here and checked by hand.
+      # bump the version below, so it is pinned here and checked by hand --
+      # and because a tag can be moved, the tarball is checked against the
+      # SHA-256 the release published rather than trusted on name alone.
       - name: Install editorconfig-checker
         env:
           EC_VERSION: v4.0.1
+          EC_SHA256: 90139c6ed52373c0acfc9deb2a07aa812e5184753afd4bc8252bf44eb4909155
         run: |
           curl -fsSL -o ec.tar.gz "https://github.com/editorconfig-checker/editorconfig-checker/releases/download/${EC_VERSION}/editorconfig-checker-linux-amd64.tar.gz"
+          echo "${EC_SHA256}  ec.tar.gz" | sha256sum --check --strict
           tar -xzf ec.tar.gz editorconfig-checker
           sudo install editorconfig-checker /usr/local/bin/editorconfig-checker
           editorconfig-checker --version
 
       # Configured by .editorconfig-checker.json; see the comment in there for
-      # why LICENSE is excluded and why indentation is left to PHPCS.
-      - run: editorconfig-checker
+      # what is checked and what is deliberately not. The github-actions format
+      # reports findings as inline annotations, the way cs2pr does for PHPCS.
+      - run: editorconfig-checker -f github-actions
 
   phpcs:
     name: WordPress coding standards
@@ -70,13 +75,13 @@ jobs:
     # The gate is the diff, and a push to main has nothing to diff against.
     if: github.event_name == 'pull_request'
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # PHPCS runs over the files this PR touches, so the merge base has
           # to be in the clone.
           fetch-depth: 0
 
-      - uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
         with:
           php-version: '8.2'
           coverage: none
@@ -113,17 +118,34 @@ jobs:
       # ACMR skips deletions, which cannot be linted.
       - name: Collect the PHP files this pull request touches
         id: changed
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
+          # Three dots, so the comparison is against the merge base. Two dots
+          # would diff the base branch tip against this head, and once main
+          # moves ahead that reports files this pull request never touched --
+          # which is exactly the unrelated work #23 wanted left alone.
           git diff --name-only --diff-filter=ACMR \
-            "${{ github.event.pull_request.base.sha }}" \
-            "${{ github.event.pull_request.head.sha }}" -- '*.php' > changed.txt
+            "${BASE_SHA}...${HEAD_SHA}" -- '*.php' > changed.txt
           echo "count=$(wc -l < changed.txt)" >> "$GITHUB_OUTPUT"
           echo "PHP files in this diff:"; cat changed.txt
 
       - name: PHPCS
         if: steps.changed.outputs.count != '0'
         run: |
-          # phpcs exits non-zero on findings; cs2pr turns the report into
-          # inline annotations and owns the pass/fail decision instead.
-          phpcs --report-full --report-checkstyle=phpcs-report.xml $(cat changed.txt) || true
+          # --file-list takes the paths one per line, so a path containing a
+          # space cannot be split into two arguments the way "$(cat ...)" would.
+          #
+          # phpcs exits 1 or 2 when it has findings and 3 when it could not run
+          # at all; only the first two are cs2pr's to judge, so a configuration
+          # error still fails the job instead of being swallowed.
+          set +e
+          phpcs --report-full --report-checkstyle=phpcs-report.xml --file-list=changed.txt
+          status=$?
+          set -e
+          if [ "$status" -gt 2 ]; then
+            echo "::error::phpcs could not run (exit ${status})"
+            exit "$status"
+          fi
           cs2pr --graceful-warnings phpcs-report.xml

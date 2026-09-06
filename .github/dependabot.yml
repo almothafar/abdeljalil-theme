@@ -1,9 +1,18 @@
 version: 2
 
 # #21 skipped Dependabot because the repository had no manifest for any
-# ecosystem to watch. The workflows added in #23 are that manifest: actions are
-# pinned to a major tag, so a bump arrives as a reviewable pull request rather
-# than as silent drift inside a floating tag.
+# ecosystem to watch. The workflows added in #23 are that manifest.
+#
+# Actions are pinned to a full commit SHA with the version in a trailing
+# comment. A major tag such as @v7 is not a pin: it moves, so v7.0.1 becomes
+# v7.2.0 inside the same tag with nothing to review. A SHA cannot move, and
+# Dependabot rewrites both the SHA and the comment, so every upgrade -- patch
+# included -- arrives as a pull request someone reads.
+#
+# There is no commit-message prefix on purpose. Dependabot's default subject
+# is already "Bump actions/checkout from 5 to 6", which is the short imperative
+# AGENTS.md asks for; setting prefix: "Bump" would append a colon and produce
+# "Bump: bump actions/checkout from 5 to 6".
 #
 # Nothing else here has an ecosystem. The theme ships no package manager, and
 # PHPCS is installed inside the workflow rather than from a committed
@@ -13,7 +22,5 @@ updates:
     directory: /
     schedule:
       interval: weekly
-    commit-message:
-      prefix: "Bump"
     labels:
       - area:ci
