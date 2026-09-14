@@ -3,16 +3,18 @@ version: 2
 # #21 skipped Dependabot because the repository had no manifest for any
 # ecosystem to watch. The workflows added in #23 are that manifest.
 #
-# Actions are pinned to a full commit SHA with the version in a trailing
-# comment. A major tag such as @v7 is not a pin: it moves, so v7.0.1 becomes
-# v7.2.0 inside the same tag with nothing to review. A SHA cannot move, and
-# Dependabot rewrites both the SHA and the comment, so every upgrade -- patch
-# included -- arrives as a pull request someone reads.
+# Actions are pinned to a major tag, which is what #23 asked for. Be clear
+# about what that does and does not buy: Dependabot opens a pull request when
+# the major moves, @v7 to @v8, and that is the upgrade worth reading. Inside a
+# major the tag itself moves, so v7.0.1 becoming v7.2.0 arrives with nothing to
+# review. That is the accepted trade -- far fewer pull requests, at the cost of
+# unreviewed minor and patch drift -- and not a claim that a major tag is
+# immutable. Pinning to a full commit SHA is what would make it one.
 #
 # There is no commit-message prefix on purpose. Dependabot's default subject
-# is already "Bump actions/checkout from 5 to 6", which is the short imperative
+# is already "Bump actions/checkout from 7 to 8", which is the short imperative
 # AGENTS.md asks for; setting prefix: "Bump" would append a colon and produce
-# "Bump: bump actions/checkout from 5 to 6".
+# "Bump: bump actions/checkout from 7 to 8".
 #
 # Nothing else here has an ecosystem. The theme ships no package manager, and
 # PHPCS is installed inside the workflow rather than from a committed
