@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+<ruleset name="Abdeljalil Theme">
+	<description>The parts of the WordPress standard that AGENTS.md actually documents.</description>
+
+	<!--
+		This is deliberately not the whole WordPress ruleset. Run bare against
+		this tree it reports 126 errors, 112 of them from one sniff family,
+		PEAR.Functions.FunctionCallSignature, which wants a particular layout
+		for multi-line calls. The theme already has a consistent layout of its
+		own, AGENTS.md does not mandate WPCS's, and a job that is red on
+		arrival gets ignored — which #23 says in as many words.
+
+		So the exclusions below are all "the repo has its own settled style
+		here", and everything left is a rule AGENTS.md states.
+	-->
+
+	<file>.</file>
+	<exclude-pattern>/.git/</exclude-pattern>
+	<exclude-pattern>/languages/</exclude-pattern>
+
+	<arg name="extensions" value="php"/>
+	<arg name="basepath" value="."/>
+	<arg name="colors"/>
+	<arg value="sp"/>
+
+	<!--
+		There is deliberately no testVersion here. It is PHPCompatibility's
+		setting, PHPCompatibility is not installed by the workflow, and
+		installing it would not help: the newest release, 9.3.5, has no data
+		for anything after PHP 7.4, which is the floor style.css declares,
+		so against this theme it can report nothing by construction. The floor
+		is checked by running php -l on a real 7.4 in the matrix instead.
+		API-level compatibility is not checked by anything; that is a gap, not
+		a thing this file is quietly covering.
+	-->
+
+	<rule ref="WordPress-Core">
+		<!--
+			Multi-line call layout. 112 violations, every one of them a
+			disagreement about where a closing bracket sits, not a defect.
+
+			Excluded by sub-code rather than as a whole sniff, because
+			PEAR.Functions.FunctionCallSignature is also what carries
+			requiredSpacesAfterOpen and requiredSpacesBeforeClose. It is
+			how WPCS enforces "Spaces inside parentheses: function foo( $bar )",
+			one of the five rules AGENTS.md states and #23 exists to enforce.
+			Excluding the sniff outright let foo($bar) through clean. Keeping
+			the two spacing sub-codes on costs nothing: neither fires anywhere
+			in the tree today.
+		-->
+		<exclude name="PEAR.Functions.FunctionCallSignature.CloseBracketLine"/>
+		<exclude name="PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket"/>
+		<exclude name="PEAR.Functions.FunctionCallSignature.EmptyLine"/>
+		<exclude name="PEAR.Functions.FunctionCallSignature.FirstArgumentPosition"/>
+		<exclude name="PEAR.Functions.FunctionCallSignature.Indent"/>
+		<exclude name="PEAR.Functions.FunctionCallSignature.MultipleArguments"/>
+		<exclude name="PEAR.Functions.FunctionCallSignature.OpeningIndent"/>
+
+		<!--
+			Alignment of => and = across consecutive lines. The theme aligns
+			these in most places and not in others; WPCS wants it everywhere.
+			Cosmetic, and not something AGENTS.md asks for.
+		-->
+		<exclude name="WordPress.Arrays.MultipleStatementAlignment"/>
+		<exclude name="Generic.Formatting.MultipleStatementAlignment"/>
+
+		<!--
+			Filenames. This is a WordPress theme, so the template names are
+			fixed by core (404.php, single.php) and not ours to change.
+		-->
+		<exclude name="WordPress.Files.FileName"/>
+	</rule>
+
+	<!--
+		AGENTS.md: "Every user-facing string goes through the abdeljalil text
+		domain". Tell the sniff which domain is ours so a wrong one is caught.
+	-->
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="abdeljalil"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!--
+		AGENTS.md leads with "Escape at output, with the function that matches
+		the context", and these sniffs are the ones that check it. They are NOT
+		in WordPress-Core, which is formatting; they live in WordPress-Extra,
+		most of which is not wanted here. Pulled in individually so the headline
+		rule of the guide is the one rule CI definitely enforces.
+
+		Verified rather than assumed: a probe file containing echo $_GET['q'];
+		passed the ruleset without them.
+	-->
+	<rule ref="WordPress.Security.EscapeOutput">
+		<!--
+			WPCS treats _e() as unsafe and wants esc_html_e() everywhere.
+			AGENTS.md names _e() as one of the four accepted forms, and the
+			strings it prints come from this theme's own catalogue rather than
+			from a request, so the guide wins over the sniff here. The rest of
+			EscapeOutput stays on: OutputNotEscaped is the sub-sniff that
+			catches genuinely unescaped output, which is the rule that matters.
+		-->
+		<exclude name="WordPress.Security.EscapeOutput.UnsafePrintingFunction"/>
+	</rule>
+	<rule ref="WordPress.Security.ValidatedSanitizedInput"/>
+	<rule ref="WordPress.Security.NonceVerification"/>
+</ruleset>

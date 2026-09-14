@@ -1,0 +1,42 @@
+{
+	"_comment": [
+		"Config for the EditorConfig job in .github/workflows/lint.yml.",
+		"",
+		"Exclude: LICENSE and fonts/OFL.txt are verbatim licence texts that",
+		"AGENTS.md says stay byte-identical to what the licensor published, so",
+		"they are not ours to reindent. languages/*.mo is a compiled gettext",
+		"catalogue, i.e. binary. Image and font binaries need no entry here:",
+		"editorconfig-checker skips them through its own default excludes.",
+		"",
+		"Disable.Indentation: .editorconfig sets indent_style = tab for every",
+		"file, and the checker is line-based, so it cannot tell a space-indented",
+		"declaration from an aligned continuation line inside a block comment.",
+		"Turned on against this tree it reports 18 findings, and most are the",
+		"second kind -- comment alignment in style.css and editor-style.css,",
+		"indented code fences in Markdown, the shell command in the pull request",
+		"template -- which are correct as they stand.",
+		"",
+		"Be clear about the cost, because the first draft of this file was not:",
+		"PHPCS does NOT pick the gap up. It runs on .php only and on changed",
+		"files only, so indentation in style.css is checked by nothing, and",
+		"nine declarations there are genuinely space-indented today. That gap",
+		"is tracked in #44 rather than covered here; it has to be fixed by hand",
+		"and then stays fixed only by review.",
+		"",
+		"What is left here still catches the things that bite regardless of",
+		"file type: CRLF, missing final newlines, trailing whitespace and",
+		"non-UTF-8 bytes."
+	],
+
+	"Exclude": [
+		"^LICENSE$",
+		"^fonts/OFL\\.txt$",
+		"\\.mo$"
+	],
+
+	"Disable": {
+		"Indentation": true,
+		"IndentSize": true,
+		"MaxLineLength": true
+	}
+}
