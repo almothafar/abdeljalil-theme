@@ -22,7 +22,7 @@
 			$youtube = get_theme_mod( 'almothafar_youtube', 'almothafar' );
 
 			if ( ! empty( $github ) ) :
-			?>
+				?>
 				<a href="https://github.com/<?php echo esc_attr( $github ); ?>" target="_blank" rel="noopener noreferrer" class="social-icon" title="GitHub">
 					<?php almothafar_icon( 'github' ); ?>
 				</a>
@@ -65,7 +65,11 @@
 	</div>
 </nav>
 
-<header class="site-header"<?php if ( get_header_image() ) : ?> style="background-image: url(<?php echo esc_url( get_header_image() ); ?>);"<?php endif; ?>>
+<?php if ( get_header_image() ) : ?>
+<header class="site-header" style="background-image: url(<?php echo esc_url( get_header_image() ); ?>);">
+<?php else : ?>
+<header class="site-header">
+<?php endif; ?>
 	<?php if ( display_header_text() ) : ?>
 		<div class="header-content">
 			<div class="site-title">

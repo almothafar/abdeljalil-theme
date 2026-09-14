@@ -990,7 +990,7 @@ function abdeljalil_comment( $comment, $args, $depth ) {
 		$page     = isset( $args['page'] ) ? (int) $args['page'] : 0;
 		$per_page = isset( $args['per_page'] ) ? (int) $args['per_page'] : 0;
 
-		$top_level_counter++;
+		++$top_level_counter;
 		$number = $top_level_counter + ( ( $page - 1 ) * $per_page );
 	}
 
@@ -1021,7 +1021,7 @@ function abdeljalil_comment( $comment, $args, $depth ) {
 			<?php endif; ?>
 		</div>
 		<div class="comment-entry">
-			<?php if ( '0' == $comment->comment_approved ) : ?>
+			<?php if ( '0' === $comment->comment_approved ) : ?>
 				<div class="red"><em>تعليقك ينتظر موافقة الإدارة.</em></div>
 			<?php endif; ?>
 			<?php comment_text(); ?>
@@ -1066,8 +1066,8 @@ function almothafar_translate_akismet_privacy_notice( $translated, $original, $d
 
 	// Akismet sprintf()s its privacy-policy URL into this string, so the
 	// replacement has to carry the one %s, in the href, and nowhere else.
+	/* translators: %s: URL of the Akismet privacy policy. */
 	return __(
-		/* translators: %s: URL of the Akismet privacy policy. */
 		'يستخدم هذا الموقع أكيسمت للحد من التعليقات المزعجة. <a href="%s" target="_blank" rel="nofollow noopener">تعرف على كيفية معالجة بيانات تعليقك.</a>',
 		'abdeljalil'
 	);

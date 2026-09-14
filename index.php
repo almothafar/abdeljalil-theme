@@ -2,7 +2,10 @@
 
 <main class="site-container">
 	<?php if ( have_posts() ) : ?>
-		<?php while ( have_posts() ) : the_post(); ?>
+		<?php
+		while ( have_posts() ) :
+			the_post();
+			?>
 			<article id="post-<?php the_ID(); ?>" <?php post_class( 'post' ); ?>>
 				<?php get_template_part( 'template-parts/post-meta' ); ?>
 				<div class="entry">
