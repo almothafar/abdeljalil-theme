@@ -52,15 +52,15 @@ get_header();
 								<?php echo esc_html( get_the_title( $recent ) ); ?>
 							</a>
 						</li>
-					<?php
+						<?php
 					endforeach;
 					?>
 				</ul>
-			<?php
+				<?php
 			else :
 				?>
 				<p><?php _e( 'لا توجد مقالات متاحة حالياً', 'abdeljalil' ); ?></p>
-			<?php
+				<?php
 			endif;
 			?>
 		</div>
@@ -89,7 +89,7 @@ get_header();
 								<span class="category-count">(<?php echo esc_html( $category->count ); ?>)</span>
 							</a>
 						</li>
-					<?php
+						<?php
 					endforeach;
 					?>
 				</ul>

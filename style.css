@@ -478,7 +478,7 @@ pre code,
 .post-head-stat {
 	line-height: 19px;
 	text-align: start;
-    padding-inline-start: 15px;
+	padding-inline-start: 15px;
 }
 
 /* Specific styles for each stat type */
@@ -530,7 +530,7 @@ pre code,
 }
 
 .archive-header {
-    box-shadow: none;
+	box-shadow: none;
 }
 
 .post a,
@@ -913,13 +913,13 @@ blockquote {
 
 .search-input,
 .search-button {
-    box-sizing: border-box;
-    height: 27px;
-    line-height: 27px;
+	box-sizing: border-box;
+	height: 27px;
+	line-height: 27px;
 }
 
 .search-input {
-    width: 200px;
+	width: 200px;
 	border: none;
 	background-color: var(--color-bg-gray);
 	color: var(--color-text-light);
@@ -1027,7 +1027,7 @@ blockquote {
 .comments-template {
 	width: 100%;
 	margin-block-start: var(--spacing-xl);
-    padding-block-start: var(--spacing-sm);
+	padding-block-start: var(--spacing-sm);
 }
 
 .comment-list {
@@ -1055,7 +1055,7 @@ blockquote {
 }
 
 .comments-section {
-    border-block-start: 2px solid var(--color-primary-dark);
+	border-block-start: 2px solid var(--color-primary-dark);
 }
 
 .comments-section h3 {
@@ -1468,7 +1468,7 @@ img.avatar {
 }
 
 .navigation .nav-previous {
-    width: 50%;
+	width: 50%;
 	text-align: start;
 }
 

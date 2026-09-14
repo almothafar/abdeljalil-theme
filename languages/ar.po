@@ -345,7 +345,7 @@ msgid "نتائج البحث عن: %s"
 msgstr ""
 
 #. translators: %s: URL of the Akismet privacy policy.
-#: functions.php:1069
+#: functions.php:1070
 #, php-format
 msgid "يستخدم هذا الموقع أكيسمت للحد من التعليقات المزعجة. <a href=\"%s\" target=\"_blank\" rel=\"nofollow noopener\">تعرف على كيفية معالجة بيانات تعليقك.</a>"
 msgstr ""
